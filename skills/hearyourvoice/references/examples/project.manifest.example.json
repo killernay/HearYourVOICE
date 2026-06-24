@@ -1,0 +1,58 @@
+{
+  "format": "hearyourvoice-deliverable",
+  "formatVersion": 1,
+  "slug": "car-or-house-first",
+  "title": "จบใหม่ กทม ซื้อรถหรือบ้านก่อน",
+  "video": {
+    "aspect": "9:16",
+    "width": 1080,
+    "height": 1920,
+    "fps": 30
+  },
+  "generatedAt": "2026-06-24T07:00:26.662Z",
+  "status": "incomplete",
+  "summary": {
+    "episodes": 1,
+    "ready": 0,
+    "incomplete": 1
+  },
+  "artifacts": {
+    "voiceover_v1": "script/voiceover-v1.md",
+    "script_v1": "script/script-v1.md",
+    "shotlist": "script/shotlist.xlsx",
+    "attribution": "attribution/ATTRIBUTION.md"
+  },
+  "episodes": [
+    {
+      "id": "ep1",
+      "title": "",
+      "voiceFile": null,
+      "voiceSec": null,
+      "targetSec": 75,
+      "durationInFrames": 2250,
+      "insertCount": 12,
+      "sources": {
+        "generative": 0,
+        "cc": 2,
+        "shot": 2,
+        "graphic": 8
+      },
+      "brief": "briefs/ep01-insert-brief.json",
+      "render": {
+        "exists": false
+      },
+      "checks": {
+        "contiguous": true,
+        "endMatchesTarget": true
+      },
+      "status": "incomplete",
+      "issues": [
+        "voiceover mp3 missing",
+        "render mp4 missing"
+      ]
+    }
+  ],
+  "series": {
+    "exists": false
+  }
+}

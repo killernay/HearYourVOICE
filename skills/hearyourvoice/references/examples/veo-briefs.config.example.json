@@ -1,0 +1,70 @@
+{
+  "_comment": "Example project config for gen-veo-briefs.mjs, generalized from the chado series. Copy to src/<slug>/veo/briefs.config.json and edit. {exact} and {aliases} are substituted from subjectLock.",
+  "voiceoverMd": "src/chado-series/voiceover-v1.md",
+  "durations": "src/chado-series/voiceover-durations.json",
+  "outDir": "src/chado-series/veo",
+  "segmentSeconds": 6,
+  "subjectInsertTypes": ["underwater", "surface", "predator_behavior"],
+  "subjectLock": {
+    "exact": "Giant Snakehead (Channa micropeltes)",
+    "aliases": ["Thai pla chado", "ปลาชะโด"],
+    "rejectTerms": ["common snakehead", "Channa striata", "striped snakehead", "pla chon", "ปลาช่อน", "generic snakehead", "generic fish", "small slender snakehead"]
+  },
+  "style": {
+    "base": "realistic cinematic wildlife documentary, Thai freshwater habitat, dark tea-colored water, moody natural light, natural colors, high detail, vertical 9:16",
+    "subjectDescriptor": "species-accurate {exact}, {aliases}, large muscular elongated predator fish with broad head and robust body, natural wildlife proportions",
+    "contextDescriptor": "documentary context for {exact}, {aliases}",
+    "noneDescriptor": "visual insert for a documentary about {exact}, {aliases}, no fish visible in this shot"
+  },
+  "noneVisualMarker": "no fish visible",
+  "negativeBase": ["text", "subtitles", "captions", "logo", "watermark", "UI", "YouTube look", "human presenter", "letters", "typography", "labels", "cartoon", "fantasy creature", "fish swimming in circles", "repetitive circling fish", "aquarium loop", "same fish shot repeated", "blood", "gore", "dead fish", "overexposed stock footage look"],
+  "noneNegativeExtra": ["visible fish", "full fish body", "fish face", "fish silhouette"],
+  "subjectNegativeExtra": ["circling movement", "looped swimming"],
+  "cameraMotions": ["slow forward drift", "slow lateral pan", "locked-off observational shot", "subtle push-in", "slow tilt through the water column", "gentle handheld documentary drift"],
+  "shotVariations": [
+    "unique shot design: wide empty habitat establishing shot",
+    "unique shot design: hidden-shadow reveal with mostly negative space",
+    "unique shot design: macro detail close-up, tight shallow depth of field",
+    "unique shot design: low muddy-bottom angle with foreground sediment",
+    "unique shot design: environmental disturbance only, no animal body",
+    "unique shot design: above-water surface reflection shot",
+    "unique shot design: locked-off ripple observation shot",
+    "unique shot design: lure object study in empty water",
+    "unique shot design: protective nursery composition with fry cloud",
+    "unique shot design: dark cover pocket from predator point of view",
+    "unique shot design: empty water column with lure path",
+    "unique shot design: front-facing hidden head portrait",
+    "unique shot design: entry splash and bubbles detail",
+    "unique shot design: camouflage texture shot, static ambush pose",
+    "unique shot design: final empty water transition into darkness",
+    "unique shot design: lateral structure pass with roots in foreground",
+    "unique shot design: top-down waterline geometry",
+    "unique shot design: split-level surface tension view",
+    "unique shot design: deep channel negative-space shot"
+  ],
+  "episodeFocuses": {
+    "ep1": [
+      ["habitat", "empty dark underwater habitat, submerged roots, dead leaves, suspended particles, faint sunbeams, no fish visible", "none"],
+      ["underwater", "barely visible motionless adult subject silhouette hidden under roots, only shadow and head outline, not swimming", "subject"],
+      ["underwater", "extreme close-up of one cautious subject eye behind aquatic grass, partial face only, no full body", "subject"],
+      ["habitat", "muddy bottom, dead leaves, root tunnel, tiny disturbed sediment as if prey passed nearby, no fish visible", "none"],
+      ["predator_behavior", "sudden burst of bubbles, mud plume, and shaken aquatic grass showing an unseen strike path, no fish visible", "none"],
+      ["surface", "calm Thai swamp surface, reeds and lotus edges reflected in dark tea-colored water, no fish visible", "none"],
+      ["surface", "single small circular breathing ripple expanding on still water, the fish remains unseen below the surface, no fish visible", "none"],
+      ["lure", "artificial lure suspended motionless underwater in front of dark empty cover, no fish visible", "none"],
+      ["underwater", "adult subject guarding orange-red fry cloud, parent held still in background, protective nursery scene", "subject"],
+      ["habitat", "dark overhanging grass pocket and root shadow where an ambush predator could hide, no fish visible", "none"],
+      ["lure", "small lure passes through open water and is ignored, empty water column, no fish visible", "none"],
+      ["underwater", "front-facing subject head partly hidden in shadow, broad head, still posture, no circling", "subject"],
+      ["lure", "tackle silhouette entering dark tea-colored water with soft bubbles around it, no fish visible", "none"],
+      ["underwater", "camouflaged subject body partially blended into roots and leaves, static ambush posture, not swimming", "subject"],
+      ["transition", "empty dark underwater channel fading into black water, suspended particles and roots only, no fish visible", "none"]
+    ]
+  },
+  "guards": {
+    "global": { "requireSubjectLock": true, "requireRejectTerms": true, "noWrongSpeciesInVisual": true, "noDuplicateVisualPrompts": true },
+    "perEpisode": {
+      "ep1": { "minNone": 8, "maxSubject": 6, "forbidContext": true, "maxConsecutiveSubject": 2, "enforceNone": true, "enforceAntiLoop": true }
+    }
+  }
+}
