@@ -31,5 +31,13 @@
     "remotion"
   ],
   "license": "MIT",
-  "author": "Chanon"
+  "author": "Chanon",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/killernay/HearYourVOICE.git"
+  },
+  "homepage": "https://github.com/killernay/HearYourVOICE#readme",
+  "bugs": {
+    "url": "https://github.com/killernay/HearYourVOICE/issues"
+  }
 }
