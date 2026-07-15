@@ -189,6 +189,7 @@ Generate 5–10 fully-shaped candidates into `content-idea-log.md`. Each one car
    **`hyv-script-reviewer` is off by default too.** It grades the script against a brief the scriptwriter just read. Call it when the human asks, or when you can point at a real contradiction — not on every run "to be safe".
 3. Rewrite into TTS-ready narration at `src/<slug>/voiceover-v1.md` following `references/script-and-voiceover-spec.md` — short lines, deliberate breaks for pacing, hook in the first ~3 s, explicit punchline beats. Put the voice-config block (voice id, `model: eleven_v3`, source) at the top.
 4. **Build the shotlist** (`src/<slug>/shotlist.xlsx`) — give every beat a category-prefixed shot ID and plan capture/source/coverage. This is the artifact that makes the rest of the workflow easy; see `references/shotlist-format.md`. Scaffold a blank one with `scripts/new-shotlist.py`, or copy `references/examples/chado-NG-shotlist.xlsx`.
+   **Build it straight from the script + the brief's `Visual opportunities`** (which already names 5–8 concrete shots with a likely source each). `hyv-storyboard` is a separate optional pass, worth it only when the visuals must be *composed* — a sequence that has to build — rather than *sourced* from CC, stock or graphics, which is most videos.
 
 **Output:** `script-v1.md`, a locked `voiceover-v1.md`, and `shotlist.xlsx`. The locked hook/punchline gates phase 2.
 

@@ -71,9 +71,9 @@ ignored the human twice: once on scope, once on money.
 | 0b | `hyv-researcher` | the picked idea + its `ต้องตรวจ` list + **depth: `normal` (default) or `deep`** | research brief + subject lock — **or `PREMISE FAILED`** |
 | 1a | `hyv-scriptwriter` | brief | script + voiceover draft + **2–3 hook candidates, ranked, with a `contested: yes/no`** |
 | 1b | `hyv-script-reviewer` — **off by default** | script + brief | pass/fail + fixes. Only when the human asks, or the script contradicts the brief |
-| 1c | `hyv-storyboard` | voiceover + config | shot-by-shot storyboard |
+| 1c | `hyv-storyboard` — **off by default** | voiceover + config | shot-by-shot storyboard. Only when the visuals must be *composed* (a shot sequence that has to build) rather than *sourced* |
 | 1d | debate panel — **only when the hook is contested** (see below) | brief + hook candidates | recommendation + split? flag |
-| 1e | `hyv-shotlister` | storyboard | shotlist.xlsx |
+| 1e | `hyv-shotlister` | **the script + the brief's `Visual opportunities`** (or the storyboard, if one exists) | shotlist.xlsx |
 | 2 | `hyv-voiceover` | voiceover-v1 + config | mp3 + durations.json |
 | 4a | `hyv-cc-scout` | shotlist | cleared CC clips |
 | 4b | `hyv-veo-prompt-smith` | shotlist gaps + durations | prompts for missing shots |
@@ -98,7 +98,8 @@ suggests. Spawn **everything whose inputs already exist, at the same time**:
 │
 1a scriptwriter — returns ranked hooks + contested: yes/no
 │
-├─ 1c storyboard ──▶ 1e shotlister
+├─ 1e shotlister ← straight from script + brief's Visual opportunities
+│                  (1c storyboard only if the visuals must be composed)
 └─ 1d  ONLY IF contested:
        ⟨ maximalist ∥ skeptic ∥ target-viewer ⟩ ──▶ judge     ← 3 at once, not 3 in a row
 │
@@ -132,11 +133,18 @@ length and you pay for it.
 (needs the locked hook), voiceover → the generative branch (needs the clock), and **anything →
 phase 5** (the timeline joins the clock to the clips). Everything else can overlap.
 
-## The two links that were costing the most
+## The three links that were costing the most
 
 Every specialist is ~2–3 minutes of wall clock. A chain of eight is 20+ minutes no matter how
-much runs in parallel, because a chain is a chain. Two links were being paid for on every video
+much runs in parallel, because a chain is a chain. Three links were being paid for on every video
 whether they earned it or not:
+
+**`hyv-storyboard` is off by default.** The brief already carries `Visual opportunities` — 5–8
+concrete shots, each tagged self-shot | cc | generative | graphic — and `hyv-shotlister` can build
+the workbook straight from those plus the script. A storyboard in between was a third pass over
+the same decision. Call it when the visuals must be **composed** — a sequence that has to build,
+where shot B only works because shot A set it up — not when they're being **sourced** from stock,
+CC, or graphics, which is most videos.
 
 **`hyv-script-reviewer` is off by default.** It graded a script against the brief that the
 scriptwriter had just read. Call it only when the human asks, or when you can point at an actual
