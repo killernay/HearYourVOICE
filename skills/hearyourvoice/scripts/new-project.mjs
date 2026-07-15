@@ -21,6 +21,56 @@ import { fileURLToPath } from "node:url";
 
 const EXAMPLES = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..", "references", "examples");
 
+// Driven entirely by the exported timeline — the same ep*-timeline.json any editor gets. It
+// already carries fps, durationInFrames and per-clip start/end frames, so nothing is recomputed
+// here and the render can't drift from the CSV a human would cut by hand.
+// A graphic beat needs no PNG: the plan's note carries its text, so it renders as a card. That's
+// what makes the ฿0 path finishable in code.
+const EPISODE_TSX = `import React from "react";
+import { AbsoluteFill, Audio, Img, OffthreadVideo, Sequence, staticFile } from "remotion";
+
+export type Clip = {
+  index: number; startFrame: number; endFrame: number;
+  source: "shot" | "generative" | "cc" | "graphic"; file?: string; note?: string;
+};
+
+const isVideo = (f: string) => /\\.(mp4|mov|webm|mkv)$/i.test(f);
+
+// A graphic beat's note looks like "TEXT: <the line>" — show that line. Restyle freely; this is
+// a starting point, not a house style.
+const Card: React.FC<{ text: string }> = ({ text }) => (
+  <AbsoluteFill style={{ backgroundColor: "#0a1212", justifyContent: "center", padding: "8%" }}>
+    <div style={{ color: "white", fontSize: 72, fontWeight: 700, lineHeight: 1.25, textAlign: "center" }}>
+      {text}
+    </div>
+  </AbsoluteFill>
+);
+
+const Beat: React.FC<{ clip: Clip }> = ({ clip }) => {
+  const exists = clip.file && clip.file.length > 0;
+  if (exists && isVideo(clip.file!)) {
+    // Muted always: the voiceover is the only audio track.
+    return <OffthreadVideo muted src={staticFile(clip.file!)} style={{ width: "100%", height: "100%", objectFit: "cover" }} />;
+  }
+  if (exists && !/^graphics\\//.test(clip.file!)) {
+    return <Img src={staticFile(clip.file!)} style={{ width: "100%", height: "100%", objectFit: "cover" }} />;
+  }
+  // graphic beat, or a file that hasn't been produced yet — render the text rather than a hole.
+  return <Card text={(clip.note ?? "").replace(/^TEXT:\\s*/, "") || "beat " + clip.index} />;
+};
+
+export const Episode: React.FC<{ clips: Clip[]; voiceFile?: string }> = ({ clips, voiceFile }) => (
+  <AbsoluteFill style={{ backgroundColor: "#0a1212" }}>
+    {clips.map((c) => (
+      <Sequence key={c.index} from={c.startFrame} durationInFrames={Math.max(1, c.endFrame - c.startFrame + 1)}>
+        <Beat clip={c} />
+      </Sequence>
+    ))}
+    {voiceFile ? <Audio src={staticFile(voiceFile)} /> : null}
+  </AbsoluteFill>
+);
+`;
+
 const args = process.argv.slice(2);
 const flag = (n, fb = "") => { const i = args.indexOf(n); if (i === -1) return fb; if (i === args.length - 1) throw new Error(`${n} requires a value`); return args[i + 1]; };
 const has = (n) => args.includes(n);
@@ -68,14 +118,114 @@ write(path.join(srcDir, "research.md"), `# Research Brief — ${title}\n\nslug: 
 write(path.join(srcDir, "script-v1.md"), `# ${title} — Script v1\n\n## Thesis\n<one line the video proves>\n\n## Beats\n- <beat 1>\n\n## Closing (punchline candidate)\n<payoff line>\n`);
 write(path.join(srcDir, "voiceover-v1.md"), `# ${title} Voiceover v1\n\nSource text for ElevenLabs TTS into \`public/${slug}/voiceover/\`.\n\nVoice pass:\n\n- Voice id: \`<voice-id>\`\n- Model: \`eleven_v3\`\n- Direction: performance-ready Thai narration. Short lines, clear pauses, strong hook, strong punchline.\n\n${epList.map((id, i) => `## EP${i + 1} - <title>\n\nVO:\n\n<hook line>\n\n<short line>\n\n<punchline beat>`).join("\n\n")}\n`);
 
-if (withRemotion) {
-  const configTs = `export const FPS = 30;\nexport const WIDTH = 1080;\nexport const HEIGHT = 1920;\nconst framesFromSeconds = (s: number) => Math.ceil(s * FPS);\n\nexport type Insert = { file: string; startSec: number; endSec: number; source?: "shot" | "generative" | "cc" | "graphic" };\nexport type Episode = { id: string; episode: string; title: string; thesis: string; closing: string; durationInFrames: number; voiceFile?: string; inserts?: Insert[]; footage: { src: string; label: string; credit: string; license: string; sourceUrl: string }[]; beats: string[]; shotIds: string[] };\n\nexport const SERIES_TITLE = ${JSON.stringify(title)};\nexport const EPISODES: Episode[] = [\n${epList.map((id, i) => `  { id: ${JSON.stringify(id)}, episode: ${JSON.stringify("EP" + (i + 1))}, title: "", thesis: "", closing: "", durationInFrames: framesFromSeconds(60), voiceFile: ${JSON.stringify(`${slug}/voiceover/${id}.mp3`)}, inserts: [], footage: [], beats: [], shotIds: [] }`).join(",\n")}\n];\nexport const SERIES_TOTAL_FRAMES = EPISODES.reduce((s, e) => s + e.durationInFrames, 0);\n`;
-  const compTsx = `import React from "react";\nimport { AbsoluteFill, Audio, OffthreadVideo, Sequence, staticFile, useVideoConfig } from "remotion";\nimport { EPISODES } from "./config";\n\nexport const ${Name}Episode: React.FC<{ episodeId: string }> = ({ episodeId }) => {\n  const ep = EPISODES.find((e) => e.id === episodeId) ?? EPISODES[0];\n  const { fps } = useVideoConfig();\n  return (\n    <AbsoluteFill style={{ backgroundColor: "#0a1212" }}>\n      {(ep.inserts ?? []).map((ins, i) => (\n        <Sequence key={i} from={Math.round(ins.startSec * fps)} durationInFrames={Math.round((ins.endSec - ins.startSec) * fps)}>\n          <OffthreadVideo muted src={staticFile(ins.file)} style={{ width: "100%", height: "100%", objectFit: "cover" }} />\n        </Sequence>\n      ))}\n      {ep.voiceFile ? <Audio src={staticFile(ep.voiceFile)} /> : null}\n    </AbsoluteFill>\n  );\n};\n`;
-  write(path.join(srcDir, "config.ts"), configTs);
-  write(path.join(srcDir, `${Name}.tsx`), compTsx);
+// Code renderers need a real project scaffolded; NLEs (capcut/premiere/davinci) need nothing —
+// they just open the exported CSV. Remotion is the only code renderer today. When a second one
+// shows up, add a function and a key here; don't build a plugin system for one entry.
+const RENDERERS = { remotion: scaffoldRemotion };
+
+if (withRemotion) RENDERERS.remotion();
+
+// One Remotion project at the repo root serving every slug — one npm install, one studio, all
+// your videos. Root.tsx is regenerated from whatever src/*/project.config.json exists, so a new
+// slug needs no hand-editing; re-run this after exporting a timeline to pick it up.
+function scaffoldRemotion() {
+  const R = (p) => path.join(root, p);
+  const rel = (p) => path.relative(root, p);
+
+  // package.json: create it, or add only the deps we need. Never clobber someone's project file.
+  const pkgPath = R("package.json");
+  const deps = { remotion: "^4.0.0", "@remotion/cli": "^4.0.0", react: "^18.3.1", "react-dom": "^18.3.1" };
+  const devDeps = { "@types/react": "^18.3.1", typescript: "^5.5.0" };
+  if (!fs.existsSync(pkgPath)) {
+    write(pkgPath, JSON.stringify({
+      name: path.basename(root), private: true, version: "0.0.0",
+      scripts: { studio: "remotion studio remotion/index.ts", render: "remotion render remotion/index.ts" },
+      dependencies: deps, devDependencies: devDeps,
+    }, null, 2) + "\n");
+  } else {
+    const pkg = JSON.parse(fs.readFileSync(pkgPath, "utf8"));
+    const before = JSON.stringify(pkg);
+    pkg.dependencies = { ...deps, ...pkg.dependencies };
+    pkg.devDependencies = { ...devDeps, ...pkg.devDependencies };
+    pkg.scripts = { studio: "remotion studio remotion/index.ts", render: "remotion render remotion/index.ts", ...pkg.scripts };
+    if (JSON.stringify(pkg) !== before) {
+      fs.writeFileSync(pkgPath, JSON.stringify(pkg, null, 2) + "\n");
+      made.push("package.json (deps merged)");
+    } else skipped.push("package.json");
+  }
+
+  write(R("tsconfig.json"), JSON.stringify({
+    compilerOptions: {
+      target: "ES2020", module: "ESNext", moduleResolution: "bundler", jsx: "react-jsx",
+      strict: true, esModuleInterop: true, skipLibCheck: true,
+      resolveJsonModule: true,   // Root.tsx imports the timeline + config JSON directly
+    },
+  }, null, 2) + "\n");
+
+  write(R("remotion.config.ts"),
+    `import { Config } from "@remotion/cli/config";\n\n` +
+    `Config.setVideoImageFormat("jpeg");\n` +
+    `// Every clip is muted on the timeline — the voiceover is the only audio track.\n` +
+    `Config.setChromiumOpenGlRenderer("angle");\n`);
+
+  write(R("remotion/index.ts"),
+    `import { registerRoot } from "remotion";\nimport { RemotionRoot } from "./Root";\n\n` +
+    `registerRoot(RemotionRoot);\n`);
+
+  write(R("remotion/Episode.tsx"), EPISODE_TSX);
+  writeRemotionRoot(R, rel);
 }
 
-console.log(`Scaffolded '${slug}' (${episodes} ep${episodes > 1 ? "s" : ""})${withRemotion ? " + Remotion starter" : ""}\n`);
+// Regenerate Root.tsx from every slug on disk that has a project.config.json.
+function writeRemotionRoot(R, rel) {
+  const srcRoot = R("src");
+  const slugs = fs.existsSync(srcRoot)
+    ? fs.readdirSync(srcRoot).filter((d) => fs.existsSync(path.join(srcRoot, d, "project.config.json")))
+    : [];
+  if (!slugs.includes(slug)) slugs.push(slug);
+
+  const imports = [], comps = [];
+  for (const s of slugs.sort()) {
+    const id = s.replace(/[^a-zA-Z0-9]/g, "_");
+    const cfg = JSON.parse(fs.readFileSync(path.join(srcRoot, s, "project.config.json"), "utf8"));
+    imports.push(`import cfg_${id} from "../src/${s}/project.config.json";`);
+    const editDir = path.join(srcRoot, s, "edit");
+    const timelines = fs.existsSync(editDir)
+      ? fs.readdirSync(editDir).filter((f) => f.endsWith("-timeline.json")).sort()
+      : [];
+    if (timelines.length === 0) {
+      // No timeline exported yet — register a placeholder so the studio still opens and shows
+      // the frame at the right size. Re-run new-project --remotion once phase 5 has run.
+      comps.push(`      <Composition id="${s}" component={Episode} durationInFrames={30}\n` +
+        `        fps={cfg_${id}.fps ?? 30} width={cfg_${id}.width ?? 1080} height={cfg_${id}.height ?? 1920}\n` +
+        `        defaultProps={{ clips: [], voiceFile: undefined }} />`);
+      continue;
+    }
+    for (const t of timelines) {
+      const ep = t.replace("-timeline.json", "");
+      const tid = `${id}_${ep}`;
+      imports.push(`import tl_${tid} from "../src/${s}/edit/${t}";`);
+      comps.push(`      <Composition id="${s}-${ep}" component={Episode}\n` +
+        `        durationInFrames={tl_${tid}.durationInFrames} fps={tl_${tid}.fps}\n` +
+        `        width={cfg_${id}.width ?? 1080} height={cfg_${id}.height ?? 1920}\n` +
+        `        defaultProps={{ clips: tl_${tid}.clips as any, voiceFile: "${s}/voiceover/${ep}.mp3" }} />`);
+    }
+  }
+
+  // Always overwrite: this file is generated, and re-running to pick up a new timeline is the
+  // whole point. write() skips what exists, which would silently keep the placeholder forever.
+  const outPath = R("remotion/Root.tsx");
+  const isNew = !fs.existsSync(outPath);
+  fs.mkdirSync(path.dirname(outPath), { recursive: true });
+  fs.writeFileSync(outPath,
+    `// GENERATED by new-project.mjs --remotion. Re-run it to pick up new slugs or timelines.\n` +
+    `import React from "react";\nimport { Composition } from "remotion";\n` +
+    `import { Episode } from "./Episode";\n${imports.join("\n")}\n\n` +
+    `export const RemotionRoot: React.FC = () => {\n  return (\n    <>\n${comps.join("\n")}\n    </>\n  );\n};\n`);
+  (isNew ? made : made).push(`remotion/Root.tsx (${comps.length} composition${comps.length === 1 ? "" : "s"})`);
+}
+
+console.log(`Scaffolded '${slug}' (${episodes} ep${episodes > 1 ? "s" : ""})${withRemotion ? " + Remotion project" : ""}\n`);
 if (made.length) console.log("Created:\n" + made.map((m) => "  + " + m).join("\n"));
 if (skipped.length) console.log("\nSkipped (exist):\n" + skipped.map((m) => "  = " + m).join("\n"));
 console.log(`\nNext:
