@@ -69,10 +69,10 @@ ignored the human twice: once on scope, once on money.
 |---|---|---|---|
 | 0a | `hyv-ideator` | a pillar / rough itch | 5–10 shaped ideas + the claims each rests on |
 | 0b | `hyv-researcher` | the picked idea + its `ต้องตรวจ` list + **depth: `normal` (default) or `deep`** | research brief + subject lock — **or `PREMISE FAILED`** |
-| 1a | `hyv-scriptwriter` | brief | script + voiceover draft |
-| 1b | `hyv-script-reviewer` | script + brief | pass/fail + fixes (loop until pass) |
+| 1a | `hyv-scriptwriter` | brief | script + voiceover draft + **2–3 hook candidates, ranked, with a `contested: yes/no`** |
+| 1b | `hyv-script-reviewer` — **off by default** | script + brief | pass/fail + fixes. Only when the human asks, or the script contradicts the brief |
 | 1c | `hyv-storyboard` | voiceover + config | shot-by-shot storyboard |
-| 1d | debate panel — **all 3 in ONE message**, then `hyv-judge` in the next | brief + hook/punchline candidates | recommendation + split? flag |
+| 1d | debate panel — **only when the hook is contested** (see below) | brief + hook candidates | recommendation + split? flag |
 | 1e | `hyv-shotlister` | storyboard | shotlist.xlsx |
 | 2 | `hyv-voiceover` | voiceover-v1 + config | mp3 + durations.json |
 | 4a | `hyv-cc-scout` | shotlist | cleared CC clips |
@@ -96,10 +96,11 @@ suggests. Spawn **everything whose inputs already exist, at the same time**:
 │
 0b researcher — verifies ต้องตรวจ FIRST · may return PREMISE FAILED and kill it
 │
-1a scriptwriter ──▶ 1b reviewer  (loop until pass)
+1a scriptwriter — returns ranked hooks + contested: yes/no
 │
 ├─ 1c storyboard ──▶ 1e shotlister
-└─ 1d  ⟨ maximalist ∥ skeptic ∥ target-viewer ⟩ ──▶ judge     ← 3 at once, not 3 in a row
+└─ 1d  ONLY IF contested:
+       ⟨ maximalist ∥ skeptic ∥ target-viewer ⟩ ──▶ judge     ← 3 at once, not 3 in a row
 │
 ══ GATE: the human picks the hook ══
 │
@@ -130,6 +131,31 @@ length and you pay for it.
 **Genuinely sequential, don't fight it:** research → script (needs facts), script → voiceover
 (needs the locked hook), voiceover → the generative branch (needs the clock), and **anything →
 phase 5** (the timeline joins the clock to the clips). Everything else can overlap.
+
+## The two links that were costing the most
+
+Every specialist is ~2–3 minutes of wall clock. A chain of eight is 20+ minutes no matter how
+much runs in parallel, because a chain is a chain. Two links were being paid for on every video
+whether they earned it or not:
+
+**`hyv-script-reviewer` is off by default.** It graded a script against the brief that the
+scriptwriter had just read. Call it only when the human asks, or when you can point at an actual
+contradiction with the brief. Not "to be safe" — safety you pay for on every run and use on
+almost none is just cost.
+
+**The debate runs only when the hook is genuinely contested.** `hyv-scriptwriter` now returns
+2–3 ranked hook candidates and a `contested: yes/no` — it has read the brief and drafted the
+lines, so it is the cheapest place to ask "is this close?".
+
+- `contested: no` → **take its top hook and move on.** No panel, no judge. Say in your report
+  which hook was taken and that no debate was needed, so the human can still overrule.
+- `contested: yes` → run the panel: three in one message, then `hyv-judge`.
+- The human asked for a debate → run it regardless. They are allowed to spend 4 minutes on a hook.
+
+**Bias toward `no`.** The panel exists for the hook that could go two ways — where "88% of people
+with sinus headache actually have migraine" fights "migraine isn't a blood-vessel problem" and
+only an argument settles it. It is not a rubber stamp for a hook that is already obviously the
+one. A debate that confirms the top-ranked hook cost four minutes to change nothing.
 
 **Across episodes, and across videos, everything is parallel.** `ep1` and `ep2` share nothing but
 the config. One producer per topic, each in its own `src/<slug>/`. If you are handed three topics,

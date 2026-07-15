@@ -95,11 +95,16 @@ See `references/pipeline-loop.md` for the one-screen map + phase input/output co
 stop is a real deliverable, not a half-done run — every mode's output is exactly the input the
 next one needs:
 
-| Mode | You stop after | They get | Roughly |
+| Mode | You stop after | They get | Measured |
 |---|---|---|---|
-| **`script`** | phase 1e | research brief · script with a debated hook · `shotlist.xlsx` | ~4 min |
-| **`voice`** ← ask for this if unsure | phase 2 | the above **+ real voiceover mp3 + the measured clock** | ~6 min |
-| **`full`** | phase 6 | the above **+ footage + timeline + rendered mp4 + `delivery/`** | ~15 min+ |
+| **`script`** | phase 1e | research brief · script with a ranked hook · `shotlist.xlsx` | ~8–10 min |
+| **`voice`** ← ask for this if unsure | phase 2 | the above **+ real voiceover mp3 + the measured clock** | ~12–15 min |
+| **`full`** | phase 6 | the above **+ footage + timeline + rendered mp4 + `delivery/`** | ~25–30 min |
+
+**Quote these honestly.** Every specialist is ~2–3 minutes of wall clock, and a chain of eight is
+20+ minutes however much runs in parallel — parallelism makes *three topics* finish together, it
+does not shorten one chain. Add ~4 min if the debate runs, and skip nothing to make a number look
+better. Telling someone "6 minutes" and delivering 25 is worse than saying 25.
 
 **`voice` is the useful default when the human hasn't said.** The voiceover is the master clock,
 so it is also the natural checkpoint: they hear whether the script actually works before anyone
@@ -177,9 +182,11 @@ Generate 5–10 fully-shaped candidates into `content-idea-log.md`. Each one car
 **Goal:** a thesis-driven, TTS-ready narration whose hook and punchline have survived an adversarial debate.
 
 1. Draft `src/<slug>/script-v1.md`: title, one-line thesis, beats, closing. Prose is fine.
-2. **Punchline debate** — before locking anything, run the adversarial multi-agent debate in `references/punchline-debate.md`. This is the "agents fighting over the punchline" step.
+2. **Punchline debate — only when the hook is contested.** `hyv-scriptwriter` returns its hook candidates *ranked*, plus `contested: yes|no`. On `no`, take its top hook, say so in your report, and move on — no panel. On `yes` (or when the human asks for a debate), run the adversarial panel in `references/punchline-debate.md`. This is the "agents fighting over the punchline" step, and it costs ~4 minutes and four agents: spend it on the hook that could really go two ways, not as a rubber stamp for one that's already obviously the winner.
 
-   **Spawn all three panelists in ONE message — three `Agent` calls in the same block, not three messages.** `hyv-hook-maximalist`, `hyv-skeptic-editor` and `hyv-target-viewer` never read each other's work: each one only reads the brief and argues its own corner, so queueing them makes the debate three times slower for nothing. Only `hyv-judge` waits — it needs all three verdicts, so it goes in the next message.
+   **When it does run, spawn all three panelists in ONE message — three `Agent` calls in the same block, not three messages.** `hyv-hook-maximalist`, `hyv-skeptic-editor` and `hyv-target-viewer` never read each other's work: each one only reads the brief and argues its own corner, so queueing them makes the debate three times slower for nothing. Only `hyv-judge` waits — it needs all three verdicts, so it goes in the next message.
+
+   **`hyv-script-reviewer` is off by default too.** It grades the script against a brief the scriptwriter just read. Call it when the human asks, or when you can point at a real contradiction — not on every run "to be safe".
 3. Rewrite into TTS-ready narration at `src/<slug>/voiceover-v1.md` following `references/script-and-voiceover-spec.md` — short lines, deliberate breaks for pacing, hook in the first ~3 s, explicit punchline beats. Put the voice-config block (voice id, `model: eleven_v3`, source) at the top.
 4. **Build the shotlist** (`src/<slug>/shotlist.xlsx`) — give every beat a category-prefixed shot ID and plan capture/source/coverage. This is the artifact that makes the rest of the workflow easy; see `references/shotlist-format.md`. Scaffold a blank one with `scripts/new-shotlist.py`, or copy `references/examples/chado-NG-shotlist.xlsx`.
 
