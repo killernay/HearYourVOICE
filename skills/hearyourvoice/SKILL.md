@@ -69,15 +69,31 @@ through a delegation chain hadn't finished at 13 minutes.**
 doing its own whole chain in its own `src/<slug>/`. Three videos in roughly the time of one —
 three workers, not one worker under three foremen.
 
-**Spawn inside a single video for exactly two reasons:**
+**Spawn ACROSS, never DOWN.**
 
-1. **The debate panel** — `hyv-hook-maximalist` ∥ `hyv-skeptic-editor` ∥ `hyv-target-viewer` →
-   `hyv-judge`. Their independence *is* the product: each must argue without seeing the others,
-   which is impossible in one context. Three in ONE message, then the judge.
-2. **The human named a specialist.**
+```
+down   A → B → C          3 handoffs · 3× the time · same one answer
+across A ∥ A ∥ A → pick   0 handoffs · 1× the time · best of three
+```
 
-The other `hyv-*` files are still worth their weight — as **spec**. They say how each phase is
-done, what its gates are, what it must never fake. **Read the spec; don't hire the agent.**
+Down a chain, agents lose: every link is a fresh context re-reading what the last one knew.
+**Across the same input they win, and it costs no wall clock at all** — three agents on one brief
+finish in the time of one, and you keep the best. You pay tokens, not minutes.
+
+So spawn for **competition**:
+
+1. **Three `hyv-scriptwriter` on one brief, in ONE message** — three angles, then
+   `hyv-script-reviewer` (the บก) picks one and names its fixes. This is not theory: the hook
+   debate already works this way and produced *"ในคน 100 คนที่คิดแบบนี้ เป็นไซนัสจริง แค่ 3 คน — แล้วอีก 97 คนล่ะ"*,
+   which no single writer here came up with.
+2. **The debate panel** — `hyv-hook-maximalist` ∥ `hyv-skeptic-editor` ∥ `hyv-target-viewer` →
+   `hyv-judge`, when the winning hook is still contested. Independence *is* the product: each must
+   argue without seeing the others, impossible in one context. Three in ONE message, then the judge.
+3. **The human named a specialist.**
+
+The rest of the `hyv-*` files are worth their weight as **spec** — how each phase is done, its
+gates, what it must never fake. **Read the spec; don't hire the agent** for a step you can do
+yourself with the brief already in your context.
 
 Don't go looking for agents on disk: they arrive by several routes (`.claude/agents/`, a plugin, a
 marketplace), and a missing file proves nothing except that you looked in the wrong place.
@@ -244,7 +260,7 @@ When more than one idea is live and you can't separate them, run the panel **on 
 
    **When it does run, spawn all three panelists in ONE message — three `Agent` calls in the same block, not three messages.** `hyv-hook-maximalist`, `hyv-skeptic-editor` and `hyv-target-viewer` never read each other's work: each one only reads the brief and argues its own corner, so queueing them makes the debate three times slower for nothing. Only `hyv-judge` waits — it needs all three verdicts, so it goes in the next message.
 
-   **`hyv-script-reviewer` is off by default too.** It grades the script against a brief the scriptwriter just read. Call it when the human asks, or when you can point at a real contradiction — not on every run "to be safe".
+   **`hyv-script-reviewer` runs on every video, and nothing is voiced before it passes.** This is the documentary process, not ceremony: research → draft → **the editor raises issues → you fix → you resubmit → approved** → *then* you record. It sits at the last moment the script is still cheap to change. After it, voice costs money, a fix means paying twice, and the voiceover is the master clock — re-record and every downstream timecode moves. Loop until `VERDICT: pass`; it fails on any Facts or Overpromise issue and names the line.
 3. Rewrite into TTS-ready narration at `src/<slug>/voiceover-v1.md` following `references/script-and-voiceover-spec.md` — short lines, deliberate breaks for pacing, hook in the first ~3 s, explicit punchline beats. Put the voice-config block (voice id, `model: eleven_v3`, source) at the top.
 4. **Build the shotlist** (`src/<slug>/shotlist.xlsx`) — give every beat a category-prefixed shot ID and plan capture/source/coverage. This is the artifact that makes the rest of the workflow easy; see `references/shotlist-format.md`. Scaffold a blank one with `scripts/new-shotlist.py`, or copy `references/examples/chado-NG-shotlist.xlsx`.
    **Build it straight from the script + the brief's `Visual opportunities`** (which already names 5–8 concrete shots with a likely source each). `hyv-storyboard` is a separate optional pass, worth it only when the visuals must be *composed* — a sequence that has to build — rather than *sourced* from CC, stock or graphics, which is most videos.
