@@ -43,7 +43,14 @@ const R = (p) => path.resolve(root, p);
 const dest = flag("--dest", "delivery");
 const title = flag("--title", slug);
 const durationsPath = R(flag("--durations", `src/${slug}/voiceover-durations.json`));
-const briefsDir = R(flag("--briefs", `src/${slug}/veo`));
+// Where the insert plan lives. The rest of the pipeline is source-agnostic — check-insert-plan
+// takes any --plan, export-timeline takes any --brief — but this script only ever looked in
+// src/<slug>/veo for *-veo-insert-brief.json, which is where the GENERATIVE path writes. A
+// graphics-only or CC-only episode writes ep*-insert-plan.json under edit/, so the manifest
+// reported insertCount 0 for work that was done. Look everywhere the plan legitimately lands.
+const briefDirs = has("--briefs")
+  ? [R(flag("--briefs", ""))]
+  : [R(`src/${slug}/edit`), R(`src/${slug}/veo`), R(`src/${slug}`)];
 const rendersDir = R(flag("--renders", "out"));
 const voiceoverDir = R(flag("--voiceover", `public/${slug}/voiceover`));
 const scriptDir = R(flag("--script-dir", `src/${slug}`));
@@ -131,12 +138,21 @@ for (const d of durList) {
   if (fs.existsSync(mp3)) ep.voiceFile = copy(mp3, `voiceover/ep${pad2(num)}.mp3`);
   else issues.push("voiceover mp3 missing");
 
-  // brief
-  const briefFile = fs.existsSync(briefsDir) ? fs.readdirSync(briefsDir).find((f) => f.toLowerCase().includes(`ep${num}-`) && f.endsWith("insert-brief.json") && epNum(f) === num) : null;
-  if (briefFile) {
-    const brief = JSON.parse(fs.readFileSync(path.join(briefsDir, briefFile), "utf8"));
+  // Insert plan — either name, from whichever dir has it. "-insert-plan" is what the
+  // source-agnostic path writes; "-insert-brief" is the generative one. Same shape.
+  let briefPath = null;
+  for (const dir of briefDirs) {
+    if (!fs.existsSync(dir)) continue;
+    const f = fs.readdirSync(dir).find((n) =>
+      epNum(n) === num && (n.endsWith("insert-plan.json") || n.endsWith("insert-brief.json")));
+    if (f) { briefPath = path.join(dir, f); break; }
+  }
+  if (briefPath) {
+    const brief = JSON.parse(fs.readFileSync(briefPath, "utf8"));
     ep.insertCount = brief.length;
     for (const s of brief) {
+      // Only a veo brief may omit source; everything else states it. Don't count a graphic
+      // as generative — that misreports what was actually made, and what it cost.
       const src = s.source || (s.generation_mode === "generate_veo" ? "generative" : "generative");
       if (ep.sources[src] != null) ep.sources[src] += 1;
     }
@@ -146,9 +162,9 @@ for (const d of durList) {
     ep.checks.endMatchesTarget = Math.abs(finalEnd - d.targetSec) <= tol;
     if (!contiguous) issues.push("insert plan not contiguous");
     if (!ep.checks.endMatchesTarget) issues.push(`brief end ${finalEnd}s != target ${d.targetSec}s`);
-    ep.brief = copy(path.join(briefsDir, briefFile), `briefs/ep${pad2(num)}-insert-brief.json`);
+    ep.brief = copy(briefPath, `briefs/ep${pad2(num)}-${path.basename(briefPath).replace(/^.*?(insert-(plan|brief)\.json)$/, "$1")}`);
   } else {
-    issues.push("insert brief missing");
+    issues.push("insert plan missing");
   }
 
   // render
