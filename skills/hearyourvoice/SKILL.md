@@ -141,6 +141,7 @@ Generate 5–10 fully-shaped candidates into `content-idea-log.md`. Each one car
 
 1. **Verify the `ต้องตรวจ` claims first.** They're what the hook rests on. If one is false the idea is dead — **research is allowed to kill it**, and should say what the real number is; a corrected premise often beats the pitch.
 2. Research with `WebSearch` / `WebFetch` and any source docs the user provides. Every key fact needs **≥2 independent sources**; capture them for later attribution.
+   **Depth is a dial, and it defaults shallow: `normal` lands 3 facts on ≤6 fetches** — that is all a 90s script has room for. Pass `deep` (up to 8 facts, ≤12 fetches) only when the user asks for it or a contested premise needs it. Topics with unlimited literature (medicine, law, economics) will happily absorb an afternoon; the cap is what stops them, so treat it as a stop rather than a target to browse past.
 3. Write a research brief from `references/research-brief.template.md`: thesis, audience, the one surprising insight, key facts + sources, **subject lock** (the exact named subject so later prompts/visuals never drift), and visual opportunities.
 
 **Output:** a research brief (chat or `src/<slug>/research.md`) and a chosen `slug`.

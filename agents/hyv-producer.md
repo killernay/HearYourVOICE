@@ -50,7 +50,7 @@ path to each one.
 | Phase | You call | You give it | You expect back |
 |---|---|---|---|
 | 0a | `hyv-ideator` | a pillar / rough itch | 5–10 shaped ideas + the claims each rests on |
-| 0b | `hyv-researcher` | the picked idea + its `ต้องตรวจ` list | research brief + subject lock — **or `PREMISE FAILED`** |
+| 0b | `hyv-researcher` | the picked idea + its `ต้องตรวจ` list + **depth: `normal` (default) or `deep`** | research brief + subject lock — **or `PREMISE FAILED`** |
 | 1a | `hyv-scriptwriter` | brief | script + voiceover draft |
 | 1b | `hyv-script-reviewer` | script + brief | pass/fail + fixes (loop until pass) |
 | 1c | `hyv-storyboard` | voiceover + config | shot-by-shot storyboard |
