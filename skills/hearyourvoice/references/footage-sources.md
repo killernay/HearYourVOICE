@@ -2,6 +2,22 @@
 
 A finished video's inserts can come from any mix of four sources. Generative is **optional** — pick the cheapest source that gives the shot you need. Default preference for most beats: **self-shot or CC > generative**, with graphics as the always-available fallback.
 
+## 0. Found Creative-Commons stills — try these first
+
+Free, and they look like a video. A real photo of the thing you're discussing, with the beat's line over it, beats a black card with text in every way that matters.
+
+```bash
+node scripts/fetch-cc-images.mjs --slug <slug> --query "air pollution bangkok" --limit 5
+node scripts/fetch-cc-images.mjs --slug <slug> --query "ฝุ่น" --source wikimedia --dry-run
+```
+
+- **Sources:** [Openverse](https://openverse.org) (Creative Commons' own index — Flickr et al) and **Wikimedia Commons** (huge; Thai queries work). Both expose the licence in their API. No key needed.
+- **The licence is read, never filtered for.** Google Images' "CC" filter has the same false positives as YouTube's — it filters the open web, it doesn't read a licence. This script takes the licence from each item's metadata and drops anything it can't read.
+- **ND is rejected outright.** You are cutting the image into a video: that *is* a derivative. NC is rejected too unless you pass `--allow-nc` and know that applies to you.
+- Downloads to `public/<slug>/cc/images/` and appends creator + licence + source URL to `ATTRIBUTION.md` as it goes — BY and BY-SA *require* that credit.
+- In the plan: `source: "cc"`, `file: "<slug>/cc/images/x.jpg"`, and keep the beat's `note` — the caption renders over the photo, and the code renderer gives a still a slow push so it doesn't read as a slideshow.
+- Exit 3 = nothing cleared for that query. Reword it before you fall back to a graphic.
+
 ## 1. Found Creative-Commons footage
 
 Real-world action that already exists on YouTube under CC BY (the only CC license YouTube supports).

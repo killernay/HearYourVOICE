@@ -27,7 +27,10 @@ const EXAMPLES = path.resolve(path.dirname(fileURLToPath(import.meta.url)), ".."
 // A graphic beat needs no PNG: the plan's note carries its text, so it renders as a card. That's
 // what makes the ฿0 path finishable in code.
 const EPISODE_TSX = `import React from "react";
-import { AbsoluteFill, Audio, Img, OffthreadVideo, Sequence, staticFile } from "remotion";
+import {
+  AbsoluteFill, Audio, Img, OffthreadVideo, Sequence, staticFile,
+  interpolate, useCurrentFrame, useVideoConfig,
+} from "remotion";
 
 export type Clip = {
   index: number; startFrame: number; endFrame: number;
@@ -35,28 +38,53 @@ export type Clip = {
 };
 
 const isVideo = (f: string) => /\\.(mp4|mov|webm|mkv)$/i.test(f);
+// A beat's note carries its on-screen line as "TEXT: <line>". Anything else is a note to a human.
+const textOf = (n?: string) => (n && /^TEXT:/i.test(n) ? n.replace(/^TEXT:\\s*/i, "").trim() : "");
 
-// A graphic beat's note looks like "TEXT: <the line>" — show that line. Restyle freely; this is
-// a starting point, not a house style.
-const Card: React.FC<{ text: string }> = ({ text }) => (
-  <AbsoluteFill style={{ backgroundColor: "#0a1212", justifyContent: "center", padding: "8%" }}>
-    <div style={{ color: "white", fontSize: 72, fontWeight: 700, lineHeight: 1.25, textAlign: "center" }}>
-      {text}
-    </div>
-  </AbsoluteFill>
-);
+// A still held for five seconds reads as a dead slideshow. A slow push makes it read as video.
+const KenBurns: React.FC<{ src: string; frames: number }> = ({ src, frames }) => {
+  const f = useCurrentFrame();
+  const scale = interpolate(f, [0, frames], [1, 1.08], { extrapolateRight: "clamp" });
+  return (
+    <AbsoluteFill style={{ overflow: "hidden" }}>
+      <Img src={src} style={{ width: "100%", height: "100%", objectFit: "cover", transform: "scale(" + scale + ")" }} />
+    </AbsoluteFill>
+  );
+};
+
+// Text over the footage, not instead of it. The scrim is what keeps it readable over a photo.
+const Caption: React.FC<{ text: string; solo: boolean }> = ({ text, solo }) => {
+  const { width } = useVideoConfig();
+  return (
+    <AbsoluteFill style={{ justifyContent: solo ? "center" : "flex-end", padding: "8%" }}>
+      <div style={{
+        color: "white", fontSize: Math.round(width * 0.066), fontWeight: 700, lineHeight: 1.25,
+        textAlign: "center", textShadow: solo ? "none" : "0 2px 24px rgba(0,0,0,0.9)",
+        background: solo ? "none" : "rgba(0,0,0,0.35)", padding: solo ? 0 : "0.5em 0.6em",
+        borderRadius: 12,
+      }}>{text}</div>
+    </AbsoluteFill>
+  );
+};
 
 const Beat: React.FC<{ clip: Clip }> = ({ clip }) => {
-  const exists = clip.file && clip.file.length > 0;
-  if (exists && isVideo(clip.file!)) {
-    // Muted always: the voiceover is the only audio track.
-    return <OffthreadVideo muted src={staticFile(clip.file!)} style={{ width: "100%", height: "100%", objectFit: "cover" }} />;
-  }
-  if (exists && !/^graphics\\//.test(clip.file!)) {
-    return <Img src={staticFile(clip.file!)} style={{ width: "100%", height: "100%", objectFit: "cover" }} />;
-  }
-  // graphic beat, or a file that hasn't been produced yet — render the text rather than a hole.
-  return <Card text={(clip.note ?? "").replace(/^TEXT:\\s*/, "") || "beat " + clip.index} />;
+  const frames = Math.max(1, clip.endFrame - clip.startFrame + 1);
+  const text = textOf(clip.note);
+  // A file is only usable if it was actually produced. A graphics/ path is a plan, not a picture:
+  // if nobody drew it, the text still carries the beat rather than leaving a hole.
+  const file = clip.file && !/^graphics\\//.test(clip.file) ? clip.file : undefined;
+
+  return (
+    <AbsoluteFill style={{ backgroundColor: "#0a1212" }}>
+      {file && isVideo(file)
+        // Muted always: the voiceover is the only audio track.
+        ? <OffthreadVideo muted src={staticFile(file)} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+        : file
+        ? <KenBurns src={staticFile(file)} frames={frames} />
+        : null}
+      {text ? <Caption text={text} solo={!file} /> : null}
+    </AbsoluteFill>
+  );
 };
 
 export const Episode: React.FC<{ clips: Clip[]; voiceFile?: string }> = ({ clips, voiceFile }) => (
@@ -172,6 +200,15 @@ function scaffoldRemotion() {
     `import { registerRoot } from "remotion";\nimport { RemotionRoot } from "./Root";\n\n` +
     `registerRoot(RemotionRoot);\n`);
 
+  // EPISODE_TSX is a template literal emitting TypeScript. A backtick inside it has to survive
+  // two levels of escaping and has silently lost that fight twice — the file looks fine and
+  // esbuild dies with `Syntax error "\`"` only once Remotion bundles. The generated code uses
+  // string concat instead of nested templates; this refuses to write proof it slipped back in.
+  if (/\\`/.test(EPISODE_TSX)) {
+    console.error("Error: generated Episode.tsx contains an escaped backtick — it will not bundle.\n" +
+      "Use string concatenation in EPISODE_TSX, not a nested template literal.");
+    process.exit(1);
+  }
   write(R("remotion/Episode.tsx"), EPISODE_TSX);
   writeRemotionRoot(R, rel);
 }
