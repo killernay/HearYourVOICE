@@ -29,7 +29,11 @@
 //   --list              print parsed segments and exit (no API calls)
 //   --emit-md [path]    write a copy/paste TTS sheet and exit — voice settings, each segment,
 //                       the filename to save it as, and how to bring the audio back. No key,
-//                       no API call, nothing billed. Use this to voice it in ANY other tool.
+//                       no API call, nothing billed. The sheet is FOR THE HUMAN to voice in
+//                       whatever tool they choose. An agent must not answer it with a system
+//                       voice (`say`, a local model): a placeholder sounds broken and its
+//                       timing is off by ~20% anyway, so every insert placed against it is
+//                       waste. No key → hand back the sheet and stop.
 //   --yes               REQUIRED to actually spend. Without it this prints the character
 //                       count it would bill and exits 2 without calling the API.
 //

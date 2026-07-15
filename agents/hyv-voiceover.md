@@ -40,6 +40,15 @@ skill installed (`npx hearyourvoice install`). Never fake the result to keep goi
    `scripts/gen-voiceover.mjs` (segmented per episode) → `public/<slug>/voiceover/ep*.mp3`.
    Never add `--yes` on the first run, and never on your own initiative.
    Env: `ELEVENLABS_API_KEY`, `VOICE_ID`, `MODEL` — all from config/.env, not hardcoded.
+
+   **No key, or the key is rejected? Then this phase does not happen.** Run
+   `gen-voiceover.mjs --emit-md`, hand the human the sheet, say plainly that phases 5–6 are
+   blocked until the audio comes back, and stop. **Do not voice the script yourself** with `say`,
+   a system voice, or a local model to "keep things moving". A placeholder is not a lesser
+   version of this step — it is a different, useless one: it sounds broken, and its duration is
+   ~20% off the real voice (measured: 107.0 s vs 82.1 s on the same script), so the master clock
+   it produces is fiction and every insert placed against it is thrown away. Report the block.
+   A correct stop beats a plausible fake.
 4. Measure: `scripts/measure-voiceover.mjs` (ffprobe) → `src/<slug>/voiceover-durations.json`.
    Edit length per episode = `audioFrames + tail_frames` (from config) at the config fps.
 

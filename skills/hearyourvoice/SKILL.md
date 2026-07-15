@@ -261,14 +261,30 @@ appended. Never put `--yes` on a first run, and never decide to spend on the use
 ### Keys: ask, don't assume — and never need one you don't
 
 **No key is required to get real work done.** Research, script, the punchline debate, storyboard
-and shotlist need nothing. Both paid steps have a free twin that produces the *prompts* so the
-user can generate anywhere they like — their own ElevenLabs account, another TTS, another video
-model — and drop the results back in:
+and shotlist need nothing. Both paid steps have a free twin that produces the *prompts* — and
+**hands them to the human**, who generates them wherever they like (their own ElevenLabs account,
+another TTS, another video model) and drops the results back in:
 
 | Instead of paying here | Run this | You get |
 |---|---|---|
 | `gen-voiceover.mjs --yes` | `gen-voiceover.mjs --emit-md` | a TTS sheet: voice settings, each segment, the filename to save it as, how to bring the audio back |
 | `veo-generate.py --yes` | `veo-generate.py --emit-md` | copy/paste generation prompts per shot |
+
+> ### 🚫 Never synthesize a stand-in voice
+>
+> `--emit-md` hands a sheet to **the human**. It is *not* a licence to voice the script yourself
+> with whatever TTS is lying around — not `say`, not a system voice, not a local model. If there
+> is no working key, the sheet **is** the deliverable for that step. Stop and hand it back.
+>
+> A robot placeholder is not a preview of anything:
+>
+> - **It sounds broken.** Anyone who opens the file judges the whole tool by it, and a file sitting in `out/` looks like the deliverable no matter what you named the folder.
+> - **Its timing is a lie anyway.** Measured on one real project: the same script ran **107.0 s** through the macOS Thai voice and **82.1 s** through the real ElevenLabs voice — **25 seconds, 23% apart.** Every insert placed against the placeholder clock has to be thrown away, so the "preview" previews nothing.
+>
+> **Need to prove the render pipeline before spending?** Render against **silence** at the target
+> length (`ffmpeg -f lavfi -i anullsrc -t <sec>`). It proves exactly what a fake voice proves —
+> that frames come out at the right size, fps and duration — and it can never be mistaken for a
+> finished video.
 
 Offer the `--emit-md` path *before* asking anyone for an API key. Many users should never need one.
 
