@@ -25,8 +25,9 @@ HYV=$(ls -d ./.claude/skills/hearyourvoice ~/.claude/skills/hearyourvoice 2>/dev
 ```
 
 Then call scripts as `node "$HYV/scripts/<name>.mjs"` (or `python3 "$HYV/scripts/<name>.py"`).
-If `$HYV` is empty the skill is not installed — stop and tell the human to run
-`npx hearyourvoice install`.
+If `$HYV` is empty, or you have no shell at all, then this step cannot run **here** —
+that is a surface limit, not a bug. Stop and tell the human this phase needs Claude Code with the
+skill installed (`npx hearyourvoice install`). Never fake the result to keep going.
 
 ## Task
 

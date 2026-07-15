@@ -18,11 +18,10 @@ The end-to-end loop that turns one topic into one finished video, in whatever fo
 
 ## First move: delegate to the team
 
-**If the `hyv-*` team is available, delegate — do not do the work yourself.** Check once:
-
-```bash
-ls .claude/agents/hyv-producer.md ~/.claude/agents/hyv-producer.md 2>/dev/null | head -1
-```
+**If the `hyv-*` subagents are available to you, delegate — do not do the work yourself.** You
+already know which subagent types you can spawn; use that. Do **not** go looking for them on disk:
+they arrive by several routes (`.claude/agents/`, a plugin, a marketplace), and a missing file
+proves nothing except that you looked in the wrong place.
 
 - **A whole video** → spawn `hyv-producer` with the topic. It runs phases 0–6, holds every gate,
   and reports back. This is the default for *"produce a video about X"*.
@@ -32,9 +31,10 @@ ls .claude/agents/hyv-producer.md ~/.claude/agents/hyv-producer.md 2>/dev/null |
   each in its own `src/<slug>/`. They don't collide.
 
 Delegating keeps each phase's noise — search results, ffprobe output, clip listings — out of the
-main conversation; you get the summary, not the logs. **If the team is not installed, run the
-phases below yourself.** Everything works solo; the team is an accelerator, not a requirement.
-Install it with `npx hearyourvoice install`. Full roster and decision chain:
+main conversation; you get the summary, not the logs. **If no `hyv-*` subagent is available to
+you, run the phases below yourself and say so once**, so the user knows they got the solo path.
+Everything works solo; the team is an accelerator, not a requirement. To add it:
+`npx hearyourvoice install` (Claude Code) or install the plugin. Full roster and decision chain:
 `references/subagents.md`.
 
 Two rules that hold either way: **the human confirms the output spec and every gate** (topic lock,
