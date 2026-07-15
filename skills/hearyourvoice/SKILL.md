@@ -204,3 +204,21 @@ Deliverable (phase 6):
 ## When to stop and ask
 
 Ask the user before: choosing the topic (phase 0), locking the hook/punchline when the debate is split (phase 1), spending ElevenLabs credits (phase 2), and spending generative credits (phase 4). These are the costly or irreversible steps.
+
+### Money: the gate is in the code, not in this paragraph
+
+The two scripts that spend real money **refuse by default**. Run them normally and they call
+nothing, print exactly what would be billed, and exit 2:
+
+| Script | Without `--yes` | Cost shown |
+|---|---|---|
+| `gen-voiceover.mjs` | no API call, no mp3 | segments + characters billed |
+| `veo-generate.py` | no clips, provider not even loaded | clips, total seconds, ~THB estimate |
+
+**Exit 2 there is the gate doing its job — it is not an error to debug or work around.** Show the
+output to the user verbatim, get an explicit OK, then re-run the *same* command with `--yes`
+appended. Never put `--yes` on a first run, and never decide to spend on the user's behalf.
+
+Two other flags spend nothing and need no key or provider — reach for them first: `--list`
+(the parsed voiceover segments) and `veo-generate.py --emit-md` / `--dry-run` (the prompts
+themselves, for pasting into any generator).

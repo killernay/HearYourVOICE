@@ -254,6 +254,22 @@ def generate_brief(brief_path, out_dir, cfg):
         log(f"DRY RUN: wrote {len(plan)} prompts to {out_dir}/generation-plan.json (no Veo calls)")
         return 0, 0
 
+    # Spending gate. Generative video is the most expensive thing this skill can do and it is
+    # irreversible, so refusing is the default and --yes is the human's signature. A mechanical
+    # stop, not a note in the docs asking an agent to remember.
+    if not cfg.get("yes"):
+        total = sum(int(s["insert_duration_sec"]) for s in brief)
+        rate = cfg.get("price_per_sec_thb", 30)
+        log("")
+        log(f"⚠️  This SPENDS generative credits — {len(brief)} clip(s), {total}s total")
+        log(f"    Estimated ~{total * rate:,.0f} THB at {rate:g}/sec (rates change — verify before approving)")
+        for s in brief:
+            log(f"      {s['beat_id']:<12} {s['insert_duration_sec']:>2}s   {s['output_filename']}")
+        log("")
+        log("    Nothing was generated. Show this to the user, get an explicit OK,")
+        log("    then re-run the same command with --yes.  (--dry-run writes prompts only.)")
+        raise SystemExit(2)
+
     done, failed = [], []
     workers = max(1, min(cfg["workers"], 5))
     with ThreadPoolExecutor(max_workers=workers) as ex:
@@ -291,6 +307,11 @@ def main():
     g("--workers", type=int, default=int(os.environ.get("VEO_MAX_WORKERS", "3")))
     g("--batch-size", type=int, default=5); g("--pause", type=int, default=15)
     g("--dry-run", action="store_true")
+    g("--yes", action="store_true",
+      help="REQUIRED to actually spend generative credits. Without it, the cost estimate is "
+           "printed and nothing is generated (exit 2).")
+    g("--price-per-sec-thb", type=float, default=float(os.environ.get("VEO_PRICE_PER_SEC_THB", "30")),
+      help="rate used for the cost estimate only (default 30 THB/sec — check the current price)")
     g("--emit-md", nargs="?", const="__AUTO__", default=None,
       help="render the copy/paste prompt markdown from the brief and exit (no Veo calls); "
            "optional PATH, else ep*-google-veo-insert-prompts.md next to the brief")
@@ -304,7 +325,8 @@ def main():
            "resolution": a.resolution, "aspect": a.aspect, "seed": a.seed,
            "style_bible": style, "prefix": a.prompt_prefix,
            "beats": {b.strip() for b in a.beats.split(",") if b.strip()},
-           "workers": a.workers, "dry_run": a.dry_run}
+           "workers": a.workers, "dry_run": a.dry_run,
+           "yes": a.yes, "price_per_sec_thb": a.price_per_sec_thb}
 
     # Emit the copy/paste prompt markdown and exit — derived from the brief, no provider needed.
     if a.emit_md is not None:
@@ -325,7 +347,10 @@ def main():
             render_prompts_md(bp, md_path_for(bp, emit_val), cfg)
         sys.exit(0)
 
-    if not a.dry_run:
+    # Only touch the provider when we are actually about to spend. Without --yes the run stops at
+    # the cost gate anyway, and requiring a configured provider just to be shown a price would
+    # hide the estimate behind setup the user doesn't need yet.
+    if not a.dry_run and a.yes:
         load_provider(a.plugin, a.agent_root)  # surface plugin errors early
 
     if a.all:

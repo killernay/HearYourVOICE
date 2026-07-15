@@ -31,8 +31,13 @@ If `$HYV` is empty the skill is not installed — stop and tell the human to run
 ## Task
 
 1. Read `src/<slug>/voiceover-v1.md` and `project.config.json` (voice id/model, fps, tail_frames).
-2. **GATE:** confirm with the human before spending ElevenLabs credits (estimate segments/cost).
-3. Generate: `scripts/gen-voiceover.mjs` (segmented per episode) → `public/<slug>/voiceover/ep*.mp3`.
+2. **GATE — the script enforces this, don't route around it.** Run `gen-voiceover.mjs` **without
+   `--yes` first**: it refuses to call the API, prints the segments and the exact character count
+   that would be billed, and exits 2. That is expected, not a failure. Show that output to the
+   human verbatim and wait for an explicit OK.
+3. Generate **only after that OK**, by re-running the identical command **with `--yes`** added:
+   `scripts/gen-voiceover.mjs` (segmented per episode) → `public/<slug>/voiceover/ep*.mp3`.
+   Never add `--yes` on the first run, and never on your own initiative.
    Env: `ELEVENLABS_API_KEY`, `VOICE_ID`, `MODEL` — all from config/.env, not hardcoded.
 4. Measure: `scripts/measure-voiceover.mjs` (ffprobe) → `src/<slug>/voiceover-durations.json`.
    Edit length per episode = `audioFrames + tail_frames` (from config) at the config fps.

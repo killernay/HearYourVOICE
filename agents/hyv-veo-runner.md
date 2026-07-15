@@ -32,12 +32,15 @@ If `$HYV` is empty the skill is not installed — stop and tell the human to run
 
 1. Read the approved prompt markdown from `hyv-veo-prompt-smith` and `project.config.json`
    (generative_provider, aspect, fps, veo_price_per_sec_thb).
-2. **GATE — before any generation:** compute and show the cost estimate
-   (`total_seconds × veo_price_per_sec_thb`, e.g. a 90 s all-Veo episode ≈ ฿2,700) and wait
-   for explicit human approval.
-3. Render with `scripts/veo-generate.py` (point `--plugin`/`--agent-root` at the provider;
-   `--brief`/`--out` at the episode). Force silent output; pad to exact duration; support
-   `--all` batch. Strip any audio (`ffmpeg -an`).
+2. **GATE — the script enforces this, don't route around it.** Run `veo-generate.py` **without
+   `--yes` first**: it generates nothing, prints the clip count, total seconds and the estimated
+   cost (`total_seconds × --price-per-sec-thb`, e.g. a 90 s all-Veo episode ≈ ฿2,700), and exits 2.
+   That is expected, not a failure. Show that output to the human verbatim and wait for an
+   explicit OK. This is the most expensive thing in the whole skill — treat a missing OK as no.
+3. Render **only after that OK**, by re-running the identical command **with `--yes`** added:
+   `scripts/veo-generate.py` (point `--plugin`/`--agent-root` at the provider; `--brief`/`--out`
+   at the episode). Force silent output; pad to exact duration; support `--all` batch. Strip any
+   audio (`ffmpeg -an`). Never add `--yes` on the first run, and never on your own initiative.
 4. Write clips → `public/<slug>/generated/ep*/`.
 
 ## Output (final message)

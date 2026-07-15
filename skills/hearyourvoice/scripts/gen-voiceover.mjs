@@ -27,6 +27,8 @@
 //   --fps <n>           default 30     --tail-frames <n>  default 24
 //   --env <path>        .env to load ELEVENLABS_API_KEY from (default ./.env)
 //   --list              print parsed segments and exit (no API calls)
+//   --yes               REQUIRED to actually spend. Without it this prints the character
+//                       count it would bill and exits 2 without calling the API.
 //
 // Env: ELEVENLABS_API_KEY (required to generate). Needs Node 18+ (global fetch) and ffprobe.
 
@@ -107,6 +109,20 @@ if (willGenerate && !apiKey) {
   console.error("Error: ELEVENLABS_API_KEY not set (export it or put it in .env).");
   process.exit(1);
 }
+
+// Spending gate. ElevenLabs bills per character and the spend is irreversible, so this is a
+// mechanical stop, not a note in the docs telling an agent to remember to ask. Default is to
+// refuse and show the bill; --yes is the human's signature.
+if (willGenerate && !has("--yes")) {
+  const todo = segments.filter((s) => wanted(s.id) && (force || !fs.existsSync(path.join(outDir, `${s.id}.mp3`))));
+  const chars = todo.reduce((n, s) => n + s.text.length, 0);
+  console.error(`\n⚠️  This SPENDS ElevenLabs credits — ${todo.length} segment(s), ${chars} characters billed:\n`);
+  for (const s of todo) console.error(`      ${s.id.padEnd(6)} ${String(s.text.length).padStart(5)} chars   ${s.title}`);
+  console.error(`\n    Nothing was generated. Show this to the user, get an explicit OK,`);
+  console.error(`    then re-run the same command with --yes.\n`);
+  process.exit(2);
+}
+
 fs.mkdirSync(outDir, { recursive: true });
 
 const probe = (file) => Number(execFileSync("ffprobe", ["-v", "error", "-show_entries", "format=duration", "-of", "default=noprint_wrappers=1:nokey=1", file], { encoding: "utf8" }).trim());
