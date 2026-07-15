@@ -53,6 +53,21 @@ if (has("-h") || has("--help") || args.length === 0) {
   process.exit(0);
 }
 
+// Load .env BEFORE anything reads process.env below — every default here falls back to an env
+// var, so loading it later means .env silently never applies. Doesn't clobber an exported one.
+const envPath = flag("--env", ".env");
+if (fs.existsSync(envPath)) {
+  for (const line of fs.readFileSync(envPath, "utf8").split("\n")) {
+    const t = line.trim();
+    if (!t || t.startsWith("#") || !t.includes("=")) continue;
+    const [k, ...rest] = t.split("=");
+    const v = rest.join("=").trim();
+    // A blank placeholder in .env means "not set" — env.example ships them, so exporting "" here
+    // would shadow the real defaults below and leak an empty var into every child process.
+    if (v && !process.env[k.trim()]) process.env[k.trim()] = v;
+  }
+}
+
 const slug = flag("--slug");
 const mdPath = flag("--md", slug ? `src/${slug}/voiceover-v1.md` : "");
 const outDir = flag("--out", slug ? `public/${slug}/voiceover` : "");
@@ -65,7 +80,6 @@ const only = flag("--only", "").split(",").map((s) => s.trim().toLowerCase()).fi
 const force = has("--force");
 const fps = Number(flag("--fps", "30"));
 const tail = Number(flag("--tail-frames", "24"));
-const envPath = flag("--env", ".env");
 const listOnly = has("--list");
 const emitMd = has("--emit-md")
   ? (() => { const i = args.indexOf("--emit-md"); const v = args[i + 1];
@@ -79,16 +93,6 @@ if (!mdPath || !outDir) {
 if (!fs.existsSync(mdPath)) {
   console.error(`Error: voiceover md not found: ${mdPath}`);
   process.exit(1);
-}
-
-// Load .env (only ELEVENLABS_API_KEY matters; don't clobber an exported one).
-if (fs.existsSync(envPath)) {
-  for (const line of fs.readFileSync(envPath, "utf8").split("\n")) {
-    const t = line.trim();
-    if (!t || t.startsWith("#") || !t.includes("=")) continue;
-    const [k, ...rest] = t.split("=");
-    if (!process.env[k.trim()]) process.env[k.trim()] = rest.join("=").trim();
-  }
 }
 
 // Parse "## EP<n> - <title>\n\nVO:\n\n<body until next ## EP>".

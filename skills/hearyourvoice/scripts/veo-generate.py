@@ -74,6 +74,16 @@ def log(msg):
         print(f"[{datetime.now():%Y-%m-%d %H:%M:%S}] {msg}", flush=True)
 
 
+def env(key, default=""):
+    """Read an env var, treating blank as absent.
+
+    os.environ.get(k, default) returns "" for a var that exists but is empty, which is not what
+    any caller means — env.example ships blank placeholders, so `VEO_MODEL=` in a .env would
+    otherwise become an empty model id, and float("") raises instead of falling back to 30.
+    """
+    return os.environ.get(key) or default
+
+
 def load_env(path):
     if not path or not Path(path).exists():
         return
@@ -82,7 +92,11 @@ def load_env(path):
         if not line or line.startswith("#") or "=" not in line:
             continue
         k, v = line.split("=", 1)
-        os.environ.setdefault(k.strip(), v.strip())
+        k, v = k.strip(), v.strip()
+        # Blank both ways: a blank line in .env means "not set" (env.example ships those), and a
+        # var that's exported-but-empty is not really set either — setdefault would skip it.
+        if v and not os.environ.get(k):
+            os.environ[k] = v
 
 
 def load_provider(plugin_path, agent_root):
@@ -292,32 +306,38 @@ def generate_brief(brief_path, out_dir, cfg):
 
 
 def main():
+    # Load .env BEFORE the parser is built — every default below falls back to os.environ, and
+    # those are evaluated right here at construction time. Loading after parse_args() means a
+    # .env silently never applies. --env is read straight from argv for the same reason.
+    argv = sys.argv[1:]
+    i = argv.index("--env") if "--env" in argv else -1
+    load_env(argv[i + 1] if 0 <= i < len(argv) - 1 else env("VEO_ENV_PATH", ".env"))
+
     ap = argparse.ArgumentParser(add_help=True)
     g = ap.add_argument
     g("--brief"); g("--out"); g("--brief-dir"); g("--out-base"); g("--all", action="store_true")
-    g("--plugin", default=os.environ.get("VEO_PLUGIN_PATH"))
-    g("--agent-root", default=os.environ.get("VEO_AGENT_ROOT"))
-    g("--env", default=os.environ.get("VEO_ENV_PATH", ".env"))
-    g("--model", default=os.environ.get("VEO_MODEL", "veo-3.1-generate-preview"))
+    g("--plugin", default=env("VEO_PLUGIN_PATH"))
+    g("--agent-root", default=env("VEO_AGENT_ROOT"))
+    g("--env", default=env("VEO_ENV_PATH", ".env"))
+    g("--model", default=env("VEO_MODEL", "veo-3.1-generate-preview"))
     g("--resolution", default="720p"); g("--aspect", default="9:16")
-    g("--seed", type=int, default=int(os.environ.get("VEO_SEED", "0")) or None)
-    g("--style-bible", default=os.environ.get("VEO_STYLE_BIBLE", ""))
-    g("--prompt-prefix", default=os.environ.get("VEO_PROMPT_PREFIX", GENERIC_PREFIX))
-    g("--beats", default=os.environ.get("VEO_BEAT_IDS", ""))
-    g("--workers", type=int, default=int(os.environ.get("VEO_MAX_WORKERS", "3")))
+    g("--seed", type=int, default=int(env("VEO_SEED", "0")) or None)
+    g("--style-bible", default=env("VEO_STYLE_BIBLE", ""))
+    g("--prompt-prefix", default=env("VEO_PROMPT_PREFIX", GENERIC_PREFIX))
+    g("--beats", default=env("VEO_BEAT_IDS", ""))
+    g("--workers", type=int, default=int(env("VEO_MAX_WORKERS", "3")))
     g("--batch-size", type=int, default=5); g("--pause", type=int, default=15)
     g("--dry-run", action="store_true")
     g("--yes", action="store_true",
       help="REQUIRED to actually spend generative credits. Without it, the cost estimate is "
            "printed and nothing is generated (exit 2).")
-    g("--price-per-sec-thb", type=float, default=float(os.environ.get("VEO_PRICE_PER_SEC_THB", "30")),
+    g("--price-per-sec-thb", type=float, default=float(env("VEO_PRICE_PER_SEC_THB", "30")),
       help="rate used for the cost estimate only (default 30 THB/sec — check the current price)")
     g("--emit-md", nargs="?", const="__AUTO__", default=None,
       help="render the copy/paste prompt markdown from the brief and exit (no Veo calls); "
            "optional PATH, else ep*-google-veo-insert-prompts.md next to the brief")
     a = ap.parse_args()
 
-    load_env(a.env)
     style = a.style_bible
     if style and Path(style).exists():
         style = Path(style).read_text().strip()
@@ -335,7 +355,7 @@ def main():
             briefs = sorted(Path(bdir).glob("ep*-veo-insert-brief.json"),
                             key=lambda p: int("".join(c for c in p.name.split("-")[0] if c.isdigit()) or "0"))
         else:
-            single = a.brief or os.environ.get("VEO_BRIEF_PATH")
+            single = a.brief or env("VEO_BRIEF_PATH")
             if not single:
                 sys.exit("Error: --emit-md needs --brief (or --brief-dir/--all)")
             briefs = [Path(single)]
@@ -370,8 +390,8 @@ def main():
         log(f"ALL DONE: {total_ok} ok, {total_fail} failed")
         sys.exit(1 if total_fail else 0)
 
-    brief = a.brief or os.environ.get("VEO_BRIEF_PATH")
-    out = a.out or os.environ.get("VEO_OUT_DIR")
+    brief = a.brief or env("VEO_BRIEF_PATH")
+    out = a.out or env("VEO_OUT_DIR")
     if not brief or not out:
         sys.exit("Error: provide --brief and --out (or --all with --brief-dir/--out-base)")
     ok, fail = generate_brief(brief, out, cfg)
