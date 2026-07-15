@@ -88,6 +88,37 @@ agents/                          the 15 hyv-* subagents
 
 Editor-agnostic: it exports a universal timeline (JSON + CSV) you assemble in **CapCut, Premiere, DaVinci Resolve, or a code renderer** — then packages a clean delivery folder. It can optionally orchestrate `veo-insert-planner` (generative footage) and `remotion-best-practices` (only if you assemble in code).
 
+## Where it runs — read this first
+
+This skill drives **your** machine: it calls **your** ffmpeg, reads **your** footage, and the final cut happens in **your** CapCut/Premiere/DaVinci. So it only works where Claude runs locally. Claude Code and the Claude app are the same tool here — the app's **Code** tab *is* Claude Code, and it "reads the same settings files as the CLI", so one install covers both.
+
+| Where | Works? | Why |
+|---|---|---|
+| **Claude Code CLI** (`claude` in a terminal) | ✅ | Runs on your machine |
+| **Claude app → Code tab → Environment: Local** | ✅ | Same `~/.claude/`, same skill, all 15 agents |
+| Claude app → Code tab → Environment: **Remote/cloud** | ❌ | Cloud sessions are sandboxed — no ffmpeg of yours, no footage, no editor |
+| Claude app → **Chat** or **Cowork** tab | ❌ | Not Claude Code — no `.claude/agents/`, nothing local to drive |
+| **claude.ai** in a browser | ❌ | Same reason: it isn't your machine |
+
+**Rule of thumb: Code tab + Local.** If Claude can't reach your ffmpeg and your editor, it can't finish a video — no matter how good the skill is.
+
+## Install on the Claude app (no terminal experience needed)
+
+You never have to open a separate terminal — the app has one built in.
+
+1. **Download the app** — [macOS](https://claude.ai/api/desktop/darwin/universal/dmg/latest/redirect) or [Windows](https://claude.ai/api/desktop/win32/x64/setup/latest/redirect), then sign in. *(Windows also needs [Git for Windows](https://git-scm.com/downloads/win); restart the app after installing it.)*
+2. **Click the `Code` tab** (not Chat, not Cowork).
+3. **Set Environment to `Local`** — this is the step people get wrong. Remote runs in the cloud and can't touch your files.
+4. **Pick your project folder** — the folder where your videos will live.
+5. **Open the built-in terminal** — `Ctrl` + `` ` `` — and paste one line:
+   ```bash
+   npx hearyourvoice install
+   ```
+6. **Check what's missing** — `npx hearyourvoice doctor` tells you if Node, Python, or ffmpeg aren't installed yet.
+7. **Use it** — type `/hearyourvoice`, or hand it to the team: *"ให้ hyv-producer ผลิตวิดีโอเรื่อง &lt;หัวข้อ&gt;"*.
+
+That's it — the CLI and the app share the same install, so doing this once covers both.
+
 ## Quick install (`npx`)
 
 **Global — whole machine** (available in every session):
@@ -265,6 +296,39 @@ agents/                          ทีม subagent hyv-* ทั้ง 15 ตั
 ```
 
 ไม่ผูกกับ editor ตัวใดตัวหนึ่ง: มัน export timeline กลาง (JSON + CSV) ที่คุณเอาไปประกอบใน **CapCut, Premiere, DaVinci Resolve, หรือ code renderer** ก็ได้ — แล้วแพ็กเป็นโฟลเดอร์ส่งมอบที่สะอาด สามารถเรียกใช้ `veo-insert-planner` (ภาพ generative) และ `remotion-best-practices` (เฉพาะถ้าประกอบด้วยโค้ด) เป็น option ได้
+
+## มันรันที่ไหนได้บ้าง — อ่านก่อนติดตั้ง
+
+สกิลนี้สั่งงาน **เครื่องคุณ**: มันเรียก ffmpeg ของคุณ อ่านฟุตเทจของคุณ และตัดต่อจบที่ CapCut/Premiere/DaVinci ของคุณ เพราะงั้นมันใช้ได้เฉพาะที่ที่ Claude รันอยู่บนเครื่องจริง ๆ
+
+**Claude Code กับแอป Claude คืออันเดียวกันในเรื่องนี้** — tab **Code** ในแอป *คือ* Claude Code และ docs ระบุว่า *"the desktop app reads the same settings files as the CLI"* ติดตั้งครั้งเดียวได้ทั้งคู่
+
+| ที่ไหน | ใช้ได้ไหม | เพราะ |
+|---|---|---|
+| **Claude Code CLI** (พิมพ์ `claude` ใน terminal) | ✅ | รันบนเครื่องคุณ |
+| **แอป Claude → tab Code → Environment: Local** | ✅ | ใช้ `~/.claude/` เดียวกัน สกิลเดียวกัน ทีม 15 ตัวครบ |
+| แอป Claude → tab Code → Environment: **Remote/cloud** | ❌ | session บนคลาวด์ถูก sandbox — ไม่มี ffmpeg ของคุณ ไม่มีฟุตเทจ ไม่มีโปรแกรมตัดต่อ |
+| แอป Claude → tab **Chat** หรือ **Cowork** | ❌ | ไม่ใช่ Claude Code — ไม่มี `.claude/agents/` และไม่มีอะไรในเครื่องให้สั่ง |
+| **claude.ai** บนเบราว์เซอร์ | ❌ | เหตุผลเดียวกัน — มันไม่ใช่เครื่องคุณ |
+
+**จำง่าย ๆ: tab Code + Local** ถ้า Claude เอื้อมไม่ถึง ffmpeg กับโปรแกรมตัดต่อของคุณ มันก็ทำวิดีโอไม่จบ ต่อให้สกิลดีแค่ไหนก็ตาม
+
+## ติดตั้งบนแอป Claude (ไม่ต้องเป็น terminal ก็ทำได้)
+
+ไม่ต้องเปิด terminal แยกเลย เพราะแอปมี terminal ในตัวอยู่แล้ว
+
+1. **โหลดแอป** — [macOS](https://claude.ai/api/desktop/darwin/universal/dmg/latest/redirect) หรือ [Windows](https://claude.ai/api/desktop/win32/x64/setup/latest/redirect) แล้วล็อกอิน *(Windows ต้องลง [Git for Windows](https://git-scm.com/downloads/win) ด้วย แล้วรีสตาร์ทแอป)*
+2. **กด tab `Code`** (ไม่ใช่ Chat ไม่ใช่ Cowork)
+3. **ตั้ง Environment เป็น `Local`** — ข้อนี้คนพลาดกันบ่อยสุด ถ้าเลือก Remote มันจะไปรันบนคลาวด์ แตะไฟล์ในเครื่องคุณไม่ได้
+4. **เลือกโฟลเดอร์โปรเจกต์** — โฟลเดอร์ที่จะเก็บงานวิดีโอของคุณ
+5. **เปิด terminal ในแอป** — กด `Ctrl` + `` ` `` แล้ววางบรรทัดเดียว:
+   ```bash
+   npx hearyourvoice install
+   ```
+6. **เช็กว่าขาดอะไร** — `npx hearyourvoice doctor` จะบอกว่ายังไม่มี Node, Python หรือ ffmpeg ตัวไหน
+7. **ใช้งาน** — พิมพ์ `/hearyourvoice` หรือโยนให้ทีม: *"ให้ hyv-producer ผลิตวิดีโอเรื่อง &lt;หัวข้อ&gt;"*
+
+จบแล้ว — CLI กับแอปใช้ที่ติดตั้งร่วมกัน ทำครั้งเดียวได้ทั้งสองทาง
 
 ## ติดตั้งเร็ว (`npx`)
 
