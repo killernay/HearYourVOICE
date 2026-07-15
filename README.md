@@ -88,41 +88,90 @@ agents/                          the 15 hyv-* subagents
 
 Editor-agnostic: it exports a universal timeline (JSON + CSV) you assemble in **CapCut, Premiere, DaVinci Resolve, or a code renderer** — then packages a clean delivery folder. It can optionally orchestrate `veo-insert-planner` (generative footage) and `remotion-best-practices` (only if you assemble in code).
 
-## Where it runs — read this first
+## Three ways to run this
 
 This loop has two halves, and they have very different needs:
 
-- **The thinking half** — research, script, the punchline debate, storyboard. Pure reasoning. Runs anywhere Claude runs.
-- **The machine half** — measuring the voiceover with `ffprobe`, pulling footage with `yt-dlp`, building the shotlist with Python, cutting in **your** CapCut/Premiere/DaVinci. This needs a real shell on a real machine with your files on it.
+- **The thinking half** — research, script, the punchline debate, storyboard, shotlist planning. Pure reasoning. No binaries, no keys, no money.
+- **The machine half** — measuring the voiceover with `ffprobe`, pulling footage with `yt-dlp`, building the workbook with Python, and cutting in **your** CapCut/Premiere/DaVinci. This needs a real shell on a real machine with your files on it.
 
-**Claude Code is the only surface verified to do both.** The Claude app's **Code** tab *is* Claude Code — it "reads the same settings files as the CLI", so one install covers both.
+Which half you get depends on where you run it. Pick your tier:
+
+| | **Basic** | **Advance** | **Production** |
+|---|---|---|---|
+| **Where** | Chat — web or the app's Chat tab | **Cowork** | **Claude Code** — CLI or the app's Code tab |
+| **Install** | the plugin | the plugin | `npx hearyourvoice install` |
+| **The team** | ❌ agents are greyed out in chat | ✅ **all 15 fan out in parallel** | ✅ all 15 |
+| **Thinking half** | ✅ | ✅ | ✅ |
+| **Machine half** | ❌ no shell | ❌ — see below | ✅ |
+| **Good for** | one topic, thinking it through | **researching and scripting a whole backlog at once** | finishing an actual video |
+
+**Basic** gives you one Claude with the whole method loaded — plenty for taking one idea from topic to a debated hook.
+
+**Advance** is where it gets interesting: hand Cowork three topics and `hyv-producer` fans the specialists out across all of them at once — researchers verifying sources in parallel, the debate panel arguing each hook, `hyv-judge` flagging where it's split. No terminal required. *(Verified by running it: the team spawns and works in parallel in Cowork.)*
+
+**Production** is the only tier that finishes a video, because only your own machine has your ffmpeg, your footage, and your editor.
+
+They compose. Think and debate in Cowork across a backlog, then bring the winners into Claude Code to produce.
+
+### Why Cowork can't do the machine half
+
+Cowork's shell "execute[s] inside a dedicated Linux VM, isolated from the host operating system by the platform's hypervisor" — so even in local mode it cannot reach the ffmpeg installed on *your* Mac, and Anthropic doesn't document what's preinstalled in that VM. Either way, the final cut happens in your editor, on your machine.
+
+That's not a wall — it's the seam. Cowork does the thinking half well; Claude Code does the rest.
+
+<details>
+<summary>What we tested, and what's still unverified</summary>
+
+**Observed:** the plugin installs in Cowork, `hyv-producer` is invoked by name, and the specialists fan out in parallel across multiple topics.
+
+**Not tested:** whether Cowork's VM has `node`/`ffmpeg`/`python` at all, and how the paid steps behave there. The spending gates are enforced in the scripts themselves (they refuse without `--yes`), but that behaviour hasn't been watched on Cowork's VM — so treat phase 2+ as Claude Code's job until someone checks.
+
+Earlier versions of this README claimed Cowork couldn't run any of this. That was wrong, and it was written from docs rather than from running it.
+
+</details>
+
+<details>
+<summary>The old table, if you're mapping surfaces</summary>
 
 | Where | Thinking half | Machine half |
 |---|---|---|
 | **Claude Code CLI** (`claude` in a terminal) | ✅ | ✅ |
 | **Claude app → Code tab → Environment: Local** | ✅ | ✅ — same `~/.claude/`, all 15 agents |
 | Claude app → Code tab → Environment: **Remote/cloud** | ✅ | ❌ — cloud sessions are sandboxed |
-| **Cowork** | 🔬 under test | 🔬 under test — see below |
-| Claude app → **Chat** tab · **claude.ai** web | 🔬 under test | ❌ — no shell |
+| **Cowork** (plugin) | ✅ + the team, in parallel | ❌ — isolated VM |
+| Claude app → **Chat** tab · **claude.ai** web (plugin) | ✅ — no team | ❌ — no shell |
 
-**Rule of thumb: Code tab + Local.** If Claude can't reach your ffmpeg and your editor, it cannot finish a video — no matter how good the skill is.
+Two things from the docs explain the shape of that table:
 
-### 🔬 Cowork — honestly, we don't know yet
+1. **Why the team only lives in Cowork:** plugins "bundle skills, connectors, and sub-agents", and "the skills bundled in a plugin work across all three. **Hooks and sub-agents run only in Cowork**, so they appear greyed out in chat." That's why Basic gets the method but not the roster.
+2. **Why the Code tab is Claude Code:** "the desktop app reads the same settings files as the CLI", so one `npx hearyourvoice install` serves both.
 
-Anthropic's docs say plugins "bundle skills, connectors, and sub-agents", that you "can install and use plugins in chat on the web, the Chat tab in Claude Desktop, and Claude Cowork", and that "hooks and **sub-agents run only in Cowork**, so they appear grayed out in chat". On paper that's a real path for the team to fan out without a terminal.
+</details>
 
-Two things are **not** established, and we won't claim them until we've watched them work:
+**Rule of thumb:** think in Cowork, finish in Claude Code. If Claude can't reach your ffmpeg and your editor, it cannot finish a video — no matter how good the skill is.
 
-1. Whether Cowork will invoke *your named* `hyv-producer` and roster, or whether its "sub-agent coordination" is only its own automatic task-splitting.
-2. Whether Cowork's execution environment has `ffmpeg` / `python` at all — its shell "execute[s] inside a dedicated Linux VM, isolated from the host operating system", so it cannot reach the ffmpeg on *your* machine, and the preinstalled toolset isn't documented.
+## Install — Basic & Advance (the plugin, no terminal at all)
 
-Either way the final cut happens in your editor, on your machine. **Until this is tested, use Claude Code.** Results will land here.
+One plugin covers both: the skill works in chat, and the whole team wakes up in Cowork.
 
-## Install on the Claude app (no terminal experience needed)
+1. **Build the bundle** (or grab it from a release):
+   ```bash
+   node bin/build-bundles.mjs        # writes hearyourvoice-plugin-<v>.zip to your Desktop
+   ```
+2. **Claude → Customize → Plugins → upload** that zip.
+3. **Use it** — just ask. In Cowork, hand it a backlog:
+   > *"/hearyourvoice ทำ 3 เรื่องนี้พร้อมกัน: ค่าไฟแพง, ฝุ่น PM2.5, หนี้ครัวเรือนไทย — เอาแค่ research + เขียนบท + ดีเบต hook"*
+
+   `hyv-producer` picks it up and fans the specialists across all three.
+
+> **Uploading to *Skills* instead of *Plugins*?** That channel takes a different shape and carries no agents — `build-bundles.mjs` also emits `hearyourvoice-skill-<v>.zip` for it. You get the method, not the team. Install **one or the other**, not both, or you'll end up with `hearyourvoice` and `hearyourvoice:hearyourvoice` side by side and won't know which one is answering.
+
+## Install — Production (Claude Code)
 
 You never have to open a separate terminal — the app has one built in.
 
-1. **Download the app** — [macOS](https://claude.ai/api/desktop/darwin/universal/dmg/latest/redirect) or [Windows](https://claude.ai/api/desktop/win32/x64/setup/latest/redirect), then sign in. *(Windows also needs [Git for Windows](https://git-scm.com/downloads/win); restart the app after installing it.)*
+1. **Download the app** — [macOS](https://claude.ai/api/desktop/darwin/universal/dmg/latest/redirect) or [Windows](https://claude.ai/api/desktop/win32/x64/setup/latest/redirect), then sign in. *(Windows also needs [Git for Windows](https://git-scm.com/downloads/win); restart the app after installing it.)* Or just use the `claude` CLI.
 2. **Click the `Code` tab** (not Chat, not Cowork).
 3. **Set Environment to `Local`** — this is the step people get wrong. Remote runs in the cloud and can't touch your files.
 4. **Pick your project folder** — the folder where your videos will live.
@@ -130,12 +179,14 @@ You never have to open a separate terminal — the app has one built in.
    ```bash
    npx hearyourvoice install
    ```
-6. **Check what's missing** — `npx hearyourvoice doctor` tells you if Node, Python, or ffmpeg aren't installed yet.
-7. **Use it** — type `/hearyourvoice`, or hand it to the team: *"ให้ hyv-producer ผลิตวิดีโอเรื่อง &lt;หัวข้อ&gt;"*.
+6. **Check what's missing** — `npx hearyourvoice doctor` reports Node / Python / ffmpeg and which API keys are set (never their values).
+7. **Use it** — type `/hearyourvoice` and describe the video. It delegates to the team on its own; you don't have to name `hyv-producer`.
 
 That's it — the CLI and the app share the same install, so doing this once covers both.
 
-## Quick install (`npx`)
+### Where to install it: global or project
+
+Both are Claude Code installs — this is only about *scope*.
 
 **Global — whole machine** (available in every session):
 
@@ -313,41 +364,72 @@ agents/                          ทีม subagent hyv-* ทั้ง 15 ตั
 
 ไม่ผูกกับ editor ตัวใดตัวหนึ่ง: มัน export timeline กลาง (JSON + CSV) ที่คุณเอาไปประกอบใน **CapCut, Premiere, DaVinci Resolve, หรือ code renderer** ก็ได้ — แล้วแพ็กเป็นโฟลเดอร์ส่งมอบที่สะอาด สามารถเรียกใช้ `veo-insert-planner` (ภาพ generative) และ `remotion-best-practices` (เฉพาะถ้าประกอบด้วยโค้ด) เป็น option ได้
 
-## มันรันที่ไหนได้บ้าง — อ่านก่อนติดตั้ง
+## 3 วิธีรันสกิลนี้
 
 ลูปนี้มี **สองครึ่ง** ที่ต้องการคนละอย่างกันมาก:
 
 - **ครึ่งที่คิด** — research, เขียนบท, ดีเบต punchline, storyboard ใช้แค่การให้เหตุผล **รันที่ไหนก็ได้**
 - **ครึ่งที่ใช้เครื่อง** — วัดเสียงด้วย `ffprobe`, ดึงฟุตเทจด้วย `yt-dlp`, ทำ shotlist ด้วย Python, ตัดต่อใน **CapCut/Premiere/DaVinci ของคุณ** อันนี้ต้องมี shell จริงบนเครื่องจริงที่มีไฟล์คุณอยู่
 
-**Claude Code คือที่เดียวที่ยืนยันแล้วว่าทำได้ทั้งสองครึ่ง** — tab **Code** ในแอป *คือ* Claude Code (docs: *"the desktop app reads the same settings files as the CLI"*) ติดตั้งครั้งเดียวได้ทั้งคู่
+ได้ครึ่งไหนขึ้นกับว่ารันที่ไหน — เลือกชั้นที่ใช่:
 
-| ที่ไหน | ครึ่งที่คิด | ครึ่งที่ใช้เครื่อง |
-|---|---|---|
-| **Claude Code CLI** (พิมพ์ `claude` ใน terminal) | ✅ | ✅ |
-| **แอป Claude → tab Code → Environment: Local** | ✅ | ✅ — `~/.claude/` เดียวกัน ทีม 15 ตัวครบ |
-| แอป Claude → tab Code → Environment: **Remote/cloud** | ✅ | ❌ — session คลาวด์ถูก sandbox |
-| **Cowork** | 🔬 กำลังทดสอบ | 🔬 กำลังทดสอบ — ดูข้างล่าง |
-| แอป Claude → tab **Chat** · **claude.ai** เว็บ | 🔬 กำลังทดสอบ | ❌ — ไม่มี shell |
+| | **Basic** | **Advance** | **Production** |
+|---|---|---|---|
+| **ที่ไหน** | Chat — เว็บ หรือ tab Chat ในแอป | **Cowork** | **Claude Code** — CLI หรือ tab Code |
+| **ติดตั้ง** | plugin | plugin | `npx hearyourvoice install` |
+| **ทีม** | ❌ agent เป็นสีเทาในแชท | ✅ **ครบ 15 ตัว แตกงานขนานกัน** | ✅ ครบ 15 ตัว |
+| **ครึ่งที่คิด** | ✅ | ✅ | ✅ |
+| **ครึ่งที่ใช้เครื่อง** | ❌ ไม่มี shell | ❌ — ดูเหตุผลข้างล่าง | ✅ |
+| **เหมาะกับ** | หัวข้อเดียว คิดให้ตกผลึก | **research + เขียนบท ทีละหลายเรื่องพร้อมกัน** | ทำวิดีโอให้เสร็จจริง |
 
-**จำง่าย ๆ: tab Code + Local** ถ้า Claude เอื้อมไม่ถึง ffmpeg กับโปรแกรมตัดต่อของคุณ มันก็ทำวิดีโอไม่จบ ต่อให้สกิลดีแค่ไหนก็ตาม
+**Basic** = Claude ตัวเดียวที่มีวิธีการทั้งหมดอยู่ในหัว พอสำหรับพาหนึ่งไอเดียจากหัวข้อไปจนได้ hook ที่ผ่านการดีเบต
 
-### 🔬 Cowork — พูดตรง ๆ ว่ายังไม่รู้
+**Advance** = จุดที่สนุก โยน 3 หัวข้อให้ Cowork แล้ว `hyv-producer` แตกลูกทีมออกไปทำทั้ง 3 เรื่องพร้อมกัน — researcher ยืนยันแหล่งข่าวขนานกัน ทีมดีเบตเถียงเรื่อง hook ของแต่ละเรื่อง `hyv-judge` บอกว่าเรื่องไหนเสียงแตก **ไม่ต้องมี terminal เลย** *(ทดสอบจริงแล้ว: ทีมแตกงานขนานกันใน Cowork ได้)*
 
-docs ของ Anthropic บอกว่า plugin *"bundle skills, connectors, and sub-agents"*, ว่า *"can install and use plugins in chat on the web, the Chat tab in Claude Desktop, and Claude Cowork"* และว่า *"hooks and **sub-agents run only in Cowork**, so they appear grayed out in chat"* — บนกระดาษนี่คือทางที่ทีมจะแตกงานได้โดยไม่ต้องมี terminal จริง ๆ
+**Production** = ชั้นเดียวที่ทำวิดีโอจบได้ เพราะมีแต่เครื่องคุณเท่านั้นที่มี ffmpeg ของคุณ ฟุตเทจของคุณ และโปรแกรมตัดต่อของคุณ
 
-แต่มี **2 ข้อที่ยังไม่มีหลักฐาน** และเราจะไม่เคลมจนกว่าจะได้เห็นมันทำงานจริง:
+**และมันต่อกันได้** — คิดกับดีเบตหลายเรื่องรวดใน Cowork แล้วเอาเรื่องที่ชนะเข้า Claude Code เพื่อผลิตจริง
 
-1. Cowork จะเรียก `hyv-producer` และทีม **ที่คุณเขียนเอง** ไหม หรือ *"sub-agent coordination"* ของมันคือการแตกงานอัตโนมัติของมันเองเท่านั้น
-2. เครื่อง Cowork มี `ffmpeg` / `python` ไหม — shell ของมัน *"execute[s] inside a dedicated Linux VM, isolated from the host operating system"* แปลว่ามันเอื้อมไม่ถึง ffmpeg บน**เครื่องคุณ** และ docs ไม่เคยระบุว่าใน VM นั้นมีเครื่องมืออะไรบ้าง
+### ทำไม Cowork ทำครึ่งที่ใช้เครื่องไม่ได้
 
-ยังไงก็ตาม ขั้นตัดต่อสุดท้ายก็จบที่โปรแกรมบนเครื่องคุณอยู่ดี **จนกว่าจะทดสอบเสร็จ ใช้ Claude Code ไปก่อน** ผลออกมาแล้วจะมาอัปเดตตรงนี้
+shell ของ Cowork *"execute[s] inside a dedicated Linux VM, isolated from the host operating system by the platform's hypervisor"* — ต่อให้เป็นโหมด local มันก็เอื้อมไม่ถึง ffmpeg ที่ลงไว้บน **Mac ของคุณ** และ Anthropic ไม่เคยระบุว่าใน VM นั้นมีอะไรติดมาบ้าง ยังไงขั้นตัดต่อสุดท้ายก็จบที่โปรแกรมบนเครื่องคุณอยู่ดี
 
-## ติดตั้งบนแอป Claude (ไม่ต้องเป็น terminal ก็ทำได้)
+**นี่ไม่ใช่กำแพง แต่คือรอยต่อ** — Cowork เก่งครึ่งที่คิด Claude Code รับช่วงที่เหลือ
+
+<details>
+<summary>ทดสอบอะไรไปแล้ว และอะไรที่ยังไม่รู้</summary>
+
+**เห็นกับตา:** plugin ติดตั้งใน Cowork ได้ · `hyv-producer` ถูกเรียกด้วยชื่อจริง · ลูกทีมแตกงานขนานกันหลายหัวข้อ
+
+**ยังไม่ได้ทดสอบ:** VM ของ Cowork มี `node`/`ffmpeg`/`python` ไหม และขั้นที่เสียเงินจะเป็นยังไงบนนั้น — gate เรื่องเงินอยู่ในตัวสคริปต์แล้ว (ไม่มี `--yes` = ไม่จ่าย) แต่ยังไม่มีใครเห็นพฤติกรรมนั้นบน VM ของ Cowork เพราะงั้นถือว่า phase 2 เป็นต้นไปเป็นงานของ Claude Code ไปก่อน
+
+README เวอร์ชันก่อนหน้าเคยเขียนว่า Cowork ทำอะไรไม่ได้เลย — **อันนั้นผิด** และมันเขียนจากการอ่าน docs ไม่ใช่จากการลองจริง
+
+</details>
+
+**จำง่าย ๆ: คิดใน Cowork ทำให้จบใน Claude Code** ถ้า Claude เอื้อมไม่ถึง ffmpeg กับโปรแกรมตัดต่อของคุณ มันก็ทำวิดีโอไม่จบ ต่อให้สกิลดีแค่ไหนก็ตาม
+
+## ติดตั้ง — Basic & Advance (ใช้ plugin ไม่ต้องแตะ terminal เลย)
+
+plugin ตัวเดียวได้ทั้งสองชั้น: skill ทำงานในแชท และทีมทั้งกองตื่นขึ้นมาใน Cowork
+
+1. **สร้างไฟล์** (หรือโหลดจาก release):
+   ```bash
+   node bin/build-bundles.mjs        # ได้ hearyourvoice-plugin-<v>.zip ไว้บน Desktop
+   ```
+2. **Claude → Customize → Plugins → upload** ไฟล์ zip นั้น
+3. **ใช้งาน** — สั่งเป็นภาษาคนได้เลย ถ้าอยู่ใน Cowork โยนหลายเรื่องรวดได้:
+   > *"/hearyourvoice ทำ 3 เรื่องนี้พร้อมกัน: ค่าไฟแพง, ฝุ่น PM2.5, หนี้ครัวเรือนไทย — เอาแค่ research + เขียนบท + ดีเบต hook"*
+
+   `hyv-producer` จะรับงานแล้วแตกลูกทีมไปทำทั้ง 3 เรื่อง
+
+> **ถ้าจะอัปเข้าช่อง *Skills* แทน *Plugins*:** คนละโครงกัน และ**ไม่พา agent ไปด้วย** — `build-bundles.mjs` สร้าง `hearyourvoice-skill-<v>.zip` ไว้ให้ด้วย ได้วิธีการแต่ไม่ได้ทีม **เลือกอย่างใดอย่างหนึ่ง อย่าอัปทั้งคู่** ไม่งั้นจะมี `hearyourvoice` กับ `hearyourvoice:hearyourvoice` ซ้อนกัน แล้วคุณจะไม่รู้ว่าตัวไหนกำลังตอบ
+
+## ติดตั้ง — Production (Claude Code)
 
 ไม่ต้องเปิด terminal แยกเลย เพราะแอปมี terminal ในตัวอยู่แล้ว
 
-1. **โหลดแอป** — [macOS](https://claude.ai/api/desktop/darwin/universal/dmg/latest/redirect) หรือ [Windows](https://claude.ai/api/desktop/win32/x64/setup/latest/redirect) แล้วล็อกอิน *(Windows ต้องลง [Git for Windows](https://git-scm.com/downloads/win) ด้วย แล้วรีสตาร์ทแอป)*
+1. **โหลดแอป** — [macOS](https://claude.ai/api/desktop/darwin/universal/dmg/latest/redirect) หรือ [Windows](https://claude.ai/api/desktop/win32/x64/setup/latest/redirect) แล้วล็อกอิน *(Windows ต้องลง [Git for Windows](https://git-scm.com/downloads/win) ด้วย แล้วรีสตาร์ทแอป)* หรือใช้ `claude` CLI ก็ได้
 2. **กด tab `Code`** (ไม่ใช่ Chat ไม่ใช่ Cowork)
 3. **ตั้ง Environment เป็น `Local`** — ข้อนี้คนพลาดกันบ่อยสุด ถ้าเลือก Remote มันจะไปรันบนคลาวด์ แตะไฟล์ในเครื่องคุณไม่ได้
 4. **เลือกโฟลเดอร์โปรเจกต์** — โฟลเดอร์ที่จะเก็บงานวิดีโอของคุณ
@@ -355,12 +437,14 @@ docs ของ Anthropic บอกว่า plugin *"bundle skills, connectors, 
    ```bash
    npx hearyourvoice install
    ```
-6. **เช็กว่าขาดอะไร** — `npx hearyourvoice doctor` จะบอกว่ายังไม่มี Node, Python หรือ ffmpeg ตัวไหน
-7. **ใช้งาน** — พิมพ์ `/hearyourvoice` หรือโยนให้ทีม: *"ให้ hyv-producer ผลิตวิดีโอเรื่อง &lt;หัวข้อ&gt;"*
+6. **เช็กว่าขาดอะไร** — `npx hearyourvoice doctor` บอกทั้ง Node / Python / ffmpeg และ API key ตัวไหนตั้งแล้วบ้าง (ไม่พิมพ์ค่า key ออกมา)
+7. **ใช้งาน** — พิมพ์ `/hearyourvoice` แล้วบอกว่าจะทำวิดีโอเรื่องอะไร มันแตกทีมให้เอง ไม่ต้องเรียกชื่อ `hyv-producer`
 
 จบแล้ว — CLI กับแอปใช้ที่ติดตั้งร่วมกัน ทำครั้งเดียวได้ทั้งสองทาง
 
-## ติดตั้งเร็ว (`npx`)
+### จะลงไว้ตรงไหน: global หรือ project
+
+ทั้งคู่คือการติดตั้งของ Claude Code เหมือนกัน — ต่างกันแค่ *ขอบเขต*
 
 **ทั้งเครื่อง (global)** — ใช้ได้ทุก session:
 
