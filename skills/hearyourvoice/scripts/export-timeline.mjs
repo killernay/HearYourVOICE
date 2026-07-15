@@ -105,7 +105,8 @@ for (const p of written) console.log(`  wrote ${p}`);
 console.log(`\nAssemble in your editor:
   • Put the voiceover mp3 on one audio track (it is the master clock).
   • Place each clip at its start_tc; trim to duration; MUTE every clip.
-  • Keep 9:16 · ${fps}fps; export the final mp4, then run package-delivery.mjs.
+  • Keep the aspect/resolution from project.config.json · ${fps}fps; export the final mp4,
+    then run package-delivery.mjs (pass it the same --aspect/--width/--height/--fps).
 The CSV opens in any NLE workflow (CapCut / Premiere / DaVinci); the JSON drives a code renderer.`);
 
 if (want("code")) {

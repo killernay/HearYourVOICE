@@ -16,3 +16,6 @@ Thumbs.db
 # Build / temp
 dist/
 *.log
+
+# Local agent-runner state (not part of the project)
+.thclaws/

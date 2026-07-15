@@ -1,7 +1,7 @@
 {
   "name": "hearyourvoice",
-  "version": "1.0.0",
-  "description": "Agent skill: the complete editor-agnostic workflow for short vertical Thai documentary/explainer videos — research, script, agent punchline debate, ElevenLabs voiceover, footage, timecoded timeline, delivery folder.",
+  "version": "1.2.0",
+  "description": "Agent skill + 15 subagents: the complete format- and editor-agnostic workflow for short Thai documentary/explainer videos — research, script, agent punchline debate, ElevenLabs voiceover, footage, timecoded timeline, delivery folder.",
   "type": "module",
   "bin": {
     "hearyourvoice": "bin/cli.mjs"
@@ -9,6 +9,7 @@
   "files": [
     "bin",
     "skills",
+    "agents",
     "install.sh",
     "README.md",
     "INSTALL.md",
@@ -20,6 +21,8 @@
   "keywords": [
     "skill",
     "agent",
+    "subagent",
+    "multi-agent",
     "claude",
     "codex",
     "video",

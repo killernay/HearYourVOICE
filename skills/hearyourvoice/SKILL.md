@@ -1,6 +1,6 @@
 ---
 name: hearyourvoice
-description: The complete, repeatable production workflow for short vertical Thai documentary/explainer videos — from idea to finished 9:16 MP4. Use whenever the user wants to produce a video end to end or run any stage of it: research a topic, write a script, run an adversarial agent debate over the hook/punchline, generate ElevenLabs voiceover, gather visuals (self-shot mock shots, generative shots, or found Creative-Commons footage), and export a timecoded timeline to assemble in any editor. Editor-agnostic: the final cut can be built in CapCut, Premiere, DaVinci Resolve, or a code-based renderer — the skill hands off a universal timeline (JSON + CSV) and a delivery folder. Footage source is flexible — generative (e.g. Google Veo) is ONE optional source, not required. Optionally orchestrates `veo-insert-planner` (generative footage) and `remotion-best-practices` (only if assembling in a code renderer).
+description: The complete, repeatable production workflow for short Thai documentary/explainer videos — from idea to a finished MP4 in any format. Use whenever the user wants to produce a video end to end or run any stage of it: research a topic, write a script, run an adversarial agent debate over the hook/punchline, generate ElevenLabs voiceover, gather visuals (self-shot mock shots, generative shots, or found Creative-Commons footage), and export a timecoded timeline to assemble in any editor. Format-agnostic: aspect/resolution/fps come from a per-project config (9:16, 16:9, 1:1, 4:5, custom) — nothing is hardcoded. Editor-agnostic: the final cut can be built in CapCut, Premiere, DaVinci Resolve, or a code-based renderer — the skill hands off a universal timeline (JSON + CSV) and a delivery folder. Footage source is flexible — generative (e.g. Google Veo) is ONE optional source, not required. Ships a 15-strong `hyv-*` subagent team (producer, researcher, scriptwriter, reviewer, storyboard, debate panel, judge, shotlister, voiceover, CC scout, prompt smith, Veo runner, assembler) so a whole video can be delegated or fanned out in parallel. Optionally orchestrates `veo-insert-planner` (generative footage) and `remotion-best-practices` (only if assembling in a code renderer).
 ---
 
 # HearYourVOICE
@@ -16,9 +16,27 @@ The end-to-end loop that turns one topic into one finished vertical video. It is
 - `veo-insert-planner` — for the generative-footage path (silent Veo prompt briefs).
 - `remotion-best-practices` — only if you choose to assemble in a code-based renderer (Remotion). Not required for NLE editors.
 
+## The team — run it solo or delegate it
+
+You can run every phase below yourself. You can also hand the work to the **`hyv-*` subagent team**
+that ships with this skill (installed into `.claude/agents/`): `hyv-producer` drives the whole loop
+by delegating to specialists — researcher, scriptwriter, script-reviewer, storyboard, the debate
+panel + judge, shotlister, voiceover, cc-scout, veo-prompt-smith, veo-runner, assembler. Each owns
+one phase, reads the output spec from `project.config.json`, and reports back; independent ones run
+in parallel, and you can fan out one producer per topic to produce a backlog at once.
+
+Two rules the team never breaks: **the human confirms the output spec and every gate** (topic lock,
+split hook/punchline, spending voiceover or generative credits), and **`hyv-judge` recommends but
+never rules** on creative direction. Full roster, decision chain, and config field reference:
+`references/subagents.md`.
+
 ## Core invariants (never break these)
 
-- Format is **vertical 9:16, 1080×1920, 30 fps**.
+- **The output spec is read, never assumed.** Aspect, width/height, fps, and editor come from
+  `src/<slug>/project.config.json` (template: `references/examples/project.config.example.json`).
+  Defaults are vertical 9:16 · 1080×1920 · 30 fps, but 16:9, 1:1, 4:5 and custom are equally
+  supported — every script takes `--aspect/--width/--height/--fps`. Confirm the config with the
+  user before producing; never hardcode a frame.
 - **The voiceover is the master clock.** Every visual's timecode is derived from the *measured* ElevenLabs audio duration — never from the written script's guessed length.
 - **All visual clips are silent.** Self-shot, generative, and CC clips are muted on the timeline. Narration is its own audio track; ambience, if any, is one continuous bed under the voice.
 - **Image-led, minimal on-screen text.** Thai captions only where they earn their place.

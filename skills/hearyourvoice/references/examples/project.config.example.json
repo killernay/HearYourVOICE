@@ -1,0 +1,39 @@
+{
+  "slug": "example-topic",
+  "language": "th",
+
+  "output": {
+    "aspect": "9:16",
+    "width": 1080,
+    "height": 1920,
+    "fps": 30,
+    "target_platforms": ["tiktok", "reels", "shorts"],
+    "tail_frames": 24,
+    "captions": "minimal"
+  },
+
+  "editor": "remotion",
+
+  "voice": {
+    "provider": "elevenlabs",
+    "voice_id": "REPLACE_ME",
+    "model": "eleven_v3",
+    "ask_before_spending": true
+  },
+
+  "footage_policy": {
+    "priority": ["graphic", "self-shot", "cc", "generative"],
+    "generative_provider": "veo",
+    "cc_license_required": "CC BY",
+    "ask_before_generative_spend": true,
+    "veo_price_per_sec_thb": 30
+  },
+
+  "gates": {
+    "lock_output_spec": true,
+    "lock_topic": true,
+    "lock_hook_punchline_if_split": true,
+    "spend_voiceover": true,
+    "spend_generative": true
+  }
+}

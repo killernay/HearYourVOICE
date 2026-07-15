@@ -1,6 +1,8 @@
 # Installing HearYourVOICE
 
-HearYourVOICE is a folder skill: a `SKILL.md` plus `references/` and `scripts/`. "Installing" means copying `skills/hearyourvoice/` into your agent's skills directory. Use `npx` (recommended), the bash `install.sh`, or copy by hand.
+HearYourVOICE is a folder skill (a `SKILL.md` plus `references/` and `scripts/`) **and a team of 15 `hyv-*` subagents**. "Installing" means copying `skills/hearyourvoice/` into your agent's skills directory, and — for Claude Code — copying `agents/hyv-*.md` into `.claude/agents/`, which is a **separate tree**. Use `npx` (recommended), the bash `install.sh`, or copy by hand.
+
+> The installer only ever adds/replaces its own `hyv-*.md` files; your other agents are never touched. Codex and Hermes get the skill alone — `.claude/agents/` is a Claude Code construct.
 
 ## With npx (recommended)
 
@@ -10,20 +12,20 @@ npx hearyourvoice install <target>      # published
 cd HearYourVOICE && npx . install <target>
 ```
 
-| target | installs to | scope |
-|--------|-------------|-------|
-| (none) / `claude` | `~/.claude/skills/hearyourvoice` | **global** — Claude Code, whole machine |
-| `codex` | `~/.codex/skills/hearyourvoice` | **global** — Codex |
-| `hermes` | `~/.hermes/skills/hearyourvoice` | **global** — Hermes / openclaws |
-| `project` | `./.claude/skills/hearyourvoice` | **project** — only the repo you're in |
-| any path | `<path>/hearyourvoice` | any other skills dir |
+| target | skill → | subagents → | scope |
+|--------|---------|-------------|-------|
+| (none) / `claude` | `~/.claude/skills/hearyourvoice` | `~/.claude/agents/hyv-*.md` | **global** — Claude Code, whole machine |
+| `codex` | `~/.codex/skills/hearyourvoice` | — | **global** — Codex |
+| `hermes` | `~/.hermes/skills/hearyourvoice` | — | **global** — Hermes / openclaws |
+| `project` | `./.claude/skills/hearyourvoice` | `./.claude/agents/hyv-*.md` | **project** — only the repo you're in |
+| any path | `<path>/hearyourvoice` | — | any other skills dir |
 
 ### Whole machine (global)
 
 ```bash
-npx hearyourvoice install            # ~/.claude/skills/hearyourvoice
-npx hearyourvoice install codex      # ~/.codex/skills/hearyourvoice
-npx hearyourvoice install hermes     # ~/.hermes/skills/hearyourvoice
+npx hearyourvoice install            # skill + 15 agents
+npx hearyourvoice install codex      # ~/.codex/skills/hearyourvoice   (skill only)
+npx hearyourvoice install hermes     # ~/.hermes/skills/hearyourvoice  (skill only)
 ```
 
 ### Project-level (working path)
@@ -52,20 +54,25 @@ Check your toolchain: `npx hearyourvoice doctor`.
 ## By hand
 
 ```bash
-# global
+# global — skill, then the subagents (separate tree)
 cp -R skills/hearyourvoice ~/.claude/skills/hearyourvoice
+mkdir -p ~/.claude/agents && cp agents/hyv-*.md ~/.claude/agents/
 # project-level (from your repo root)
 cp -R /path/to/HearYourVOICE/skills/hearyourvoice ./.claude/skills/hearyourvoice
+mkdir -p .claude/agents && cp /path/to/HearYourVOICE/agents/hyv-*.md .claude/agents/
 ```
 
-> Path note: any agent that loads `SKILL.md` folders can use this — only the directory differs. Project-level wins over global when both exist.
+> Path note: any agent that loads `SKILL.md` folders can use the skill — only the directory differs. Project-level wins over global when both exist (for skills and agents alike).
 
 ## Verify
 
 ```bash
 ls ~/.claude/skills/hearyourvoice            # SKILL.md, references/, scripts/
+ls ~/.claude/agents/hyv-*.md                 # 15 subagents
 node ~/.claude/skills/hearyourvoice/scripts/measure-voiceover.mjs --help
 ```
+
+In a Claude Code session, `/agents` lists the team. The subagents need **Claude Code v2.1.172+** (nested subagents); the skill itself has no such requirement.
 
 In a session, the skill triggers on requests like *"produce a video about &lt;topic&gt;"*, *"write the script and run the punchline debate"*, or *"package the delivery folder"*. Or invoke it by name (`hearyourvoice`).
 
@@ -76,7 +83,7 @@ Checked per tool — install what each step needs:
 - **Node 18+** — every `*.mjs` (uses global `fetch`). `node --version`.
 - **Python 3** + **openpyxl** — `new-shotlist.py` (`pip install openpyxl`); `veo-generate.py`.
 - **ffmpeg / ffprobe** — timing measurement, render verification, silent-clip stripping.
-- **A video editor** — CapCut, Premiere, DaVinci Resolve, or a code renderer (e.g. Remotion). 9:16 · 1080×1920 · 30fps. The assembly target (phase 5–6); `export-timeline.mjs` hands it a JSON + CSV.
+- **A video editor** — CapCut, Premiere, DaVinci Resolve, or a code renderer (e.g. Remotion). The assembly target (phase 5–6); `export-timeline.mjs` hands it a JSON + CSV. Aspect/resolution/fps come from `src/<slug>/project.config.json` (default 9:16 · 1080×1920 · 30fps), not from the tools.
 - **ElevenLabs API key** — voiceover (phase 2). See *Environment & API keys* below.
 - **Veo provider plugin** — *only* if you generate footage (phase 4 generative path). See *Environment & API keys* below.
 
