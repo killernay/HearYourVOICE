@@ -1,7 +1,7 @@
 {
   "name": "hearyourvoice",
   "version": "1.2.0",
-  "description": "Turn one topic into one finished video: research, script, an adversarial agent debate over the hook/punchline, ElevenLabs voiceover as the master clock, footage (self-shot, Creative-Commons, or generative), a timecoded editor-neutral timeline, and one packaged delivery folder. Format- and editor-agnostic. Ships a 15-strong hyv-* subagent team led by hyv-producer. The reasoning half (research, script, debate) runs anywhere; the machine half (ffprobe, yt-dlp, ffmpeg, your editor) needs Claude Code.",
+  "description": "Turn one topic into one finished video — research, script, an agent debate over the punchline, voiceover, footage, timeline, delivery folder. Ships a 15-agent production team.",
   "author": {
     "name": "Chanon Ngernthongdee",
     "url": "https://github.com/killernay"

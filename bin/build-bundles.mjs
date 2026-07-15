@@ -20,7 +20,9 @@ import { fileURLToPath } from "node:url";
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const SKILL = "hearyourvoice";
-const DESCRIPTION_LIMIT = 1024; // enforced by the Skills uploader
+// Two different uploaders, two different limits — both found by having an upload rejected.
+const SKILL_DESCRIPTION_LIMIT = 1024; // Skills uploader
+const PLUGIN_DESCRIPTION_LIMIT = 500; // Plugins uploader
 
 const outArg = process.argv.indexOf("--out");
 const OUT = outArg > -1 ? path.resolve(process.argv[outArg + 1]) : path.join(os.homedir(), "Desktop");
@@ -43,9 +45,9 @@ if (fs.existsSync(skillMd)) {
     const d = /^description:\s*([\s\S]*?)(?=\n[a-z_]+:|$)/m.exec(fm[1]);
     if (check(d, "SKILL.md frontmatter has no description")) {
       const len = d[1].trim().length;
-      check(len <= DESCRIPTION_LIMIT,
-        `SKILL.md description is ${len} chars — the Skills uploader rejects anything over ${DESCRIPTION_LIMIT}`);
-      if (len <= DESCRIPTION_LIMIT) console.log(`  description ${len}/${DESCRIPTION_LIMIT} chars`);
+      check(len <= SKILL_DESCRIPTION_LIMIT,
+        `SKILL.md description is ${len} chars — the Skills uploader rejects anything over ${SKILL_DESCRIPTION_LIMIT}`);
+      if (len <= SKILL_DESCRIPTION_LIMIT) console.log(`  SKILL.md description   ${len}/${SKILL_DESCRIPTION_LIMIT} chars`);
     }
     check(/^name:\s*\S/m.test(fm[1]), "SKILL.md frontmatter has no name");
   }
@@ -55,6 +57,11 @@ const manifestPath = path.join(ROOT, ".claude-plugin", "plugin.json");
 if (check(fs.existsSync(manifestPath), "missing .claude-plugin/plugin.json")) {
   const m = JSON.parse(fs.readFileSync(manifestPath, "utf8"));
   check(m.version === version, `plugin.json version ${m.version} != package.json ${version}`);
+  const dlen = (m.description || "").length;
+  check(dlen > 0, "plugin.json has no description");
+  check(dlen <= PLUGIN_DESCRIPTION_LIMIT,
+    `plugin.json description is ${dlen} chars — the Plugins uploader rejects anything over ${PLUGIN_DESCRIPTION_LIMIT}`);
+  if (dlen && dlen <= PLUGIN_DESCRIPTION_LIMIT) console.log(`  plugin.json description ${dlen}/${PLUGIN_DESCRIPTION_LIMIT} chars`);
 }
 
 const agents = fs.existsSync(path.join(ROOT, "agents"))
