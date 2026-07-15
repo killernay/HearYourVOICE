@@ -5,7 +5,7 @@ description: The complete, repeatable production workflow for short Thai documen
 
 # HearYourVOICE
 
-The end-to-end loop that turns one topic into one finished vertical video. It is the **orchestrator** every project runs, regardless of where the footage comes from. Each phase either does work directly or hands off to a specialist skill.
+The end-to-end loop that turns one topic into one finished video, in whatever format the project config asks for. It is the **orchestrator** every project runs, regardless of where the footage comes from. Each phase either does work directly or hands off to a specialist.
 
 **Footage is source-agnostic.** A finished video can use any mix of: shots you film yourself, generative shots (Google Veo or any model), found Creative-Commons clips, or motion graphics built in your editor. Generative is optional — many projects use zero Veo. Only load `veo-insert-planner` when you actually generate Veo shots.
 
@@ -16,19 +16,56 @@ The end-to-end loop that turns one topic into one finished vertical video. It is
 - `veo-insert-planner` — for the generative-footage path (silent Veo prompt briefs).
 - `remotion-best-practices` — only if you choose to assemble in a code-based renderer (Remotion). Not required for NLE editors.
 
-## The team — run it solo or delegate it
+## First move: delegate to the team
 
-You can run every phase below yourself. You can also hand the work to the **`hyv-*` subagent team**
-that ships with this skill (installed into `.claude/agents/`): `hyv-producer` drives the whole loop
-by delegating to specialists — researcher, scriptwriter, script-reviewer, storyboard, the debate
-panel + judge, shotlister, voiceover, cc-scout, veo-prompt-smith, veo-runner, assembler. Each owns
-one phase, reads the output spec from `project.config.json`, and reports back; independent ones run
-in parallel, and you can fan out one producer per topic to produce a backlog at once.
+**If the `hyv-*` team is available, delegate — do not do the work yourself.** Check once:
 
-Two rules the team never breaks: **the human confirms the output spec and every gate** (topic lock,
-split hook/punchline, spending voiceover or generative credits), and **`hyv-judge` recommends but
-never rules** on creative direction. Full roster, decision chain, and config field reference:
+```bash
+ls .claude/agents/hyv-producer.md ~/.claude/agents/hyv-producer.md 2>/dev/null | head -1
+```
+
+- **A whole video** → spawn `hyv-producer` with the topic. It runs phases 0–6, holds every gate,
+  and reports back. This is the default for *"produce a video about X"*.
+- **One phase** → spawn that specialist directly (`hyv-cc-scout` for footage, `hyv-script-reviewer`
+  to check a draft, the debate panel + `hyv-judge` for a hook).
+- **A backlog** → one `hyv-researcher` per topic in parallel, then one `hyv-producer` per video,
+  each in its own `src/<slug>/`. They don't collide.
+
+Delegating keeps each phase's noise — search results, ffprobe output, clip listings — out of the
+main conversation; you get the summary, not the logs. **If the team is not installed, run the
+phases below yourself.** Everything works solo; the team is an accelerator, not a requirement.
+Install it with `npx hearyourvoice install`. Full roster and decision chain:
 `references/subagents.md`.
+
+Two rules that hold either way: **the human confirms the output spec and every gate** (topic lock,
+split hook/punchline, spending voiceover or generative credits), and **`hyv-judge` recommends but
+never rules** on creative direction.
+
+## Know what you can actually run — then say so
+
+Half this loop is pure reasoning. The other half shells out to real binaries on a real machine.
+Which half you can do depends on where you are running, so check before you promise:
+
+| Work | Needs | Runs where |
+|---|---|---|
+| research · script · review · storyboard · debate panel · judge | reasoning (+ web search) | anywhere — chat, Cowork, Claude Code |
+| **shotlister** (`new-shotlist.py`, openpyxl) · **voiceover** (ffprobe) · **cc-scout** (yt-dlp) · **veo-runner** · **assembler** (ffmpeg + your editor) | a local shell + binaries + your files | **Claude Code only** |
+
+Note `hyv-shotlister` is phase 1 but still needs Python — **the line is drawn by tool dependency,
+not by phase number**.
+
+> ### 🛑 Hard stop — never simulate the machine half
+>
+> If you cannot run shell commands, you **cannot** do the second row. Do not fake it:
+>
+> - **Never invent durations** or write a `voiceover-durations.json` you did not measure with
+>   `ffprobe`. The master clock is measured audio — a guessed number silently breaks every
+>   timecode downstream and the error is invisible until the render is wrong.
+> - **Never claim** a file was generated, a clip downloaded, a license verified, or a video
+>   rendered unless you ran the command and saw it succeed.
+>
+> Stop instead, say which step needs a local shell, and tell the user to run it in Claude Code
+> (`npx hearyourvoice install`). A correct refusal beats a plausible fabrication.
 
 ## Core invariants (never break these)
 

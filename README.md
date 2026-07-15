@@ -90,17 +90,33 @@ Editor-agnostic: it exports a universal timeline (JSON + CSV) you assemble in **
 
 ## Where it runs — read this first
 
-This skill drives **your** machine: it calls **your** ffmpeg, reads **your** footage, and the final cut happens in **your** CapCut/Premiere/DaVinci. So it only works where Claude runs locally. Claude Code and the Claude app are the same tool here — the app's **Code** tab *is* Claude Code, and it "reads the same settings files as the CLI", so one install covers both.
+This loop has two halves, and they have very different needs:
 
-| Where | Works? | Why |
+- **The thinking half** — research, script, the punchline debate, storyboard. Pure reasoning. Runs anywhere Claude runs.
+- **The machine half** — measuring the voiceover with `ffprobe`, pulling footage with `yt-dlp`, building the shotlist with Python, cutting in **your** CapCut/Premiere/DaVinci. This needs a real shell on a real machine with your files on it.
+
+**Claude Code is the only surface verified to do both.** The Claude app's **Code** tab *is* Claude Code — it "reads the same settings files as the CLI", so one install covers both.
+
+| Where | Thinking half | Machine half |
 |---|---|---|
-| **Claude Code CLI** (`claude` in a terminal) | ✅ | Runs on your machine |
-| **Claude app → Code tab → Environment: Local** | ✅ | Same `~/.claude/`, same skill, all 15 agents |
-| Claude app → Code tab → Environment: **Remote/cloud** | ❌ | Cloud sessions are sandboxed — no ffmpeg of yours, no footage, no editor |
-| Claude app → **Chat** or **Cowork** tab | ❌ | Not Claude Code — no `.claude/agents/`, nothing local to drive |
-| **claude.ai** in a browser | ❌ | Same reason: it isn't your machine |
+| **Claude Code CLI** (`claude` in a terminal) | ✅ | ✅ |
+| **Claude app → Code tab → Environment: Local** | ✅ | ✅ — same `~/.claude/`, all 15 agents |
+| Claude app → Code tab → Environment: **Remote/cloud** | ✅ | ❌ — cloud sessions are sandboxed |
+| **Cowork** | 🔬 under test | 🔬 under test — see below |
+| Claude app → **Chat** tab · **claude.ai** web | 🔬 under test | ❌ — no shell |
 
-**Rule of thumb: Code tab + Local.** If Claude can't reach your ffmpeg and your editor, it can't finish a video — no matter how good the skill is.
+**Rule of thumb: Code tab + Local.** If Claude can't reach your ffmpeg and your editor, it cannot finish a video — no matter how good the skill is.
+
+### 🔬 Cowork — honestly, we don't know yet
+
+Anthropic's docs say plugins "bundle skills, connectors, and sub-agents", that you "can install and use plugins in chat on the web, the Chat tab in Claude Desktop, and Claude Cowork", and that "hooks and **sub-agents run only in Cowork**, so they appear grayed out in chat". On paper that's a real path for the team to fan out without a terminal.
+
+Two things are **not** established, and we won't claim them until we've watched them work:
+
+1. Whether Cowork will invoke *your named* `hyv-producer` and roster, or whether its "sub-agent coordination" is only its own automatic task-splitting.
+2. Whether Cowork's execution environment has `ffmpeg` / `python` at all — its shell "execute[s] inside a dedicated Linux VM, isolated from the host operating system", so it cannot reach the ffmpeg on *your* machine, and the preinstalled toolset isn't documented.
+
+Either way the final cut happens in your editor, on your machine. **Until this is tested, use Claude Code.** Results will land here.
 
 ## Install on the Claude app (no terminal experience needed)
 
@@ -299,19 +315,33 @@ agents/                          ทีม subagent hyv-* ทั้ง 15 ตั
 
 ## มันรันที่ไหนได้บ้าง — อ่านก่อนติดตั้ง
 
-สกิลนี้สั่งงาน **เครื่องคุณ**: มันเรียก ffmpeg ของคุณ อ่านฟุตเทจของคุณ และตัดต่อจบที่ CapCut/Premiere/DaVinci ของคุณ เพราะงั้นมันใช้ได้เฉพาะที่ที่ Claude รันอยู่บนเครื่องจริง ๆ
+ลูปนี้มี **สองครึ่ง** ที่ต้องการคนละอย่างกันมาก:
 
-**Claude Code กับแอป Claude คืออันเดียวกันในเรื่องนี้** — tab **Code** ในแอป *คือ* Claude Code และ docs ระบุว่า *"the desktop app reads the same settings files as the CLI"* ติดตั้งครั้งเดียวได้ทั้งคู่
+- **ครึ่งที่คิด** — research, เขียนบท, ดีเบต punchline, storyboard ใช้แค่การให้เหตุผล **รันที่ไหนก็ได้**
+- **ครึ่งที่ใช้เครื่อง** — วัดเสียงด้วย `ffprobe`, ดึงฟุตเทจด้วย `yt-dlp`, ทำ shotlist ด้วย Python, ตัดต่อใน **CapCut/Premiere/DaVinci ของคุณ** อันนี้ต้องมี shell จริงบนเครื่องจริงที่มีไฟล์คุณอยู่
 
-| ที่ไหน | ใช้ได้ไหม | เพราะ |
+**Claude Code คือที่เดียวที่ยืนยันแล้วว่าทำได้ทั้งสองครึ่ง** — tab **Code** ในแอป *คือ* Claude Code (docs: *"the desktop app reads the same settings files as the CLI"*) ติดตั้งครั้งเดียวได้ทั้งคู่
+
+| ที่ไหน | ครึ่งที่คิด | ครึ่งที่ใช้เครื่อง |
 |---|---|---|
-| **Claude Code CLI** (พิมพ์ `claude` ใน terminal) | ✅ | รันบนเครื่องคุณ |
-| **แอป Claude → tab Code → Environment: Local** | ✅ | ใช้ `~/.claude/` เดียวกัน สกิลเดียวกัน ทีม 15 ตัวครบ |
-| แอป Claude → tab Code → Environment: **Remote/cloud** | ❌ | session บนคลาวด์ถูก sandbox — ไม่มี ffmpeg ของคุณ ไม่มีฟุตเทจ ไม่มีโปรแกรมตัดต่อ |
-| แอป Claude → tab **Chat** หรือ **Cowork** | ❌ | ไม่ใช่ Claude Code — ไม่มี `.claude/agents/` และไม่มีอะไรในเครื่องให้สั่ง |
-| **claude.ai** บนเบราว์เซอร์ | ❌ | เหตุผลเดียวกัน — มันไม่ใช่เครื่องคุณ |
+| **Claude Code CLI** (พิมพ์ `claude` ใน terminal) | ✅ | ✅ |
+| **แอป Claude → tab Code → Environment: Local** | ✅ | ✅ — `~/.claude/` เดียวกัน ทีม 15 ตัวครบ |
+| แอป Claude → tab Code → Environment: **Remote/cloud** | ✅ | ❌ — session คลาวด์ถูก sandbox |
+| **Cowork** | 🔬 กำลังทดสอบ | 🔬 กำลังทดสอบ — ดูข้างล่าง |
+| แอป Claude → tab **Chat** · **claude.ai** เว็บ | 🔬 กำลังทดสอบ | ❌ — ไม่มี shell |
 
 **จำง่าย ๆ: tab Code + Local** ถ้า Claude เอื้อมไม่ถึง ffmpeg กับโปรแกรมตัดต่อของคุณ มันก็ทำวิดีโอไม่จบ ต่อให้สกิลดีแค่ไหนก็ตาม
+
+### 🔬 Cowork — พูดตรง ๆ ว่ายังไม่รู้
+
+docs ของ Anthropic บอกว่า plugin *"bundle skills, connectors, and sub-agents"*, ว่า *"can install and use plugins in chat on the web, the Chat tab in Claude Desktop, and Claude Cowork"* และว่า *"hooks and **sub-agents run only in Cowork**, so they appear grayed out in chat"* — บนกระดาษนี่คือทางที่ทีมจะแตกงานได้โดยไม่ต้องมี terminal จริง ๆ
+
+แต่มี **2 ข้อที่ยังไม่มีหลักฐาน** และเราจะไม่เคลมจนกว่าจะได้เห็นมันทำงานจริง:
+
+1. Cowork จะเรียก `hyv-producer` และทีม **ที่คุณเขียนเอง** ไหม หรือ *"sub-agent coordination"* ของมันคือการแตกงานอัตโนมัติของมันเองเท่านั้น
+2. เครื่อง Cowork มี `ffmpeg` / `python` ไหม — shell ของมัน *"execute[s] inside a dedicated Linux VM, isolated from the host operating system"* แปลว่ามันเอื้อมไม่ถึง ffmpeg บน**เครื่องคุณ** และ docs ไม่เคยระบุว่าใน VM นั้นมีเครื่องมืออะไรบ้าง
+
+ยังไงก็ตาม ขั้นตัดต่อสุดท้ายก็จบที่โปรแกรมบนเครื่องคุณอยู่ดี **จนกว่าจะทดสอบเสร็จ ใช้ Claude Code ไปก่อน** ผลออกมาแล้วจะมาอัปเดตตรงนี้
 
 ## ติดตั้งบนแอป Claude (ไม่ต้องเป็น terminal ก็ทำได้)
 
