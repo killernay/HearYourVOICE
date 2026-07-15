@@ -19,3 +19,6 @@ dist/
 
 # Local agent-runner state (not part of the project)
 .thclaws/
+
+# Plugin build artifact (rebuild with the zip command in README)
+*.zip
