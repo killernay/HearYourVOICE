@@ -140,6 +140,7 @@ Set in frontmatter (`model: opus` / `model: sonnet`) — verified live: `hyv-ide
 
 | Phase | Who | What |
 |---|---|---|
+| 0a scaffold | **you** | `new-project.mjs --slug <your-slug>` — **your own slug, your first action, one command.** It never overwrites `.env`, so the other desks doing theirs at the same moment cannot collide with you. Don't wait to be handed a folder. |
 | 0b research | **you** | **`research.md` already there with an Evidence log? Read it and skip searching entirely.** Otherwise: WebSearch + WebFetch, 3 facts, ≥2 independent sources each, ≤6 fetches. Write `research.md` — brief **+ Evidence log** (below). **One shared brief; everything below competes on it.** |
 | **1a scripts — COMPETE** | **spawn 3 × `hyv-scriptwriter` in ONE message** | Same brief, three different angles. **Paste the brief and the config values into each prompt — never a path.** Give each its angle and tell it the others exist. They finish in the time of one, and you keep the best. |
 | **1b บก เลือก + ตรวจ** | **spawn `hyv-script-reviewer` — ALWAYS, before any voice** | Reads all three, **picks one**, names its blocking fixes. Fix them, resubmit, loop until `pass`. **The proof stage — see below.** |

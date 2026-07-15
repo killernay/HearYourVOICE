@@ -73,6 +73,14 @@ through a delegation chain hadn't finished at 13 minutes.**
 doing its own whole chain in its own `src/<slug>/`. Three videos in roughly the time of one —
 three workers, not one worker under three foremen.
 
+**Spawn them as your first action. Set nothing up.** Each producer scaffolds its own slug —
+`new-project.mjs` never overwrites `.env`, so they can't collide. You do not need to inspect the
+folder, list the env vars, or prove `node`/`ffprobe` exist before handing out topics: the desks
+need none of that to start searching, and the tools get checked by the phase that uses them.
+**Measured: doing that homework first cost 2:49 — a third of the run — with every desk idle for
+all of it.** The topics are the only thing you have that they need. Hand them over and get out of
+the way.
+
 **Spawn ACROSS, never DOWN.**
 
 ```
@@ -134,7 +142,15 @@ never rules** on creative direction.
 ## Know what you can actually run — then say so
 
 Half this loop is pure reasoning. The other half shells out to real binaries on a real machine.
-Which half you can do depends on where you are running, so check before you promise:
+Which half you can do depends on where you are running — so know the line, and **check each tool
+at the step that uses it, never up front.**
+
+> **Do not preflight.** `ffprobe` is used at phase 2, five-plus minutes after you start; proving it
+> exists before your first search buys a fact you can't act on yet and costs a turn now, while the
+> human waits. Each check is its own model turn — **measured: four setup calls burned 2:49 before
+> a single producer was spawned, a third of the run, and every one of those tools was for a phase
+> that hadn't started.** The scripts already fail loudly and safely when a binary is missing; that
+> failure, at the step, is the check. Start the work. Verify the tool when you reach for it.
 
 | Work | Needs | Runs where |
 |---|---|---|
