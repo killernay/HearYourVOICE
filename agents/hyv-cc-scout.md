@@ -31,7 +31,9 @@ and log every source. If you can't clear it, you don't use it.
 
    It reads the license from Openverse/Wikimedia metadata, drops ND and NC, downloads to
    `public/<slug>/cc/images/`, and appends credits itself. `--dry-run` to look before fetching;
-   exit 3 means nothing cleared for that query — try another wording before giving up on the beat.
+   exit 3 means nothing cleared for that query — try another wording, but **cap it at ~2 wordings
+   per beat**. If nothing clears, make the beat a graphic and move on: graphics are the
+   always-available fallback and cost nothing. No single beat is worth an unbounded hunt.
 3. **Video** where motion actually matters. For each candidate **verify CC BY with `yt-dlp`
    metadata** — do NOT trust YouTube's "CC" filter. Reject anything you can't confirm.
    Download cleared clips → `public/<slug>/cc/video/`; cut **reviewed** selects (exact
