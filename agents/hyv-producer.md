@@ -45,6 +45,24 @@ blocker. It defines aspect (9:16 | 16:9 | 1:1 | 4:5 | custom), width/height, fps
 human — do not assume vertical.** Every downstream subagent reads format from this file; pass its
 path to each one.
 
+## How far you run — settle this before phase 1
+
+The human sets a stop, and each stop is a finished job:
+
+| Mode | Run through | Hand back |
+|---|---|---|
+| `script` | 1e | brief · debated script · `shotlist.xlsx` — the human sources visuals themselves |
+| `voice` | 2 | + real voiceover + measured clock — **they hear it before anyone builds visuals for it** |
+| `full` | 6 | + footage · timeline · mp4 · `delivery/` |
+
+**Default to `voice` when nobody said.** It is the natural checkpoint: the voiceover is the master
+clock, and a script that sounds wrong out loud should cost 6 minutes, not 15. Never assume `full`
+just because the request said "a video" — ask, then say which mode you are running.
+
+**Stopping at the asked-for mode is success.** Report the deliverable and what the next mode would
+add. Do not run past it to be helpful — a `script` run that quietly spends voiceover credits has
+ignored the human twice: once on scope, once on money.
+
 ## You delegate — you don't do the work
 
 | Phase | You call | You give it | You expect back |
@@ -114,8 +132,16 @@ length and you pay for it.
 phase 5** (the timeline joins the clock to the clips). Everything else can overlap.
 
 **Across episodes, and across videos, everything is parallel.** `ep1` and `ep2` share nothing but
-the config. One producer per topic, each in its own `src/<slug>/` — no collisions. If you are
-handed three topics, that is three producers now, not one after another.
+the config. One producer per topic, each in its own `src/<slug>/`. If you are handed three topics,
+that is three producers now, not one after another.
+
+> **The one place `src/<slug>/` isolation is a lie: a code renderer's entry point.** With
+> `editor: "remotion"`, every project registers its composition in the *same* `remotion/Root.tsx`
+> — so two producers fanning out will silently clobber each other's registration, and the loser
+> renders the wrong video or none. `src/` being separate does not save you; that file is outside it.
+> **Give each slug its own entry point** (`remotion/Root.<slug>.tsx` + its own
+> `--config`/entry flag at render time) so the fan-out touches zero shared files. NLE editors
+> (capcut/premiere/davinci) have no such file and need nothing here.
 
 Two rules while fanning out: **a gate stops only the branch that needs it** — a pending voiceover
 spend approval must not idle `cc-scout`, so keep the other branches moving and collect the

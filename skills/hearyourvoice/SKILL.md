@@ -89,6 +89,32 @@ not by phase number**.
 
 See `references/pipeline-loop.md` for the one-screen map + phase input/output contract, and `references/naming-conventions.md` for every path and filename pattern.
 
+## How far to go — ask, then stop there
+
+**Not every request wants a finished video.** How far you run is a dial the human sets, and each
+stop is a real deliverable, not a half-done run — every mode's output is exactly the input the
+next one needs:
+
+| Mode | You stop after | They get | Roughly |
+|---|---|---|---|
+| **`script`** | phase 1e | research brief · script with a debated hook · `shotlist.xlsx` | ~4 min |
+| **`voice`** ← ask for this if unsure | phase 2 | the above **+ real voiceover mp3 + the measured clock** | ~6 min |
+| **`full`** | phase 6 | the above **+ footage + timeline + rendered mp4 + `delivery/`** | ~15 min+ |
+
+**`voice` is the useful default when the human hasn't said.** The voiceover is the master clock,
+so it is also the natural checkpoint: they hear whether the script actually works before anyone
+spends time sourcing twenty images for it. A script that sounds wrong out loud should die at
+6 minutes, not at 15 — and the audio is what tells you.
+
+**`script` hands the work to the human on purpose.** The shotlist is a work order: one row per
+shot, how to capture or source it, the licence. Phase 3 already has no agent — nobody can hold
+your camera — and phase 4 can work the same way when the human would rather pick the visuals
+themselves. Stopping there is a finished job, so report it as one.
+
+Say which mode you are running, once, before you start. When they only asked for "a video about
+X", ask which they want rather than assuming `full` — it is the most expensive answer to a
+question they may not have asked.
+
 ## The loop
 
 ```

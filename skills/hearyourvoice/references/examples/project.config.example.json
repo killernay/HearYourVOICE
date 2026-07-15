@@ -16,7 +16,8 @@
 
   "voice": {
     "provider": "elevenlabs",
-    "voice_id": "REPLACE_ME",
+    "voice_id": "",
+    "_voice_id": "Leave empty to use VOICE_ID from .env (the usual case). Set it only to pin ONE project to a different voice — a non-empty value here overrides .env.",
     "model": "eleven_v3",
     "ask_before_spending": true
   },
