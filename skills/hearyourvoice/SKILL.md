@@ -69,11 +69,18 @@ hand one script down a line: research → script → hook → voice can't overla
 a fresh context per link and buys nothing. **Measured: solo 4:38 to a real voiceover; the same job
 through a delegation chain hadn't finished at 13 minutes.**
 
-**Several videos? *That's* what the team is for.** One `hyv-producer` per topic, in parallel, each
-doing its own whole chain in its own `src/<slug>/`. Three videos in roughly the time of one —
-three workers, not one worker under three foremen.
+**Several videos? *That's* what the team is for.** One `hyv-producer` per topic, each doing its own
+whole chain in its own `src/<slug>/`. Three videos in roughly the time of one — three workers, not
+one worker under three foremen.
 
-**Spawn them as your first action. Set nothing up.** Each producer scaffolds its own slug —
+**Spawn every producer in ONE message — one `Agent` call per topic, all in the same block, never
+one message each.** "In parallel" is not something you intend, it is something the message shape
+either does or doesn't do: three `Agent` calls in one block run at once; three messages queue, and
+topic 3 starts only when topic 1 is done. **Measured: one producer per message turned a 3-desk run
+into a 3× serial chain, while the phrase "spawn them in parallel" sat right there in the prompt.**
+Compose all of them before you send. Their whole point is that they never need each other.
+
+**Set nothing up first.** Each producer scaffolds its own slug —
 `new-project.mjs` never overwrites `.env`, so they can't collide. You do not need to inspect the
 folder, list the env vars, or prove `node`/`ffprobe` exist before handing out topics: the desks
 need none of that to start searching, and the tools get checked by the phase that uses them.
