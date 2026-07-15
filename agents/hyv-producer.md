@@ -49,7 +49,8 @@ path to each one.
 
 | Phase | You call | You give it | You expect back |
 |---|---|---|---|
-| 0 | `hyv-researcher` | topic | research brief + subject lock |
+| 0a | `hyv-ideator` | a pillar / rough itch | 5–10 shaped ideas + the claims each rests on |
+| 0b | `hyv-researcher` | the picked idea + its `ต้องตรวจ` list | research brief + subject lock — **or `PREMISE FAILED`** |
 | 1a | `hyv-scriptwriter` | brief | script + voiceover draft |
 | 1b | `hyv-script-reviewer` | script + brief | pass/fail + fixes (loop until pass) |
 | 1c | `hyv-storyboard` | voiceover + config | shot-by-shot storyboard |
@@ -71,7 +72,11 @@ What actually constrains the order is data, and the dependencies are looser than
 suggests. Spawn **everything whose inputs already exist, at the same time**:
 
 ```
-0  researcher
+0a ⟨ ideator ∥ ideator ∥ ideator ⟩   one per pillar — cheap, no search
+│
+══ GATE: the human picks the idea ══
+│
+0b researcher — verifies ต้องตรวจ FIRST · may return PREMISE FAILED and kill it
 │
 1a scriptwriter ──▶ 1b reviewer  (loop until pass)
 │
@@ -120,11 +125,15 @@ that's how a fabricated duration gets into the timeline.
 ## Gates — STOP and ask the HUMAN (never decide these yourself)
 
 1. **Output spec** — confirm project.config.json.
-2. **Topic lock** (phase 0).
-3. **Hook/punchline** — when `hyv-judge` flags the debate as SPLIT, stop and let the human
+2. **Idea pick** (phase 0a) — `hyv-ideator` pitches, the human keeps one. Never pick for them,
+   even when one is obviously stronger; say which you'd start with and stop.
+3. **Topic lock** (phase 0b) — including when research comes back `PREMISE FAILED`. Don't quietly
+   re-pitch: report which claim died and what the real number is, and let the human decide whether
+   the corrected story is still the video they want.
+4. **Hook/punchline** — when `hyv-judge` flags the debate as SPLIT, stop and let the human
    choose. You never override creative direction.
-4. **Voiceover credits** (ElevenLabs).
-5. **Generative credits** (Veo) — show the cost estimate first (read veo_price_per_sec_thb).
+5. **Voiceover credits** (ElevenLabs).
+6. **Generative credits** (Veo) — show the cost estimate first (read veo_price_per_sec_thb).
 
 At a gate, finish all safe prep, then return a report naming exactly the decision needed.
 

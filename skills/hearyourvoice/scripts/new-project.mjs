@@ -225,6 +225,15 @@ function writeRemotionRoot(R, rel) {
   for (const s of slugs.sort()) {
     const id = s.replace(/[^a-zA-Z0-9]/g, "_");
     const cfg = JSON.parse(fs.readFileSync(path.join(srcRoot, s, "project.config.json"), "utf8"));
+    // The spec lives under `output`, not at the root. Read the wrong path and a `?? 1080`
+    // fallback silently renders 9:16 for a project configured 16:9 — the exact hardcoded-frame
+    // bug this config exists to prevent, except invisible. So resolve it here and fail loudly.
+    const out = cfg.output;
+    if (!out?.width || !out?.height || !out?.fps) {
+      console.error(`Error: src/${s}/project.config.json has no output.width/height/fps.\n` +
+        `The frame is read from that file, never guessed — fix it before scaffolding.`);
+      process.exit(1);
+    }
     imports.push(`import cfg_${id} from "../src/${s}/project.config.json";`);
     const editDir = path.join(srcRoot, s, "edit");
     const timelines = fs.existsSync(editDir)
@@ -234,7 +243,7 @@ function writeRemotionRoot(R, rel) {
       // No timeline exported yet — register a placeholder so the studio still opens and shows
       // the frame at the right size. Re-run new-project --remotion once phase 5 has run.
       comps.push(`      <Composition id="${s}" component={Episode} durationInFrames={30}\n` +
-        `        fps={cfg_${id}.fps ?? 30} width={cfg_${id}.width ?? 1080} height={cfg_${id}.height ?? 1920}\n` +
+        `        fps={cfg_${id}.output.fps} width={cfg_${id}.output.width} height={cfg_${id}.output.height}\n` +
         `        defaultProps={{ clips: [], voiceFile: undefined }} />`);
       continue;
     }
@@ -244,7 +253,7 @@ function writeRemotionRoot(R, rel) {
       imports.push(`import tl_${tid} from "../src/${s}/edit/${t}";`);
       comps.push(`      <Composition id="${s}-${ep}" component={Episode}\n` +
         `        durationInFrames={tl_${tid}.durationInFrames} fps={tl_${tid}.fps}\n` +
-        `        width={cfg_${id}.width ?? 1080} height={cfg_${id}.height ?? 1920}\n` +
+        `        width={cfg_${id}.output.width} height={cfg_${id}.output.height}\n` +
         `        defaultProps={{ clips: tl_${tid}.clips as any, voiceFile: "${s}/voiceover/${ep}.mp3" }} />`);
     }
   }

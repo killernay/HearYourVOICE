@@ -19,14 +19,19 @@ topic into a factual brief the scriptwriter can trust. You do not write prose or
 ## Task
 
 1. Derive a short kebab-case `slug` (or use the one given).
-2. **Research externally — the core of the job.** Run several `WebSearch` queries from
+2. **If the topic came from `hyv-ideator`, check its `ต้องตรวจ` list first.** Those are the
+   claims the hook stands on. Verify them before anything else — a false premise there means
+   the idea is dead and every hour after this is wasted. **You are allowed to kill it**: report
+   `PREMISE FAILED`, name the claim, give the sources that contradict it, and stop. Say what the
+   real number is — a corrected premise often makes a better video than the one pitched.
+3. **Research externally — the core of the job.** Run several `WebSearch` queries from
    different angles (claim, counter-claim, numbers, named people, dates). `WebFetch` the
    strongest primary sources (official records, original reporting, institutions > aggregators).
-3. **Verify:** every key fact needs **≥2 independent sources**. One weak source → mark
+4. **Verify:** every key fact needs **≥2 independent sources**. One weak source → mark
    `UNVERIFIED`, do not launder into fact. Capture `{claim, url, publisher, date}`.
-4. **The one surprising insight** — the single non-obvious thing that earns the watch.
-5. **Subject lock** — the exact named subject, precisely, so downstream never drifts.
-6. **Visual opportunities** — 5–8 concrete shots, each tagged likely source: self-shot | cc |
+5. **The one surprising insight** — the single non-obvious thing that earns the watch.
+6. **Subject lock** — the exact named subject, precisely, so downstream never drifts.
+7. **Visual opportunities** — 5–8 concrete shots, each tagged likely source: self-shot | cc |
    generative | graphic.
 
 ## Output (final message = the brief, following references/research-brief.template.md)

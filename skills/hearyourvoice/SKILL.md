@@ -1,6 +1,6 @@
 ---
 name: hearyourvoice
-description: The repeatable workflow for short Thai documentary/explainer videos — one topic in, one finished MP4 out. Use when producing a video end to end or running any stage: research a topic, write a script, run an adversarial agent debate over the hook/punchline, generate ElevenLabs voiceover, gather visuals (self-shot, Creative-Commons, or generative), lay timecoded inserts on a timeline, and package a delivery folder. Format-agnostic: aspect/resolution/fps come from a per-project config (9:16, 16:9, 1:1, custom) — nothing is hardcoded. Editor-agnostic: assemble in CapCut, Premiere, DaVinci, or a code renderer from a universal timeline (JSON + CSV). Generative footage (e.g. Veo) is one optional source, never required. Ships a 15-strong `hyv-*` subagent team led by `hyv-producer`, so a video can be delegated whole or fanned out in parallel. The reasoning half runs anywhere; steps that shell out (ffprobe, yt-dlp, ffmpeg, your editor) need Claude Code.
+description: The repeatable workflow for short Thai documentary/explainer videos — one topic in, one finished MP4 out. Use when producing a video end to end or running any stage: research a topic, write a script, run an adversarial agent debate over the hook/punchline, generate ElevenLabs voiceover, gather visuals (self-shot, Creative-Commons, or generative), lay timecoded inserts on a timeline, and package a delivery folder. Format-agnostic: aspect/resolution/fps come from a per-project config (9:16, 16:9, 1:1, custom) — nothing is hardcoded. Editor-agnostic: assemble in CapCut, Premiere, DaVinci, or a code renderer from a universal timeline (JSON + CSV). Generative footage (e.g. Veo) is one optional source, never required. Ships a 16-strong `hyv-*` subagent team led by `hyv-producer`, so a video can be delegated whole or fanned out in parallel. The reasoning half runs anywhere; steps that shell out (ffprobe, yt-dlp, ffmpeg, your editor) need Claude Code.
 ---
 
 # HearYourVOICE
@@ -92,7 +92,10 @@ See `references/pipeline-loop.md` for the one-screen map + phase input/output co
 ## The loop
 
 ```
-0 Research ─▶ 1 Script + punchline debate ─▶ ══ hook locked ══
+0a Ideas ─▶ ══ you pick ══ ─▶ 0b Research (may kill the premise)
+                                     │
+                                     ▼
+   1 Script + punchline debate ─▶ ══ hook locked ══
                                                      │
                         ┌────────────────────────────┴────────────────────────┐
                         ▼                                                     ▼
@@ -121,12 +124,23 @@ Phases 3 and 4 are where visuals come from — use whichever sources fit the pro
 
 ---
 
-## Phase 0 — Research the topic
+## Phase 0 — Find the story (ideas → pick → research)
 
-**Goal:** pick one topic and assemble a factual brief.
+**Goal:** end up with one topic and a factual brief you can build on. Two steps, and a human between them.
 
-1. The idea bank is `content-idea-log.md` (dated candidate topics). Add ideas here; pick one to produce.
-2. Research it with `WebSearch` / `web_fetch` and any source docs the user provides. Capture sources for later attribution.
+**0a · Ideate** (`hyv-ideator` — cheap, no search, no verification)
+
+Generate 5–10 fully-shaped candidates into `content-idea-log.md`. Each one carries a **hook**, 3–5 **แก่นเรื่อง** points, **มุมเล่า** (why the viewer cares), an **เปรียบเทียบ** analogy, a **Format**, the **B-roll** it needs — and **`ต้องตรวจ`: the claims it stands on.** Fan out one ideator per pillar.
+
+**Ideas before research, on purpose.** Ideas are cheap; research is not. Ten ideas → the human keeps one → you verify only that one. Research first and you pay for nine briefs you throw away. But the trade only holds if you treat an unverified idea as what it is: **a hypothesis.** Never state a figure as fact at this stage — write it under `ต้องตรวจ`.
+
+> ### ══ GATE — the human picks ══
+> Ideas are pitched, never chosen, by an agent. Same rule `hyv-judge` lives under.
+
+**0b · Research the winner** (`hyv-researcher` — real WebSearch)
+
+1. **Verify the `ต้องตรวจ` claims first.** They're what the hook rests on. If one is false the idea is dead — **research is allowed to kill it**, and should say what the real number is; a corrected premise often beats the pitch.
+2. Research with `WebSearch` / `WebFetch` and any source docs the user provides. Every key fact needs **≥2 independent sources**; capture them for later attribution.
 3. Write a research brief from `references/research-brief.template.md`: thesis, audience, the one surprising insight, key facts + sources, **subject lock** (the exact named subject so later prompts/visuals never drift), and visual opportunities.
 
 **Output:** a research brief (chat or `src/<slug>/research.md`) and a chosen `slug`.

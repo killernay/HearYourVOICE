@@ -77,7 +77,7 @@ mkdir -p .claude/agents && cp /path/to/HearYourVOICE/agents/hyv-*.md .claude/age
 
 ```bash
 ls ~/.claude/skills/hearyourvoice            # SKILL.md, references/, scripts/
-ls ~/.claude/agents/hyv-*.md                 # 15 subagents
+ls ~/.claude/agents/hyv-*.md                 # 16 subagents
 node ~/.claude/skills/hearyourvoice/scripts/measure-voiceover.mjs --help
 ```
 

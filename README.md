@@ -5,7 +5,7 @@
 
 **The complete, repeatable workflow for short Thai documentary/explainer videos — from a topic to a finished MP4, in whatever format you ship.**
 
-HearYourVOICE is an **agent skill + a 15-strong subagent team** — a `SKILL.md`, its `references/` and `scripts/`, and the `hyv-*` specialists that do the work. Drop a topic in, and it walks the whole loop: research → script → an adversarial *agent debate* over the hook/punchline → ElevenLabs voiceover → gather visuals (self-shot, found Creative-Commons, or generative) → lay timecoded inserts on an editor timeline → validate → **package one clean `delivery/<slug>/` folder**.
+HearYourVOICE is an **agent skill + a 16-strong subagent team** — a `SKILL.md`, its `references/` and `scripts/`, and the `hyv-*` specialists that do the work. Drop a topic in, and it walks the whole loop: research → script → an adversarial *agent debate* over the hook/punchline → ElevenLabs voiceover → gather visuals (self-shot, found Creative-Commons, or generative) → lay timecoded inserts on an editor timeline → validate → **package one clean `delivery/<slug>/` folder**.
 
 ## The point: the harness, not the model
 
@@ -135,7 +135,7 @@ skills/hearyourvoice/
   scripts/                       new-project · new-shotlist · gen-voiceover ·
                                  measure-voiceover · gen-veo-briefs · veo-generate ·
                                  check-insert-plan · export-timeline · package-delivery
-agents/                          the 15 hyv-* subagents
+agents/                          the 16 hyv-* subagents
 ```
 
 Editor-agnostic: it exports a universal timeline (JSON + CSV) you assemble in **CapCut, Premiere, DaVinci Resolve, or a code renderer** — then packages a clean delivery folder. It can optionally orchestrate `veo-insert-planner` (generative footage) and `remotion-best-practices` (only if you assemble in code).
@@ -153,7 +153,7 @@ Which half you get depends on where you run it. Pick your tier:
 |---|---|---|---|
 | **Where** | Chat — web or the app's Chat tab | **Cowork** | **Claude Code** — CLI or the app's Code tab |
 | **Install** | the plugin | the plugin | `npx hearyourvoice install` |
-| **The team** | ❌ agents are greyed out in chat | ✅ **all 15 fan out in parallel** | ✅ all 15 |
+| **The team** | ❌ agents are greyed out in chat | ✅ **all 16 fan out in parallel** | ✅ all 16 |
 | **Thinking half** | ✅ | ✅ | ✅ |
 | **Machine half** | ❌ no shell | ❌ — see below | ✅ |
 | **Good for** | one topic, thinking it through | **researching and scripting a whole backlog at once** | finishing an actual video |
@@ -189,7 +189,7 @@ Earlier versions of this README claimed Cowork couldn't run any of this. That wa
 | Where | Thinking half | Machine half |
 |---|---|---|
 | **Claude Code CLI** (`claude` in a terminal) | ✅ | ✅ |
-| **Claude app → Code tab → Environment: Local** | ✅ | ✅ — same `~/.claude/`, all 15 agents |
+| **Claude app → Code tab → Environment: Local** | ✅ | ✅ — same `~/.claude/`, all 16 agents |
 | Claude app → Code tab → Environment: **Remote/cloud** | ✅ | ❌ — cloud sessions are sandboxed |
 | **Cowork** (plugin) | ✅ + the team, in parallel | ❌ — isolated VM |
 | Claude app → **Chat** tab · **claude.ai** web (plugin) | ✅ — no team | ❌ — no shell |
@@ -354,7 +354,7 @@ I hope the structure of this project helps anyone pick it up and bring quality c
 
 **เวิร์กโฟลว์ครบวงจรและทำซ้ำได้ สำหรับคลิปสารคดี/อธิบายความภาษาไทยสั้น ๆ — จากแค่ "หัวข้อ" ไปจนเป็นไฟล์ MP4 ที่เสร็จสมบูรณ์ ในสัดส่วนไหนก็ได้ที่คุณจะปล่อย**
 
-HearYourVOICE คือ **agent skill + ทีม subagent 15 ตัว** — ประกอบด้วย `SKILL.md` พร้อม `references/`, `scripts/` และทีม `hyv-*` ที่ลงมือทำจริง แค่โยนหัวข้อเข้าไป มันจะเดินครบทั้งลูป: research → เขียนสคริปต์ → ให้ *agent ดีเบต* แย้งกันเรื่อง hook/punchline → ทำเสียงพากย์ด้วย ElevenLabs → หาภาพ (ถ่ายเอง, Creative-Commons, หรือ generative) → วาง insert ตาม timecode บน timeline ของ editor → ตรวจสอบ → **แพ็กเป็นโฟลเดอร์ `delivery/<slug>/` ที่สะอาดหนึ่งชุด**
+HearYourVOICE คือ **agent skill + ทีม subagent 16 ตัว** — ประกอบด้วย `SKILL.md` พร้อม `references/`, `scripts/` และทีม `hyv-*` ที่ลงมือทำจริง แค่โยนหัวข้อเข้าไป มันจะเดินครบทั้งลูป: research → เขียนสคริปต์ → ให้ *agent ดีเบต* แย้งกันเรื่อง hook/punchline → ทำเสียงพากย์ด้วย ElevenLabs → หาภาพ (ถ่ายเอง, Creative-Commons, หรือ generative) → วาง insert ตาม timecode บน timeline ของ editor → ตรวจสอบ → **แพ็กเป็นโฟลเดอร์ `delivery/<slug>/` ที่สะอาดหนึ่งชุด**
 
 ## หัวใจ: harness ไม่ใช่ตัวโมเดล
 
@@ -484,7 +484,7 @@ skills/hearyourvoice/
   scripts/                       new-project · new-shotlist · gen-voiceover ·
                                  measure-voiceover · gen-veo-briefs · veo-generate ·
                                  check-insert-plan · export-timeline · package-delivery
-agents/                          ทีม subagent hyv-* ทั้ง 15 ตัว
+agents/                          ทีม subagent hyv-* ทั้ง 16 ตัว
 ```
 
 ไม่ผูกกับ editor ตัวใดตัวหนึ่ง: มัน export timeline กลาง (JSON + CSV) ที่คุณเอาไปประกอบใน **CapCut, Premiere, DaVinci Resolve, หรือ code renderer** ก็ได้ — แล้วแพ็กเป็นโฟลเดอร์ส่งมอบที่สะอาด สามารถเรียกใช้ `veo-insert-planner` (ภาพ generative) และ `remotion-best-practices` (เฉพาะถ้าประกอบด้วยโค้ด) เป็น option ได้
@@ -502,7 +502,7 @@ agents/                          ทีม subagent hyv-* ทั้ง 15 ตั
 |---|---|---|---|
 | **ที่ไหน** | Chat — เว็บ หรือ tab Chat ในแอป | **Cowork** | **Claude Code** — CLI หรือ tab Code |
 | **ติดตั้ง** | plugin | plugin | `npx hearyourvoice install` |
-| **ทีม** | ❌ agent เป็นสีเทาในแชท | ✅ **ครบ 15 ตัว แตกงานขนานกัน** | ✅ ครบ 15 ตัว |
+| **ทีม** | ❌ agent เป็นสีเทาในแชท | ✅ **ครบ 16 ตัว แตกงานขนานกัน** | ✅ ครบ 16 ตัว |
 | **ครึ่งที่คิด** | ✅ | ✅ | ✅ |
 | **ครึ่งที่ใช้เครื่อง** | ❌ ไม่มี shell | ❌ — ดูเหตุผลข้างล่าง | ✅ |
 | **เหมาะกับ** | หัวข้อเดียว คิดให้ตกผลึก | **research + เขียนบท ทีละหลายเรื่องพร้อมกัน** | ทำวิดีโอให้เสร็จจริง |
