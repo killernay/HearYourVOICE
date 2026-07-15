@@ -19,7 +19,11 @@ HYV=$(ls -d .claude/skills/hearyourvoice ~/.claude/skills/hearyourvoice 2>/dev/n
 node "$HYV/scripts/new-project.mjs" --slug <slug> --title "<ชื่อ>"
 
 # 1 · research → write src/<slug>/research.md yourself
-#     3 facts, ≥2 INDEPENDENT sources each, ≤6 WebFetch. Then stop and write.
+#     LOOK FIRST: research.md already there with an Evidence log? Read it, skip searching.
+#     Else: 3 facts, ≥2 INDEPENDENT sources each, ≤6 WebFetch. Then stop and write.
+#     Each fact carries its EXCERPTS, not just links. End with "## Evidence log":
+#     every query, every URL fetched (incl. dead ends), what each gave.
+#     That file is the evidence — writers think with it, บก rules on it, re-runs reuse it.
 
 # 2 · script → write src/<slug>/voiceover-v1.md yourself
 #     Format: "## EP1 - <title>" then a blank line, "VO:", blank line, the narration.
@@ -79,6 +83,16 @@ across A ∥ A ∥ A → pick   0 handoffs · 1× the time · best of three
 Down a chain, agents lose: every link is a fresh context re-reading what the last one knew.
 **Across the same input they win, and it costs no wall clock at all** — three agents on one brief
 finish in the time of one, and you keep the best. You pay tokens, not minutes.
+
+**And when you do spawn: hand over the payload, never the pointer.** You hold the brief and the
+config. Writing `Read src/<slug>/research.md` throws that away and drops a fresh agent into an
+empty room — so it Globs, it `ls`, it opens the config, it reads three more files to be sure it
+understood. **Measured on a 3-desk run: writers given a path spent 7–10 Read/Glob calls before
+writing a word, and 57% of every tool call in that run was an agent rediscovering what its spawner
+already knew.** A Read costs 2 seconds; the model turn wrapped around it costs ~30. Paste the
+facts, the sources, the target length, the language, the voice config, and the angle **into the
+prompt**. If the prompt only makes sense to someone who can see your disk, it's a pointer — rewrite
+it before you send it.
 
 So spawn for **competition**:
 

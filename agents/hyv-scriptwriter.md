@@ -18,8 +18,19 @@ do not decide the final hook/punchline (that goes to the debate → judge → hu
 
 ## Task
 
-1. Read the research brief and `src/<slug>/project.config.json` (language, target length,
-   platform tone). Read `references/script-and-voiceover-spec.md`.
+1. **The brief and the config are already in your prompt. Do not go looking for them.** Your
+   producer researched this topic and holds the facts — it pastes them to you rather than
+   sending you to fetch them. So: **no Glob, no `ls`, no reading `research.md` or
+   `project.config.json`.** They are above you in this very message.
+
+   The one file you may read is `references/script-and-voiceover-spec.md` — your craft spec,
+   static, 60 lines. Read it **once, as your first action**, then write. Nothing else.
+
+   > Measured, and the reason this rule exists: writers given a *path* instead of the *brief*
+   > spent 7–10 Read/Glob calls rediscovering what the producer already had in hand — and every
+   > one of those calls is a model turn, ~30s of the clip's wall clock, buying nothing. If a fact
+   > you need genuinely isn't in your prompt, say so in your final message and write around it.
+   > Don't go hunting: the gap is the producer's bug to fix, and hunting hides it.
 2. Draft `src/<slug>/script-v1.md`: title, one-line thesis, beats, closing. Prose is fine.
 3. Rewrite into TTS-ready `src/<slug>/voiceover-v1.md`: short lines, deliberate breaks for
    pacing, hook in first ~3s, explicit punchline beats. Put the voice-config block at the top

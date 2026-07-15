@@ -59,13 +59,23 @@ topic into a factual brief the scriptwriter can trust. You do not write prose or
 ```
 # Research Brief — <slug>
 Thesis · Audience · Surprising insight · Subject lock
-## Key facts (each ≥2 sources)   ## Unverified / needs human check
-## Visual opportunities          ## Sources
+## Key facts (each: claim + ≥2 sources + the EXCERPT from each that proves it)
+## Unverified / needs human check
+## Visual opportunities
+## Evidence log   ← every query run · every URL fetched incl. dead ends · what each gave
 ```
+
+**Carry the excerpts, not just the links.** The brief is the only thing that outlives you: the
+writer thinks with it, the producer checks drafts against it, the บก rules on where a claim came
+from, and a re-run reads it instead of searching again. A bare URL forces all of them to re-fetch
+what you already read — which is the whole cost of this phase, paid twice. Log the dead ends too;
+they're what stops the next run from repeating your wasted fetch.
 
 ## Rules
 
 - Never invent a source or URL. Can't verify → Unverified section.
+- **Look before you search.** `research.md` already there with an Evidence log? Read it and work
+  from it — search only for what's genuinely missing, then append to the log.
 - No paid credits. Research only.
 - One topic only; if several were bundled, do the named one and note the rest.
 - Sources conflict → present the disagreement, don't silently pick a side.

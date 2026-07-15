@@ -140,8 +140,8 @@ Set in frontmatter (`model: opus` / `model: sonnet`) — verified live: `hyv-ide
 
 | Phase | Who | What |
 |---|---|---|
-| 0b research | **you** | WebSearch + WebFetch. 3 facts, ≥2 independent sources each, ≤6 fetches. Write `research.md` — **one shared brief; everything below competes on it.** |
-| **1a scripts — COMPETE** | **spawn 3 × `hyv-scriptwriter` in ONE message** | Same brief, three different angles. Give each its angle in the prompt and tell it the others exist. They finish in the time of one, and you keep the best. |
+| 0b research | **you** | **`research.md` already there with an Evidence log? Read it and skip searching entirely.** Otherwise: WebSearch + WebFetch, 3 facts, ≥2 independent sources each, ≤6 fetches. Write `research.md` — brief **+ Evidence log** (below). **One shared brief; everything below competes on it.** |
+| **1a scripts — COMPETE** | **spawn 3 × `hyv-scriptwriter` in ONE message** | Same brief, three different angles. **Paste the brief and the config values into each prompt — never a path.** Give each its angle and tell it the others exist. They finish in the time of one, and you keep the best. |
 | **1b บก เลือก + ตรวจ** | **spawn `hyv-script-reviewer` — ALWAYS, before any voice** | Reads all three, **picks one**, names its blocking fixes. Fix them, resubmit, loop until `pass`. **The proof stage — see below.** |
 | 1d hook debate | **spawn** | ONLY if the winning script's hook is contested, or the human asked. 3 in one message, then `hyv-judge`. Usually the script competition already settled it. |
 | 1e shotlist | **you** | `new-shotlist.py` + fill it from the script and the brief's `Visual opportunities`. |
@@ -238,6 +238,50 @@ which is the normal case, since its job is to pitch several. **Skip it when the 
 topic**: they already made this call and re-litigating it is not your job. That is why 1d is now
 `contested`-only — with 0c doing the heavy lifting, a hook debate is a second opinion on a
 decision the scriptwriter usually got right.
+
+## Hand over the payload, never the pointer
+
+**When you spawn anyone, paste what they need into the prompt. Never send them to fetch it.**
+
+You already did the research. The brief is in your context, the config values are in your context.
+Writing `Read src/<slug>/research.md for the verified research` throws all of that away and makes
+a fresh agent rebuild it from an empty room — and it can't just read the one file, because it
+doesn't yet know the room, so it Globs, it `ls`, it reads the config, it reads three more files
+to be sure.
+
+> **Measured on a 3-desk run:** writers handed a *path* spent **7–10 Read/Glob calls each before
+> writing a word**. 57% of all tool calls in that run were agents rediscovering what their spawner
+> already knew. The individual Read costs 2 seconds — but each one drags a model turn behind it,
+> and turns are ~30s of the clip's wall clock. That's minutes, per desk, for nothing.
+
+So the prompt you send a scriptwriter contains **the brief's facts and sources inline, the target
+length, language, and voice config inline, and its assigned angle**. It should be able to start
+writing on its first action. If your prompt would make sense only to someone who can see your
+disk, it's a pointer — rewrite it.
+
+The same applies to you: whoever spawned you already knows the topic, the working dir, and that
+the keys are set. Don't re-verify the room before starting. Check what you're about to *spend*,
+not what you're standing in.
+
+## research.md is the evidence, not a scratchpad
+
+**Write the brief so it survives you.** You did the searching; the writers, the บก, and the next
+run all have to live off what you wrote down. A URL list is not evidence — nobody can think with
+it without re-fetching, which is the cost you just paid.
+
+Every fact in `research.md` carries: **the claim, the ≥2 sources, and the actual excerpt from each
+source that supports it.** The excerpt is the point — it's what makes the file usable as a local
+reference instead of a bibliography. Add an `## Evidence log` at the bottom: every search query you
+ran, every URL you fetched (including the dead ends), and what each one gave you. Dead ends matter
+— they stop the next run from repeating your wasted fetch.
+
+That file then earns its keep three ways: the **writer** thinks with it instead of guessing, **you**
+check drafts against it instead of trusting memory, the **บก** can see where every claim came from
+and rule on it, and a re-run **skips searching entirely**.
+
+**So: before you search, look.** `research.md` present with an Evidence log → read it, use it, go
+straight to phase 1a. Re-researching a topic you already researched is the most expensive way to
+learn nothing. Search only for what's genuinely missing, and append it to the log when you do.
 
 ## The three links that were costing the most
 
