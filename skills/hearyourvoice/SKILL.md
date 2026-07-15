@@ -151,7 +151,9 @@ Generate 5–10 fully-shaped candidates into `content-idea-log.md`. Each one car
 **Goal:** a thesis-driven, TTS-ready narration whose hook and punchline have survived an adversarial debate.
 
 1. Draft `src/<slug>/script-v1.md`: title, one-line thesis, beats, closing. Prose is fine.
-2. **Punchline debate** — before locking anything, run the adversarial multi-agent debate in `references/punchline-debate.md`. Spawn opposing reviewers with the `Agent` tool (Hook Maximalist vs Skeptic/Editor vs Target-Viewer), argue each candidate hook and closing line against the rubric, then a Judge pass picks and sharpens the winner. This is the "agents fighting over the punchline" step.
+2. **Punchline debate** — before locking anything, run the adversarial multi-agent debate in `references/punchline-debate.md`. This is the "agents fighting over the punchline" step.
+
+   **Spawn all three panelists in ONE message — three `Agent` calls in the same block, not three messages.** `hyv-hook-maximalist`, `hyv-skeptic-editor` and `hyv-target-viewer` never read each other's work: each one only reads the brief and argues its own corner, so queueing them makes the debate three times slower for nothing. Only `hyv-judge` waits — it needs all three verdicts, so it goes in the next message.
 3. Rewrite into TTS-ready narration at `src/<slug>/voiceover-v1.md` following `references/script-and-voiceover-spec.md` — short lines, deliberate breaks for pacing, hook in the first ~3 s, explicit punchline beats. Put the voice-config block (voice id, `model: eleven_v3`, source) at the top.
 4. **Build the shotlist** (`src/<slug>/shotlist.xlsx`) — give every beat a category-prefixed shot ID and plan capture/source/coverage. This is the artifact that makes the rest of the workflow easy; see `references/shotlist-format.md`. Scaffold a blank one with `scripts/new-shotlist.py`, or copy `references/examples/chado-NG-shotlist.xlsx`.
 

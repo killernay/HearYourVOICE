@@ -54,7 +54,7 @@ path to each one.
 | 1a | `hyv-scriptwriter` | brief | script + voiceover draft |
 | 1b | `hyv-script-reviewer` | script + brief | pass/fail + fixes (loop until pass) |
 | 1c | `hyv-storyboard` | voiceover + config | shot-by-shot storyboard |
-| 1d | debate panel + `hyv-judge` | brief + hook/punchline candidates | recommendation + split? flag |
+| 1d | debate panel — **all 3 in ONE message**, then `hyv-judge` in the next | brief + hook/punchline candidates | recommendation + split? flag |
 | 1e | `hyv-shotlister` | storyboard | shotlist.xlsx |
 | 2 | `hyv-voiceover` | voiceover-v1 + config | mp3 + durations.json |
 | 4a | `hyv-cc-scout` | shotlist | cleared CC clips |
