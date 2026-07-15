@@ -219,6 +219,29 @@ nothing, print exactly what would be billed, and exit 2:
 output to the user verbatim, get an explicit OK, then re-run the *same* command with `--yes`
 appended. Never put `--yes` on a first run, and never decide to spend on the user's behalf.
 
-Two other flags spend nothing and need no key or provider — reach for them first: `--list`
-(the parsed voiceover segments) and `veo-generate.py --emit-md` / `--dry-run` (the prompts
-themselves, for pasting into any generator).
+### Keys: ask, don't assume — and never need one you don't
+
+**No key is required to get real work done.** Research, script, the punchline debate, storyboard
+and shotlist need nothing. Both paid steps have a free twin that produces the *prompts* so the
+user can generate anywhere they like — their own ElevenLabs account, another TTS, another video
+model — and drop the results back in:
+
+| Instead of paying here | Run this | You get |
+|---|---|---|
+| `gen-voiceover.mjs --yes` | `gen-voiceover.mjs --emit-md` | a TTS sheet: voice settings, each segment, the filename to save it as, how to bring the audio back |
+| `veo-generate.py --yes` | `veo-generate.py --emit-md` | copy/paste generation prompts per shot |
+
+Offer the `--emit-md` path *before* asking anyone for an API key. Many users should never need one.
+
+**When a key genuinely is needed** (the user chose to generate here), set it up properly:
+
+1. Check first — `npx hearyourvoice doctor` reports which keys are set without printing values.
+2. Missing? Copy the template: `cp <skill>/references/examples/env.example .env`, then **ask the
+   user for the value** and write it into `.env` yourself.
+3. **Never echo a key back** into the conversation, a commit, a log, or a filename. Read it from
+   `.env`; don't repeat it. Confirm `.env` is gitignored before writing (it is, in this repo's
+   template) and never commit it.
+4. Don't invent a key, don't guess a `VOICE_ID`, and don't proceed on a placeholder — stop and ask.
+
+`ELEVENLABS_API_KEY` + `VOICE_ID` cover phase 2. `VEO_PLUGIN_PATH` points at the user's own
+provider for phase 4 — this skill ships none. Full list with comments: `references/examples/env.example`.

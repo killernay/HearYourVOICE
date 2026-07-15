@@ -17,6 +17,9 @@
 
 import fs from "node:fs";
 import path from "node:path";
+import { fileURLToPath } from "node:url";
+
+const EXAMPLES = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..", "references", "examples");
 
 const args = process.argv.slice(2);
 const flag = (n, fb = "") => { const i = args.indexOf(n); if (i === -1) return fb; if (i === args.length - 1) throw new Error(`${n} requires a value`); return args[i + 1]; };
@@ -46,7 +49,22 @@ mkdir(path.join(srcDir, "edit"));  // exported timelines (json/csv) for your edi
 
 const epList = Array.from({ length: episodes }, (_, i) => `ep${i + 1}`);
 
-write(path.join(srcDir, "research.md"), `# Research Brief — ${title}\n\nslug: ${slug}\nformat: 9:16 · 1080×1920 · 30fps\n\n## Thesis\n<one line>\n\n## Subject lock\nexact: <the precise named subject>\nreject: <look-alikes to avoid>\n\n## Key facts (with sources)\n- <fact> — <url>\n`);
+// project.config.json is the first gate: every subagent reads the output spec from it and
+// nothing is hardcoded, so scaffold it from the template with this project's slug filled in.
+const cfgPath = path.join(srcDir, "project.config.json");
+if (!fs.existsSync(cfgPath)) {
+  const cfg = JSON.parse(fs.readFileSync(path.join(EXAMPLES, "project.config.example.json"), "utf8"));
+  cfg.slug = slug;
+  write(cfgPath, JSON.stringify(cfg, null, 2) + "\n");
+} else skipped.push(path.relative(root, cfgPath));
+
+// .env goes at the repo root, not per project — one set of keys serves every video.
+// Never overwrite: someone's real keys may already be in there.
+const envPath = path.join(root, ".env");
+if (!fs.existsSync(envPath)) write(envPath, fs.readFileSync(path.join(EXAMPLES, "env.example"), "utf8"));
+else skipped.push(".env");
+
+write(path.join(srcDir, "research.md"), `# Research Brief — ${title}\n\nslug: ${slug}\nformat: see src/${slug}/project.config.json (defaults 9:16 · 1080×1920 · 30fps — change it there, not here)\n\n## Thesis\n<one line>\n\n## Subject lock\nexact: <the precise named subject>\nreject: <look-alikes to avoid>\n\n## Key facts (with sources)\n- <fact> — <url>\n`);
 write(path.join(srcDir, "script-v1.md"), `# ${title} — Script v1\n\n## Thesis\n<one line the video proves>\n\n## Beats\n- <beat 1>\n\n## Closing (punchline candidate)\n<payoff line>\n`);
 write(path.join(srcDir, "voiceover-v1.md"), `# ${title} Voiceover v1\n\nSource text for ElevenLabs TTS into \`public/${slug}/voiceover/\`.\n\nVoice pass:\n\n- Voice id: \`<voice-id>\`\n- Model: \`eleven_v3\`\n- Direction: performance-ready Thai narration. Short lines, clear pauses, strong hook, strong punchline.\n\n${epList.map((id, i) => `## EP${i + 1} - <title>\n\nVO:\n\n<hook line>\n\n<short line>\n\n<punchline beat>`).join("\n\n")}\n`);
 
@@ -61,8 +79,11 @@ console.log(`Scaffolded '${slug}' (${episodes} ep${episodes > 1 ? "s" : ""})${wi
 if (made.length) console.log("Created:\n" + made.map((m) => "  + " + m).join("\n"));
 if (skipped.length) console.log("\nSkipped (exist):\n" + skipped.map((m) => "  = " + m).join("\n"));
 console.log(`\nNext:
+  0. confirm the output spec in src/${slug}/project.config.json (aspect/fps/editor) — nothing is hardcoded
   1. node scripts/new-shotlist.py --slug ${slug} --episodes ${episodes}
-  2. write src/${slug}/voiceover-v1.md -> node scripts/gen-voiceover.mjs --slug ${slug} --voice-id <id>
+  2. write src/${slug}/voiceover-v1.md, then EITHER
+       free : node scripts/gen-voiceover.mjs --slug ${slug} --emit-md      # TTS sheet, voice it anywhere
+       paid : node scripts/gen-voiceover.mjs --slug ${slug} --voice-id <id>   # shows the bill, add --yes to spend
   3. node scripts/measure-voiceover.mjs --dir public/${slug}/voiceover --out src/${slug}/voiceover-durations.json
   4. build the insert plan -> node scripts/export-timeline.mjs --slug ${slug} --episode ep1 --brief <brief.json> --durations src/${slug}/voiceover-durations.json
   5. assemble in your editor (CapCut / Premiere / DaVinci / Remotion) -> render -> node scripts/package-delivery.mjs --slug ${slug}`);

@@ -27,6 +27,9 @@
 //   --fps <n>           default 30     --tail-frames <n>  default 24
 //   --env <path>        .env to load ELEVENLABS_API_KEY from (default ./.env)
 //   --list              print parsed segments and exit (no API calls)
+//   --emit-md [path]    write a copy/paste TTS sheet and exit — voice settings, each segment,
+//                       the filename to save it as, and how to bring the audio back. No key,
+//                       no API call, nothing billed. Use this to voice it in ANY other tool.
 //   --yes               REQUIRED to actually spend. Without it this prints the character
 //                       count it would bill and exits 2 without calling the API.
 //
@@ -64,6 +67,10 @@ const fps = Number(flag("--fps", "30"));
 const tail = Number(flag("--tail-frames", "24"));
 const envPath = flag("--env", ".env");
 const listOnly = has("--list");
+const emitMd = has("--emit-md")
+  ? (() => { const i = args.indexOf("--emit-md"); const v = args[i + 1];
+             return !v || v.startsWith("--") ? "__AUTO__" : v; })()
+  : null;
 
 if (!mdPath || !outDir) {
   console.error("Error: provide --slug, or both --md and --out. Run with --help.");
@@ -99,6 +106,56 @@ if (segments.length === 0) {
 if (listOnly) {
   for (const s of segments) console.log(`\n## ${s.id.toUpperCase()} - ${s.title}\n${s.text}`);
   console.log(`\n(${segments.length} segments)`);
+  process.exit(0);
+}
+
+// Prompt-only path: hand the narration to ANY TTS (ElevenLabs' own UI, another vendor, a local
+// model) and drop the mp3s back in. Costs nothing, needs no key. The naming section is the point
+// — measure-voiceover.mjs only finds the files if they come back as <id>.mp3.
+if (emitMd !== null) {
+  const outFile = emitMd === "__AUTO__"
+    ? path.join(path.dirname(mdPath), `${path.basename(mdPath, ".md")}-tts-prompts.md`)
+    : emitMd;
+  const lines = [
+    `# Voiceover — copy/paste into any TTS`,
+    ``,
+    `Generated from \`${mdPath}\`. Nothing here has been billed.`,
+    ``,
+    `## Voice settings to match`,
+    ``,
+    `| Setting | Value |`,
+    `|---|---|`,
+    `| voice id | \`${voiceId || "(not set — pass --voice-id or set VOICE_ID)"}\` |`,
+    `| model | \`${model}\` |`,
+    `| format | \`${format}\` |`,
+    `| stability | \`${stability}\` |`,
+    `| similarity | \`${similarity}\` |`,
+    ``,
+    `Any voice works — these are just the settings this project was written for. Keep one voice`,
+    `across every segment or the episodes won't match.`,
+    ``,
+    `## Segments (${segments.length})`,
+    ``,
+  ];
+  for (const s of segments) {
+    lines.push(`### ${s.id.toUpperCase()} — ${s.title}`, ``, `**Save as:** \`${s.id}.mp3\` · ${s.text.length} characters`, ``, "```text", s.text, "```", ``);
+  }
+  lines.push(
+    `## Bringing the audio back`,
+    ``,
+    `1. Put every mp3 in \`${outDir || "public/<slug>/voiceover"}/\`, named exactly \`ep1.mp3\`, \`ep2.mp3\`, … as above.`,
+    `2. Measure them — this is what makes the timing real:`,
+    `   \`\`\`bash`,
+    `   node measure-voiceover.mjs --dir ${outDir || "public/<slug>/voiceover"} --fps ${fps} --tail-frames ${tail}`,
+    `   \`\`\``,
+    `3. That writes \`voiceover-durations.json\`, and the rest of the pipeline runs off those`,
+    `   **measured** durations. Never hand-write that file — a guessed number silently breaks`,
+    `   every timecode downstream.`,
+    ``,
+  );
+  fs.mkdirSync(path.dirname(outFile), { recursive: true });
+  fs.writeFileSync(outFile, lines.join("\n"));
+  console.log(`Wrote ${outFile} — ${segments.length} segment(s), no API calls, nothing billed.`);
   process.exit(0);
 }
 

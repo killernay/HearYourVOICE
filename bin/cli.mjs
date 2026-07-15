@@ -95,6 +95,21 @@ function which(cmd, args2) {
   catch { return null; }
 }
 
+// Read .env without pulling values into anything we print. Presence only — a doctor that
+// echoes a key into a terminal someone is screen-sharing is worse than no doctor.
+function envKeys(file = ".env") {
+  const found = new Set();
+  if (fs.existsSync(file)) {
+    for (const line of fs.readFileSync(file, "utf8").split("\n")) {
+      const t = line.trim();
+      if (!t || t.startsWith("#") || !t.includes("=")) continue;
+      const [k, ...rest] = t.split("=");
+      if (rest.join("=").trim()) found.add(k.trim());
+    }
+  }
+  return found;
+}
+
 function doctor() {
   const checks = [
     ["Node", which("node", ["--version"]), ">=18 required"],
@@ -106,7 +121,28 @@ function doctor() {
   for (const [name, found, hint] of checks) {
     console.log(`  ${found ? "✅" : "❌"} ${name.padEnd(9)} ${found ? found.replace(/\n.*/, "") : "not found"}  — ${hint}`);
   }
-  console.log("\n  (ElevenLabs key + a video editor are needed for voiceover & final render.)");
+
+  const inEnv = envKeys();
+  const set = (k) => inEnv.has(k) || !!process.env[k];
+  const keys = [
+    ["ELEVENLABS_API_KEY", "generating voiceover — without it, use gen-voiceover.mjs --emit-md"],
+    ["VOICE_ID", "which ElevenLabs voice to use"],
+    ["VEO_PLUGIN_PATH", "generative clips — without it, use veo-generate.py --emit-md"],
+  ];
+  console.log(`\n  Keys (${fs.existsSync(".env") ? "./.env + environment" : "environment only — no ./.env here"}):`);
+  for (const [k, why] of keys) {
+    console.log(`  ${set(k) ? "✅" : "○"} ${k.padEnd(19)} ${set(k) ? "set" : "not set"}  — ${why}`);
+  }
+
+  console.log(`
+  ○ is fine. Every key is optional: they gate the steps that SPEND money, and
+  those steps refuse to run without --yes anyway. Research, script, the punchline
+  debate, and both --emit-md paths need no keys at all.
+
+  Need one? Copy the template and fill it in — .env is gitignored, keep it that way:
+    cp <skill>/references/examples/env.example .env
+
+  Still needed for a final render: a video editor (CapCut / Premiere / DaVinci).`);
 }
 
 function help() {
