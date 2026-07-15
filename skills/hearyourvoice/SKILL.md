@@ -207,8 +207,14 @@ Generate 5–10 fully-shaped candidates into `content-idea-log.md`. Each one car
 
 **Ideas before research, on purpose.** Ideas are cheap; research is not. Ten ideas → the human keeps one → you verify only that one. Research first and you pay for nine briefs you throw away. But the trade only holds if you treat an unverified idea as what it is: **a hypothesis.** Never state a figure as fact at this stage — write it under `ต้องตรวจ`.
 
+**0c · Debate which idea** (the panel's highest-value use — **skip it when the human named the topic**)
+
+When more than one idea is live and you can't separate them, run the panel **on the ideas**: all three in ONE message (`hyv-hook-maximalist`, `hyv-skeptic-editor`, `hyv-target-viewer`), then `hyv-judge`. Their three questions already are the right ones for choosing what to make — most stopping power / can we actually pay it off / would I care.
+
+**This beats debating the hook, and it's not close.** 0c decides *whether the video exists*; a hook debate polishes one line of a video already being made. **A perfect hook on a topic nobody cares about is a competent boring video** — and you never find out, because it shipped. Four minutes spent choosing what to make is worth more than four minutes spent on its first sentence, which is why the phase-1 hook debate is now `contested`-only.
+
 > ### ══ GATE — the human picks ══
-> Ideas are pitched, never chosen, by an agent. Same rule `hyv-judge` lives under.
+> Ideas are pitched, never chosen, by an agent. The panel *recommends*; `hyv-judge` flags a split; **you** pick. Same rule the hook debate lives under.
 
 **0b · Research the winner** (`hyv-researcher` — real WebSearch)
 

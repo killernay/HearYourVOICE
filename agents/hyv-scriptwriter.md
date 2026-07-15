@@ -8,6 +8,7 @@ description: >-
   to the target duration in project.config.json, not a fixed assumption. Final message = the
   script + voiceover draft + the candidate hooks/punchlines.
 tools: Read, Write, Grep, Glob
+model: sonnet
 ---
 
 # hyv-scriptwriter — คนเขียนบท (Phase 1a)

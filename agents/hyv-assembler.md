@@ -10,6 +10,7 @@ description: >-
 tools: Read, Write, Bash, Grep, Glob
 skills:
   - hearyourvoice
+model: sonnet
 ---
 
 # hyv-assembler — คนประกอบ + แพ็ก (Phases 5–6)

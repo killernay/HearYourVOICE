@@ -7,6 +7,7 @@ description: >-
   from the audience's gut, it does NOT decide. Returns a ranked vote, the honest reaction to
   each option, and one rewrite that would make its top pick land better for that audience.
 tools: Read
+model: sonnet
 ---
 
 # hyv-target-viewer — ผู้เล่นดีเบต: สวมบทผู้ชมจริง

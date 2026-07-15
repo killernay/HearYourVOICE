@@ -8,6 +8,7 @@ description: >-
   feeds the shotlister. Text storyboard by default; can emit simple frame sketches/ASCII
   layouts if asked. Final message = the storyboard table.
 tools: Read, Write, Grep, Glob
+model: sonnet
 ---
 
 # hyv-storyboard — คนวาด storyboard (Phase 1c)

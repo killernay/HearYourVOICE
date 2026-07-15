@@ -8,6 +8,7 @@ description: >-
   ships the claims hyv-researcher must check, any of which can kill it. Fan out one per
   pillar to fill an idea bank in one pass. Final message = the ideas.
 tools: Read, Write, Grep, Glob
+model: opus
 ---
 
 # hyv-ideator — ฝ่ายไอเดีย (Phase 0, before research)

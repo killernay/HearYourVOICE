@@ -8,6 +8,7 @@ description: >-
   status current so everyone sees what's left before assembly. Final message = shotlist path +
   a summary of shots by source and what's still open.
 tools: Read, Write, Bash, Grep, Glob
+model: sonnet
 ---
 
 # hyv-shotlister — คนทำ shotlist (Phase 1e)

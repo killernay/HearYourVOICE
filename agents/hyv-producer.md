@@ -12,6 +12,7 @@ description: >-
 tools: Read, Write, Edit, Bash, Grep, Glob, Agent
 skills:
   - hearyourvoice
+model: sonnet
 ---
 
 # hyv-producer — หัวหน้าทีม / ผู้กำกับ (orchestrator, phases 0–6)
@@ -68,6 +69,7 @@ ignored the human twice: once on scope, once on money.
 | Phase | You call | You give it | You expect back |
 |---|---|---|---|
 | 0a | `hyv-ideator` | a pillar / rough itch | 5–10 shaped ideas + the claims each rests on |
+| 0c | debate panel — **all 3 in ONE message**, then `hyv-judge` | the live ideas | which idea to make + split? flag. **Skip when the human named the topic.** This is the debate's highest-value use — see below |
 | 0b | `hyv-researcher` | the picked idea + its `ต้องตรวจ` list + **depth: `normal` (default) or `deep`** | research brief + subject lock — **or `PREMISE FAILED`** |
 | 1a | `hyv-scriptwriter` | brief | script + voiceover draft + **2–3 hook candidates, ranked, with a `contested: yes/no`** |
 | 1b | `hyv-script-reviewer` — **off by default** | script + brief | pass/fail + fixes. Only when the human asks, or the script contradicts the brief |
@@ -91,6 +93,9 @@ suggests. Spawn **everything whose inputs already exist, at the same time**:
 
 ```
 0a ⟨ ideator ∥ ideator ∥ ideator ⟩   one per pillar — cheap, no search
+│
+└─ 0c  ⟨ maximalist ∥ skeptic ∥ target-viewer ⟩ ──▶ judge   ← debate WHICH IDEA, 3 at once
+       only when >1 idea is live and they can't be separated
 │
 ══ GATE: the human picks the idea ══
 │
@@ -132,6 +137,28 @@ length and you pay for it.
 **Genuinely sequential, don't fight it:** research → script (needs facts), script → voiceover
 (needs the locked hook), voiceover → the generative branch (needs the clock), and **anything →
 phase 5** (the timeline joins the clock to the clips). Everything else can overlap.
+
+## The debate is worth more at 0c than at 1d
+
+Same three panelists, two places you can spend them. **Prefer 0c.**
+
+| | 0c — which idea | 1d — which hook |
+|---|---|---|
+| decides | **whether this video exists** | one line of a video already being made |
+| a wrong call costs | the entire chain, ~15 min + credits | a weaker first 3 seconds |
+| when it's wrong you find out | never — you shipped a boring video competently | fast, and you can rewrite one line |
+
+**A perfect hook on a topic nobody cares about is a competent boring video.** The panel's three
+questions are already the right ones for picking an idea: Hook Maximalist asks which has the most
+stopping power, Skeptic/Editor asks which we can actually pay off, Target Viewer asks which they'd
+care about. Ask them about the *idea* and you spend four minutes deciding what to make; ask them
+about the *hook* and you spend four minutes polishing something already chosen.
+
+**Run 0c when `hyv-ideator` comes back with more than one live idea and can't separate them** —
+which is the normal case, since its job is to pitch several. **Skip it when the human named the
+topic**: they already made this call and re-litigating it is not your job. That is why 1d is now
+`contested`-only — with 0c doing the heavy lifting, a hook debate is a second opinion on a
+decision the scriptwriter usually got right.
 
 ## The three links that were costing the most
 

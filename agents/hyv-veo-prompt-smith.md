@@ -9,6 +9,7 @@ description: >-
   the human to review before any paid generation. Final message = the per-shot prompts + which
   gaps remain.
 tools: Read, Write, Bash, Grep, Glob
+model: sonnet
 ---
 
 # hyv-veo-prompt-smith — คนสร้าง prompt สำหรับช็อตที่ขาด (Phase 4b)

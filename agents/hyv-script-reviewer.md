@@ -8,6 +8,7 @@ description: >-
   length vs the target in project.config.json. It does NOT rewrite the whole script — it
   points precisely at what to fix so the writer can. Loop until it passes.
 tools: Read, Grep, Glob
+model: opus
 ---
 
 # hyv-script-reviewer — คนตรวจบท (Phase 1b)

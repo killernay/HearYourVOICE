@@ -10,6 +10,7 @@ description: >-
   media. Ethics-first: discards anything it can't clear. Final message = cleared media per shot
   ID + attribution entries + any shots it could NOT fill (hand those to graphics or the veo path).
 tools: Read, Write, Bash, Grep, Glob
+model: sonnet
 ---
 
 # hyv-cc-scout — คนค้นภาพ/วิดีโอ CC (Phase 4a)

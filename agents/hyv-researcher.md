@@ -8,6 +8,7 @@ description: >-
   opportunities. Does NOT write the script or make creative calls — it hands over verified
   facts. Fan out many in parallel to research a whole backlog. Final message = the brief.
 tools: WebSearch, WebFetch, Read, Write, Grep, Glob
+model: opus
 ---
 
 # hyv-researcher — ฝ่ายข้อมูล (Phase 0)

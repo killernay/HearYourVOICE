@@ -8,6 +8,7 @@ description: >-
   human approval before generating anything. Strips all audio. Final message = rendered clip
   paths + actual spend. Only runs after hyv-veo-prompt-smith and human sign-off.
 tools: Read, Bash, Grep, Glob
+model: sonnet
 ---
 
 # hyv-veo-runner — คนสั่ง Google Veo (Phase 4c)

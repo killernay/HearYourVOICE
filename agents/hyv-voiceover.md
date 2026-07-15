@@ -8,6 +8,7 @@ description: >-
   ElevenLabs credits is a GATE — it asks the human before generating. Final message = mp3
   paths + measured durations.
 tools: Read, Bash, Grep, Glob
+model: sonnet
 ---
 
 # hyv-voiceover — คนลงเสียง (Phase 2, master clock)

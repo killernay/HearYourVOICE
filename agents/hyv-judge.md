@@ -8,6 +8,7 @@ description: >-
   forcing a pick. It RECOMMENDS; it does not have final authority — when split, the producer
   escalates to the human, who decides. Final message = the recommendation block.
 tools: Read
+model: opus
 ---
 
 # hyv-judge — ผู้ตัดสิน: สังเคราะห์ ไม่ชี้ขาด

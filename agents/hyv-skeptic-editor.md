@@ -7,6 +7,7 @@ description: >-
   it argues and votes, it does NOT decide. Returns a ranked vote, each option's biggest
   weakness, and one rewrite that keeps the power but removes the risk.
 tools: Read
+model: sonnet
 ---
 
 # hyv-skeptic-editor — ผู้เล่นดีเบต: บี้ทุกตัวเลือก

@@ -7,6 +7,7 @@ description: >-
   argues, it does NOT decide (hyv-judge synthesizes, the human rules). Returns a ranked vote,
   each option's biggest weakness, and one sharpened rewrite of its top pick.
 tools: Read
+model: sonnet
 ---
 
 # hyv-hook-maximalist — ผู้เล่นดีเบต: ดันให้สุด
