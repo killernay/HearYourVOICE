@@ -29,7 +29,9 @@ const readFlag = (name, fallback = "") => {
 const has = (n) => args.includes(n);
 
 if (has("-h") || has("--help") || args.length === 0) {
-  console.log(fs.readFileSync(new URL(import.meta.url)).toString().split("\n").slice(1, 18).join("\n").replace(/^\/\/ ?/gm, ""));
+  const _src = fs.readFileSync(new URL(import.meta.url), "utf8").split("\n");
+  const _end = _src.findIndex((l, i) => i > 0 && !l.startsWith("//") && l.trim() !== "");
+  console.log(_src.slice(1, _end).join("\n").replace(/^\/\/ ?/gm, ""));
   process.exit(0);
 }
 

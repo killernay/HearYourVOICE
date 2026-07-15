@@ -37,7 +37,13 @@
 //   --yes               REQUIRED to actually spend. Without it this prints the character
 //                       count it would bill and exits 2 without calling the API.
 //
-// Env: ELEVENLABS_API_KEY (required to generate). Needs Node 18+ (global fetch) and ffprobe.
+// ENV — you do not need to read this file's source to know how it resolves:
+//   .env is loaded FIRST (--env <path>, default ./.env), then every default below falls back to
+//   it. So ELEVENLABS_API_KEY, VOICE_ID, MODEL and FORMAT all resolve from .env on their own —
+//   pass NOTHING for them unless you are overriding on purpose. Precedence, highest first:
+//     explicit flag  >  exported shell env  >  .env  >  built-in default
+//   A blank line in .env (VOICE_ID=) counts as unset and does not shadow the default.
+//   ELEVENLABS_API_KEY is required to generate. Needs Node 18+ (global fetch) and ffprobe.
 
 import fs from "node:fs";
 import path from "node:path";
@@ -53,7 +59,9 @@ const flag = (n, fb = "") => {
 const has = (n) => args.includes(n);
 
 if (has("-h") || has("--help") || args.length === 0) {
-  console.log(fs.readFileSync(new URL(import.meta.url)).toString().split("\n").slice(1, 38).join("\n").replace(/^\/\/ ?/gm, ""));
+  const _src = fs.readFileSync(new URL(import.meta.url), "utf8").split("\n");
+  const _end = _src.findIndex((l, i) => i > 0 && !l.startsWith("//") && l.trim() !== "");
+  console.log(_src.slice(1, _end).join("\n").replace(/^\/\/ ?/gm, ""));
   process.exit(0);
 }
 

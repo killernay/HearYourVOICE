@@ -5,6 +5,48 @@ description: The repeatable workflow for short Thai documentary/explainer videos
 
 # HearYourVOICE
 
+## The recipe — run this, don't read the library first
+
+**A topic and a `.env` with `ELEVENLABS_API_KEY` + `VOICE_ID` is everything you need to start.**
+Everything below this section is reference for when a step surprises you. Do not read it up front,
+do not open `references/*` to orient, and **never read a script's source to work out how it
+behaves — run it with `--help`, or just run it: they all print what they need and refuse safely.**
+
+```bash
+HYV=$(ls -d .claude/skills/hearyourvoice ~/.claude/skills/hearyourvoice 2>/dev/null | head -1)
+
+# 0 · scaffold (writes src/<slug>/ + public/<slug>/ + .env if missing)
+node "$HYV/scripts/new-project.mjs" --slug <slug> --title "<ชื่อ>"
+
+# 1 · research → write src/<slug>/research.md yourself
+#     3 facts, ≥2 INDEPENDENT sources each, ≤6 WebFetch. Then stop and write.
+
+# 2 · script → write src/<slug>/voiceover-v1.md yourself
+#     Format: "## EP1 - <title>" then a blank line, "VO:", blank line, the narration.
+
+# 3 · voiceover — the gate prints the bill and exits 2; that is the gate working
+node "$HYV/scripts/gen-voiceover.mjs" --slug <slug>          # shows characters billed
+node "$HYV/scripts/gen-voiceover.mjs" --slug <slug> --yes    # only after a human OK
+
+# 4 · the master clock (this file is what every later timecode is built from)
+node "$HYV/scripts/measure-voiceover.mjs" --dir public/<slug>/voiceover \
+     --out src/<slug>/voiceover-durations.json
+```
+
+**Voice, model and format come from `.env` on their own.** Don't pass `--voice-id` unless the
+human named a specific voice — an empty `voice_id` in the config means "use `.env`", and passing
+the config's empty/placeholder value overrides `.env` and breaks the call.
+
+That is the whole `voice` mode. Stop there and hand it back: they hear the script before anyone
+builds visuals for it. `full` mode continues at [phase 4](#phase-4--footage-find-andor-generate-find-footage-หรือ-generative-shot).
+
+**Budget your reading.** Every file you open before starting is wall-clock the human waits
+through. One measured run spent **5 of its 16 minutes** reading templates, `--help` output and
+script source before its first search. The recipe above is the orientation; anything else, open it
+when you hit the thing it explains.
+
+---
+
 The end-to-end loop that turns one topic into one finished video, in whatever format the project config asks for. It is the **orchestrator** every project runs, regardless of where the footage comes from. Each phase either does work directly or hands off to a specialist.
 
 **Footage is source-agnostic.** A finished video can use any mix of: shots you film yourself, generative shots (Google Veo or any model), found Creative-Commons clips, or motion graphics built in your editor. Generative is optional — many projects use zero Veo. Only load `veo-insert-planner` when you actually generate Veo shots.
