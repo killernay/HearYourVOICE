@@ -107,6 +107,34 @@ npx hearyourvoice install project  # → ./.claude/skills/ + ./.claude/agents/
 
 The installer only ever touches its own `hyv-*.md` files — your other agents are left alone. Codex and Hermes get the skill only, since `.claude/agents/` is a Claude Code construct.
 
+### Global or project — which should you pick?
+
+|  | **Global** (`install`) | **Project** (`install project`) |
+|---|---|---|
+| Lives in | `~/.claude/skills/` + `~/.claude/agents/` | `./.claude/` inside the repo |
+| Works in | every session on the machine | only that repo |
+| Goes into git | no | yes, if you commit `.claude/` |
+| Version | one, for everything | pinned per repo |
+| Best for | your own machine, many videos, one version | a team sharing one repo, or running versions side by side |
+
+**Default to global.** It's one command, it's there in every session, and updating it updates everything: `npx hearyourvoice install`.
+
+**Choose project when** your teammates should get the exact same version by cloning the repo (commit `.claude/` and they have it — no install step), or when different repos need different versions.
+
+### The one gotcha: skills and agents resolve in *opposite* directions
+
+Claude Code doesn't treat these two the same, and it will surprise you:
+
+- **Skills** — a **global skill wins over a project skill** of the same name. ("Enterprise overrides personal, and personal overrides project.")
+- **Agents** — a **project agent wins** a name clash, but global agents still load in *every* project — they add on top rather than being replaced.
+
+Two practical consequences:
+
+1. **A global install silently defeats a project install.** If HearYourVOICE is installed globally, a project copy of the skill is ignored — *even if the project's is newer*. Installing per-repo versions only works when there is **no global copy**.
+2. **Global agents follow you everywhere.** Install the team globally and `hyv-*` shows up in every project, including ones where you wanted the skill alone.
+
+So: **pick one scope and stay in it.** If you need per-repo versions (or want to demo two versions side by side), keep the global install off entirely and use `install project` in each.
+
 Check your toolchain anytime: `npx hearyourvoice doctor` (Node / Python / ffmpeg).
 
 > From a local checkout it's the same, via `npx .`:
@@ -256,6 +284,34 @@ npx hearyourvoice install project  # → ./.claude/skills/ + ./.claude/agents/
 ```
 
 ตัวติดตั้งแตะเฉพาะไฟล์ `hyv-*.md` ของตัวเอง — agent ตัวอื่นของคุณไม่ถูกแตะต้อง ส่วน Codex/Hermes ได้เฉพาะ skill เพราะ `.claude/agents/` เป็นของ Claude Code
+
+### เลือก global หรือ project ดี?
+
+|  | **Global** (`install`) | **Project** (`install project`) |
+|---|---|---|
+| อยู่ที่ | `~/.claude/skills/` + `~/.claude/agents/` | `./.claude/` ใน repo |
+| ใช้ได้ที่ | ทุก session ในเครื่อง | เฉพาะ repo นั้น |
+| ขึ้น git ไหม | ไม่ | ได้ ถ้า commit `.claude/` |
+| เวอร์ชัน | ตัวเดียว ใช้ทุกที่ | pin แยกต่อ repo |
+| เหมาะกับ | เครื่องตัวเอง ทำหลายคลิป เวอร์ชันเดียว | ทีมที่แชร์ repo เดียวกัน หรืออยากรันหลายเวอร์ชันคู่กัน |
+
+**ไม่รู้จะเลือกอะไร → เอา global** คำสั่งเดียว ใช้ได้ทุก session อัปเดตทีเดียวได้หมด: `npx hearyourvoice install`
+
+**เลือก project เมื่อ** อยากให้เพื่อนร่วมทีมได้เวอร์ชันเดียวกันเป๊ะแค่ clone repo (commit `.claude/` ไปด้วย เขาไม่ต้องติดตั้งเลย) หรือเมื่อคนละ repo ต้องใช้คนละเวอร์ชัน
+
+### กับดักข้อเดียวที่ต้องรู้: skill กับ agent ตัดสินกลับด้านกัน
+
+Claude Code ปฏิบัติกับสองอย่างนี้ไม่เหมือนกัน และมันจะทำให้คุณงงถ้าไม่รู้:
+
+- **skill** — **global ชนะ project** ถ้าชื่อซ้ำกัน (docs: *"enterprise overrides personal, and personal overrides project"*)
+- **agent** — **project ชนะ** ถ้าชื่อชนกัน แต่ agent ที่ลง global ยัง**โผล่ในทุกโปรเจกต์** — มันเพิ่มเข้าไป ไม่ได้ถูกแทนที่
+
+ผลที่ตามมาจริง 2 ข้อ:
+
+1. **ลง global ทีเดียว = ลบล้าง project แบบเงียบ ๆ** ถ้ามี HearYourVOICE ตัว global อยู่ สกิลที่ลงไว้ใน project จะถูกมองข้าม — **ต่อให้ตัวใน project ใหม่กว่าก็ตาม** การลงแยกเวอร์ชันต่อ repo จะได้ผลก็ต่อเมื่อ**ไม่มีตัว global เลย**
+2. **agent ตัว global ตามคุณไปทุกที่** ถ้าลงทีมแบบ global แล้ว `hyv-*` จะโผล่ในทุกโปรเจกต์ รวมถึงอันที่คุณอยากได้แค่ skill เปล่า ๆ
+
+สรุป: **เลือก scope เดียวแล้วอยู่กับมัน** ถ้าต้องการเวอร์ชันแยกต่อ repo (หรืออยากเดโมสองเวอร์ชันเทียบกัน) ให้**ไม่ลง global เลย** แล้วใช้ `install project` ในแต่ละที่แทน
 
 เช็ก toolchain ได้ทุกเมื่อ: `npx hearyourvoice doctor` (Node / Python / ffmpeg)
 

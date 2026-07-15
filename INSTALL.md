@@ -20,6 +20,15 @@ cd HearYourVOICE && npx . install <target>
 | `project` | `./.claude/skills/hearyourvoice` | `./.claude/agents/hyv-*.md` | **project** — only the repo you're in |
 | any path | `<path>/hearyourvoice` | — | any other skills dir |
 
+**Which scope?** Default to **global** — one command, works in every session, one version to update. Use **project** when teammates should get the exact version by cloning the repo (commit `.claude/`), or when different repos need different versions. See the README's *Global or project* section for the full comparison.
+
+> ### ⚠️ Global and project don't mix — skills and agents resolve in opposite directions
+>
+> - **Skills**: a **global skill overrides a project skill** of the same name — *even if the project's copy is newer*. Claude Code's rule is "enterprise overrides personal, personal overrides project."
+> - **Agents**: a **project agent wins** a name clash, but global agents still load in *every* project — they add on top rather than being replaced.
+>
+> So a global install silently defeats a project install, and globally-installed `hyv-*` agents follow you into every repo. **Pick one scope and stay in it.** Running versions side by side (or demoing v1 vs v2) only works with **no global copy** — use `install project` in each folder.
+
 ### Whole machine (global)
 
 ```bash
