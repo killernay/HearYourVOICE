@@ -1,6 +1,6 @@
 # Pipeline Loop — map + phase contract
 
-One topic in, one finished 9:16 MP4 out. Footage source is flexible; generative is optional.
+One topic in, one finished MP4 out — in whatever format `project.config.json` asks for (defaults 9:16). Footage source is flexible; generative is optional.
 
 ```
         ┌──────────────────────────────────────────────────────────────┐

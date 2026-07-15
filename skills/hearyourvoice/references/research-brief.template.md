@@ -6,7 +6,7 @@ Fill this before writing the script. Keep it to one screen. Save as `src/<slug>/
 # Research Brief — <topic>
 
 slug: <kebab-slug>            # e.g. chado-series, ai-bilge-pump, tourism-demand
-format: 9:16 · 1080×1920 · 30fps
+format: see src/<slug>/project.config.json (defaults 9:16 · 1080×1920 · 30fps — set it there, not here)
 episodes: <1, or a list ep1..epN>
 
 ## Thesis (one line)

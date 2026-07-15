@@ -160,13 +160,13 @@ All selects are silent. **Output:** reviewed silent selects in `public/<slug>/se
 
 1. Build the **insert plan**: an ordered list per episode where each insert has `start_sec`, `end_sec`, `source` (`shot` | `generative` | `cc` | `graphic`), `file`, and a note. Timecodes are **contiguous** (each `start_sec == previous end_sec`) and the final `end_sec == target edit length` from `voiceover-durations.json`. Validate with `scripts/check-insert-plan.mjs`. (For the generative path, `veo-insert-planner`'s brief already is this plan with `source: generative`.)
 2. **Export the timeline** with `scripts/export-timeline.mjs --slug <slug> --episode ep1 --brief <brief.json> --durations voiceover-durations.json` → writes `src/<slug>/edit/ep1-timeline.json` (frames + SMPTE timecode) and `ep1-timeline.csv` (one row per clip).
-3. **Assemble in your editor** (see `references/assembly-and-validation.md`) — same recipe everywhere: voiceover mp3 on one audio track (master clock), each clip placed at its `start_tc` and **muted**, 9:16 · 30 fps. Works in CapCut, Premiere, DaVinci, or a code renderer (with `new-project.mjs --remotion` + `remotion-best-practices`).
+3. **Assemble in the editor named in `project.config.json`** (see `references/assembly-and-validation.md`) — the recipe is identical everywhere: voiceover mp3 on one audio track (master clock), each clip placed at its `start_tc` and **muted**, at the config's aspect and fps. Works in CapCut, Premiere, DaVinci, or a code renderer (`editor: "remotion"` → scaffold with `new-project.mjs --remotion`, then load `remotion-best-practices`).
 
 **Output:** an editor-neutral timeline + a cut ready to render.
 
 ## Phase 6 — Validate, package, log
 
-Render the final **mp4** from your editor, then run the editor-agnostic gates in `references/assembly-and-validation.md`: the mp4 exists; `ffprobe` confirms **1080×1920, 30 fps**, duration ≈ target, audio length ≈ video length; and you **eyeball** a few frames (not blank, correct episode, Thai text fits, clips muted). If you assembled in code, also run that tool's checks.
+Render the final **mp4** from your editor, then run the editor-agnostic gates in `references/assembly-and-validation.md`: the mp4 exists; `ffprobe` confirms **the width×height and fps from `project.config.json`**, duration ≈ target, audio length ≈ video length; and you **eyeball** a few frames (not blank, correct episode, Thai text fits, clips muted). If you assembled in code, also run that tool's checks.
 
 Then **package the deliverable** — the canonical output format (see `references/output-format.md`). The working files are scattered across `src/`, `public/`, and `out/`; `scripts/package-delivery.mjs --slug <slug>` gathers them into one standard `delivery/<slug>/` folder (`video/`, `voiceover/`, `script/`, `briefs/`, `attribution/`, `thumbnails/`) plus a canonical `manifest.json` and a `README.md`. The manifest reports per-episode checks and a `status` of `ready`/`incomplete`; it exits non-zero until every episode is `ready`. That folder is the hand-off.
 

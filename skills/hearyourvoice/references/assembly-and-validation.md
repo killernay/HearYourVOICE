@@ -40,7 +40,7 @@ The recipe is identical everywhere:
 
 1. Put the **voiceover mp3 on one audio track** — it is the master clock. Do not retime it.
 2. Place each clip at its `start_tc`, trim to its duration, and **mute every clip** (audio comes only from the voiceover; add an optional continuous ambience bed if desired).
-3. Keep the canvas **9:16 · 1080×1920 · 30 fps**.
+3. Keep the canvas at the **aspect / width / height / fps from `project.config.json`** (defaults 9:16 · 1080×1920 · 30 fps). Never assume the frame — read it.
 4. **Graphics beats** (`source: graphic`) are built in your editor — motion-graphics/typography/data viz. Use your tool's animation (NLE keyframes, templates, or a code renderer). Keep on-screen text minimal.
 5. Export the final **mp4**.
 
@@ -49,7 +49,7 @@ The recipe is identical everywhere:
 ## Validation gates (phase 6) — all must pass, any editor
 
 1. **The exported mp4 exists** for each episode.
-2. `ffprobe out/<slug>-<id>.mp4` confirms **1080×1920, 30 fps**, `duration ≈ target`, and **audio length ≈ video length** (voiceover not cut off).
+2. `ffprobe out/<slug>-<id>.mp4` confirms **the config's width×height and fps**, `duration ≈ target`, and **audio length ≈ video length** (voiceover not cut off). `package-delivery.mjs` takes the same values as `--width/--height/--fps/--aspect` and fails the manifest when the render disagrees.
 3. **Eyeball it** (or a few still frames): not blank, correct episode, Thai text fits, no rejected/loose footage, clips muted.
 4. If you assembled in code, also run that tool's checks (lint/type-check/still render).
 

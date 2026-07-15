@@ -32,11 +32,11 @@ Use Google Veo to generate video only. Do not generate narration, dialogue,
 music, ambience, or sound effects. The output video must be silent; if audio
 is an option, disable it. The voiceover is already generated separately and the
 reference line below is only for visual timing and meaning — do not read it aloud.
-Aspect ratio: vertical 9:16. No text, subtitles, captions, logo, watermark, UI,
+Aspect ratio: the project's aspect from `project.config.json` (default vertical 9:16). No text, subtitles, captions, logo, watermark, UI,
 letters, typography, or labels.
 ```
 
-Why each rule: the voiceover is the **master clock** and already exists, so Veo must add *no* audio (strip it anyway with `ffmpeg -an`); the format is locked 9:16; on-screen text/logos/UI break the documentary look and fight the editor's own captions.
+Why each rule: the voiceover is the **master clock** and already exists, so Veo must add *no* audio (strip it anyway with `ffmpeg -an`); the aspect must match the project config rather than the model's default, or the clip arrives letterboxed; on-screen text/logos/UI break the documentary look and fight the editor's own captions.
 
 **Per-scene parts** (each maps to a brief field):
 
