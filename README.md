@@ -62,13 +62,27 @@ The recipe is identical wherever you take it: voiceover on one audio track (the 
 ## The loop — seven phases
 
 ```
-0 Research → 1 Script + punchline debate → 2 Voiceover (master clock)
-   → 3 Mock shots (optional) → 4 Footage (find/generate) → 5 Inserts onto TC
-   → 6 Validate + package → delivery/<slug>/ (manifest.json: status ready)
+0 Research → 1 Script + punchline debate → ══ you lock the hook ══
+                          │
+              ┌───────────┴───────────┐     CC + graphics never touch the
+              ▼                       ▼     audio — start them together
+   2 Voiceover                3 Mock shots (optional)
+     master clock             4 Footage: find CC · graphics
+              │                       │
+              └───────────┬───────────┘
+                          ▼
+              4' Generative shots (optional) — waits: the prompt
+                 has to state its exact seconds
+                          │
+                          ▼   join: measured clock + clip pool
+              5 Inserts onto TC → 6 Validate + package
+                          → delivery/<slug>/ (manifest.json: status ready)
                           └─→ back to 0 for the next topic
 ```
 
 Each phase has one job, one owner, and one artifact it must hand the next. That contract is the whole trick — it's what lets you stop anywhere, hand off, or fan out without the thing falling apart.
+
+**The numbers are a data order, not a queue.** Finding CC footage and building graphics never need the audio, so they start *with* the voiceover, not after it — one is a slow API call, the other slow web search, and doing them back to back just pays for both. Two things genuinely wait: generative shots (a Veo prompt must say "exactly N seconds", and N comes from the measured audio) and phase 5 (the timeline joins the clock to the clips). Across topics nothing is shared at all: three topics means three producers at once, not three in a row.
 
 | Phase | What happens | Hands over | Runs in |
 |---|---|---|---|
@@ -391,13 +405,27 @@ aspect, resolution, fps และ editor อยู่ใน `src/<slug>/project.
 ## ลูปการทำงาน — 7 เฟส
 
 ```
-0 Research → 1 เขียนสคริปต์ + ดีเบต punchline → 2 เสียงพากย์ (master clock)
-   → 3 ถ่าย mock (ถ้าต้องการ) → 4 ภาพ (หา/generate) → 5 วาง insert ลง TC
-   → 6 ตรวจสอบ + แพ็ก → delivery/<slug>/ (manifest.json: status ready)
-                       └─→ วนกลับไป 0 เรื่องต่อไป
+0 Research → 1 เขียนสคริปต์ + ดีเบต punchline → ══ คุณล็อก hook ══
+                          │
+              ┌───────────┴───────────┐     CC + กราฟิก ไม่แตะเสียงเลย
+              ▼                       ▼     → เริ่มพร้อมกันได้
+   2 เสียงพากย์                3 ถ่าย mock (ถ้าต้องการ)
+     master clock             4 ภาพ: หา CC · กราฟิก
+              │                       │
+              └───────────┬───────────┘
+                          ▼
+              4' ภาพ generative (ถ้าต้องการ) — ตัวนี้ต้องรอ
+                 เพราะ prompt ต้องระบุจำนวนวินาทีเป๊ะ ๆ
+                          │
+                          ▼   join: นาฬิกาที่วัดแล้ว + คลิปพูล
+              5 วาง insert ลง TC → 6 ตรวจ + แพ็ก
+                          → delivery/<slug>/ (manifest.json: status ready)
+                          └─→ วนกลับไป 0 เรื่องต่อไป
 ```
 
 แต่ละเฟสมีหน้าที่เดียว เจ้าของเดียว และมี "ของ" ที่ต้องส่งต่อชิ้นเดียว — **สัญญาการส่งต่อนี่แหละคือกลไกทั้งหมด** มันคือสิ่งที่ทำให้หยุดตรงไหนก็ได้ ส่งต่อให้ใครก็ได้ หรือแตกงานขนานได้ โดยงานไม่พัง
+
+**ตัวเลขคือลำดับของข้อมูล ไม่ใช่คิวเข้าแถว** — การหาภาพ CC และการทำกราฟิกไม่ต้องใช้เสียงเลย เพราะงั้นต้องเริ่ม**พร้อม**เสียงพากย์ ไม่ใช่รอให้เสียงเสร็จก่อน อันหนึ่งรอ API ช้า อีกอันรอค้นเว็บช้า ทำเรียงกันคือจ่ายค่าช้าสองต่อฟรี ๆ **มีสองอย่างที่รอจริง**: ภาพ generative (prompt ของ Veo ต้องบอกว่า "เอา N วินาทีเป๊ะ" ซึ่ง N มาจากเสียงที่วัดแล้ว) กับเฟส 5 (timeline ต้องเอานาฬิกามาต่อกับคลิปพูล) ส่วนข้ามหัวข้อยิ่งไม่มีอะไรใช้ร่วมกันเลย — 3 หัวข้อ = producer 3 ตัวพร้อมกัน ไม่ใช่ 3 ตัวเรียงคิว
 
 | เฟส | ทำอะไร | ส่งต่ออะไร | ทำได้ที่ |
 |---|---|---|---|

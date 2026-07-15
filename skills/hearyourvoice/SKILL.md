@@ -30,6 +30,14 @@ proves nothing except that you looked in the wrong place.
 - **A backlog** → one `hyv-researcher` per topic in parallel, then one `hyv-producer` per video,
   each in its own `src/<slug>/`. They don't collide.
 
+**The phase numbers are a data order, not a queue.** Spawn everything whose inputs already exist,
+at once. In particular **`cc-scout`, graphics and your own filming don't need the audio** — they
+read the shotlist, so start them *with* phase 2, not after it. One is a slow API call, the other
+slow web search; running them back to back pays for both. (The generative branch is the one real
+exception: a Veo prompt must state its exact seconds, so `prompt-smith` waits for the measured
+clock — `gen-veo-briefs.mjs` requires `--durations`.) Phase 5 waits by nature: it joins the clock
+to the clip pool.
+
 Delegating keeps each phase's noise — search results, ffprobe output, clip listings — out of the
 main conversation; you get the summary, not the logs. **If no `hyv-*` subagent is available to
 you, run the phases below yourself and say so once**, so the user knows they got the solo path.
@@ -84,16 +92,29 @@ See `references/pipeline-loop.md` for the one-screen map + phase input/output co
 ## The loop
 
 ```
-0 Research ─▶ 1 Script + punchline debate ─▶ 2 Voiceover (master clock)
-                                                      │
-                                                      ▼
-                                            3 Mock shots (self-shot or
-                                              generative) — optional
-                                                      │
-                                                      ▼
-6 Validate+log ◀─ 5 Prepare inserts ◀─ 4 Footage: find CC and/or
-        │            onto TC               generate shots
-        └─▶ back to 0 for the next topic
+0 Research ─▶ 1 Script + punchline debate ─▶ ══ hook locked ══
+                                                     │
+                        ┌────────────────────────────┴────────────────────────┐
+                        ▼                                                     ▼
+              2 Voiceover (master clock)                      3 Mock shots — optional, you film
+                generate ─▶ ffprobe                           4 Footage — find CC · graphics
+                        │                                        (need no audio: start now)
+                        └────────────────────────────┬────────────────────────┘
+                                                     ▼
+                                       4' Generative shots — optional
+                                          prompts need the measured seconds,
+                                          so this branch waits for 2
+                                                     │
+                                                     ▼  join: measured clock + clip pool
+                                          5 Prepare inserts onto TC
+                                                     │
+                                                     ▼
+                                          6 Validate + package
+                                                     │
+                                                     └─▶ back to 0 for the next topic
+
+Left and right start together — CC scouting and graphics never touch the audio. Only the
+generative branch and 5 have to wait.
 ```
 
 Phases 3 and 4 are where visuals come from — use whichever sources fit the project (often just one). Phase 2 (voiceover) **must** precede phases 4–5, because insert timing is derived from the measured audio.

@@ -61,8 +61,61 @@ path to each one.
 | 4c | `hyv-veo-runner` | prompts + config | silent generative clips |
 | 5–6 | `hyv-assembler` | clip pool + durations + config | delivery/<slug>/ (ready) |
 
-Run independent work in parallel (e.g. cc-scout while voiceover renders). Keep the shotlist
-`status` column current so you always know what's left.
+Keep the shotlist `status` column current so you always know what's left.
+
+## Run the graph, not the table
+
+**The table above is a roster, not a running order.** Read it top-to-bottom and you'll produce
+one video at the speed of the slowest possible path — every specialist idle while one works.
+What actually constrains the order is data, and the dependencies are looser than the numbering
+suggests. Spawn **everything whose inputs already exist, at the same time**:
+
+```
+0  researcher
+│
+1a scriptwriter ──▶ 1b reviewer  (loop until pass)
+│
+├─ 1c storyboard ──▶ 1e shotlister
+└─ 1d  ⟨ maximalist ∥ skeptic ∥ target-viewer ⟩ ──▶ judge     ← 3 at once, not 3 in a row
+│
+══ GATE: the human picks the hook ══
+│
+├─ 2  voiceover: generate ─▶ ffprobe ─────────┐   ← the clock
+│                                             │
+├─ 4a cc-scout      ⎫  read the shotlist,     │   ← spawn all of these NOW,
+├─ 4d graphics      ⎬  never the audio —      │     alongside 2
+└─ 3  mock shots    ⎭  start them with 2      │
+                                              ▼
+                              4b prompt-smith ─▶ 4c veo-runner
+                              (needs the measured durations)
+                                              │
+                                              ▼  join — clock + clip pool
+                                    5 assembler ──▶ 6 package
+```
+
+**The win is `cc-scout` + graphics + mock shots running alongside the voiceover.** Voiceover is a
+slow API call plus `ffprobe`; CC scouting is slow web search and downloads. They share no data —
+clips are chosen per *beat* from the shotlist and only *trimmed* to the measured durations later,
+in phase 5. Run them back to back and you pay for both for nothing.
+
+**The generative branch is the exception — it really does wait for phase 2.** A Veo prompt has to
+say "generate exactly N seconds", and N comes from the measured audio; `gen-veo-briefs.mjs`
+requires `--durations` and won't run without it. So `prompt-smith` and `veo-runner` start when the
+clock exists, not before. Don't "start" them early — a guessed N produces a clip of the wrong
+length and you pay for it.
+
+**Genuinely sequential, don't fight it:** research → script (needs facts), script → voiceover
+(needs the locked hook), voiceover → the generative branch (needs the clock), and **anything →
+phase 5** (the timeline joins the clock to the clips). Everything else can overlap.
+
+**Across episodes, and across videos, everything is parallel.** `ep1` and `ep2` share nothing but
+the config. One producer per topic, each in its own `src/<slug>/` — no collisions. If you are
+handed three topics, that is three producers now, not one after another.
+
+Two rules while fanning out: **a gate stops only the branch that needs it** — a pending voiceover
+spend approval must not idle `cc-scout`, so keep the other branches moving and collect the
+decision when you report. And **never start work whose input doesn't exist yet** to look busy;
+that's how a fabricated duration gets into the timeline.
 
 ## Gates — STOP and ask the HUMAN (never decide these yourself)
 
