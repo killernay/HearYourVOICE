@@ -58,19 +58,29 @@ The end-to-end loop that turns one topic into one finished video, in whatever fo
 - `veo-insert-planner` — for the generative-footage path (silent Veo prompt briefs).
 - `remotion-best-practices` — only if you choose to assemble in a code-based renderer (Remotion). Not required for NLE editors.
 
-## First move: delegate to the team
+## First move: one worker per video — including you
 
-**If the `hyv-*` subagents are available to you, delegate — do not do the work yourself.** You
-already know which subagent types you can spawn; use that. Do **not** go looking for them on disk:
-they arrive by several routes (`.claude/agents/`, a plugin, a marketplace), and a missing file
-proves nothing except that you looked in the wrong place.
+**One video? Do it yourself.** Follow the recipe above. Do not spawn a chain of specialists to
+hand one script down a line: research → script → hook → voice can't overlap, so splitting it adds
+a fresh context per link and buys nothing. **Measured: solo 4:38 to a real voiceover; the same job
+through a delegation chain hadn't finished at 13 minutes.**
 
-- **A whole video** → spawn `hyv-producer` with the topic. It runs phases 0–6, holds every gate,
-  and reports back. This is the default for *"produce a video about X"*.
-- **One phase** → spawn that specialist directly (`hyv-cc-scout` for footage, `hyv-script-reviewer`
-  to check a draft, the debate panel + `hyv-judge` for a hook).
-- **A backlog** → one `hyv-researcher` per topic in parallel, then one `hyv-producer` per video,
-  each in its own `src/<slug>/`. They don't collide.
+**Several videos? *That's* what the team is for.** One `hyv-producer` per topic, in parallel, each
+doing its own whole chain in its own `src/<slug>/`. Three videos in roughly the time of one —
+three workers, not one worker under three foremen.
+
+**Spawn inside a single video for exactly two reasons:**
+
+1. **The debate panel** — `hyv-hook-maximalist` ∥ `hyv-skeptic-editor` ∥ `hyv-target-viewer` →
+   `hyv-judge`. Their independence *is* the product: each must argue without seeing the others,
+   which is impossible in one context. Three in ONE message, then the judge.
+2. **The human named a specialist.**
+
+The other `hyv-*` files are still worth their weight — as **spec**. They say how each phase is
+done, what its gates are, what it must never fake. **Read the spec; don't hire the agent.**
+
+Don't go looking for agents on disk: they arrive by several routes (`.claude/agents/`, a plugin, a
+marketplace), and a missing file proves nothing except that you looked in the wrong place.
 
 **The phase numbers are a data order, not a queue.** Spawn everything whose inputs already exist,
 at once. In particular **`cc-scout`, graphics and your own filming don't need the audio** — they
