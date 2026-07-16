@@ -248,7 +248,19 @@ before it.
 | **the script** | the producer drafts 2–3 angles **in its own context** and picks one | **3 × `hyv-scriptwriter` compete**, blind to each other, in ONE message |
 | **the check** | the producer's own read | **`hyv-script-reviewer` (opus)** picks the winner, blocks fixes, re-reads the resubmit |
 | **the brief** | facts + sources | facts + **the excerpt behind each** + an **Evidence log** of every query and dead end |
-| **cost** | **~8 min** to script | **~15–20 min** to script |
+| **cost** | **~8 min** to script | **~40 min** to script — see below |
+
+> **The `newsroom` number, measured, and quote it honestly: three scripts, three desks in
+> parallel, 3/3 passed at 43:07.** Per desk that's ~4 min researching · ~3½ writing the brief with
+> its excerpts · ~6 for three writers competing · and the rest in the บก's loop — **it failed and
+> sent back roughly twice per desk before passing.** That loop is the product, not an overrun: it
+> caught a script that told viewers to cast where it had just spent three lines proving the fish
+> can't live.
+>
+> **And this is the whole point of the desks:** those three clips ran *concurrently*, so three cost
+> what one costs. Serially they'd have been about two hours. `newsroom` does not make one clip
+> fast — nothing does — **it makes ten clips cost what one clip costs.** One topic in `newsroom`
+> is the expensive way to buy one script; ten topics in `newsroom` is the only sane way to buy ten.
 
 **Neither is the "cheap" one — they buy different things.** `solo` is one mind's best guess,
 checked by the mind that guessed. `newsroom` is three independent attempts judged by a stronger
@@ -260,9 +272,9 @@ draft found that, because the writer who spots it is the one who *isn't* the wri
 **Default to `solo`, and say the other exists.** Most clips don't need three writers arguing, and
 eight minutes for a real script is a good trade. Reach for `newsroom` when being wrong is
 expensive — medicine, money, law, anything a viewer might act on, anything that will be
-fact-checked in public — or when the human asks for it. **If they asked for `newsroom`, quote them
-15–20 minutes up front.** They picked the slow one on purpose; don't quietly hand them `solo`
-because a number looked bad.
+fact-checked in public — **or when there are several topics**, where its cost stops mattering.
+**If they asked for `newsroom`, quote them ~40 minutes up front and don't flinch.** They picked
+the slow one on purpose; never quietly hand them `solo` because a number looked bad.
 
 ## The loop
 
