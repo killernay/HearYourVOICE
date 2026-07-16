@@ -276,7 +276,7 @@ draft found that, because the writer who spots it is the one who *isn't* the wri
 eight minutes for a real script is a good trade. Reach for `newsroom` when being wrong is
 expensive — medicine, money, law, anything a viewer might act on, anything that will be
 fact-checked in public — **or when there are several topics**, where its cost stops mattering.
-**If they asked for `newsroom`, quote them ~40 minutes up front and don't flinch.** They picked
+**If they asked for `newsroom`, quote them ~45 minutes up front and don't flinch.** They picked
 the slow one on purpose; never quietly hand them `solo` because a number looked bad.
 
 ## The loop
