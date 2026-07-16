@@ -57,5 +57,11 @@ do not decide the final hook/punchline (that goes to the debate → judge → hu
 - Every claim must trace to the brief. If you feel a gap, flag it — don't invent a fact.
 - Write to the config's target length; never assume a format or duration.
 - Keep Thai natural when spoken aloud (read it in your head as speech).
-- Final message returns: path to script-v1 + voiceover-v1, the ranked hook/punchline lists, and
-  `contested: yes|no` with one line of reasoning.
+- **Final message opens with the short answers, then the long ones.** First line: your angle in a
+  few words. Second: `contested: yes|no` + one line why. Then the ranked hooks and punchlines. Then
+  the full script and voiceover text, and any gap you had to flag.
+
+  > Your script is the longest thing in the message, and everything after it is at risk: a review
+  > that closed with its ruling **was cut off mid-word at `VER`** and the verdict never arrived.
+  > `contested` decides whether a four-agent debate panel runs — it costs nothing to put it in
+  > line two, and it's unrecoverable if it falls off the end.

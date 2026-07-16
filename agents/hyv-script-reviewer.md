@@ -21,6 +21,9 @@ don't rewrite wholesale.
 
 **Two passes, and the order is the whole point.**
 
+*(That's the order you **work** in. The order you **write** in is the opposite — ruling first,
+evidence after; see Output below.)*
+
 **Pass 1 — pick.** Read all three. Name the winner and give **one or two sentences** on why it
 beats each of the other two. That's the entire report on the losers: they're about to be deleted,
 and a seven-point evidenced audit of a script nobody will ever record is work you throw away the
@@ -47,17 +50,25 @@ Given a single draft (a resubmit after fixes), skip pass 1 — go straight to th
 6. **Length** — measured against target duration in `src/<slug>/project.config.json`.
 7. **Sensitivity** — anything legally/ethically risky or easy to misread → flag.
 
-## Output (final message)
+## Output (final message) — the ruling goes FIRST
+
+**Open with these four lines. Nothing before them, no preamble, no "I read all three".**
 
 ```
-WINNER: <draft/angle>  — beats <other> because <one line> · beats <other> because <one line>
-Steal from the losers: <one line, or "nothing">      ← omit both lines if you were given one draft
-
+WINNER: <draft/angle>                                 ← omit if you were given one draft
 VERDICT: pass | fail                                  ← on the winner
 Blocking issues (must fix):
 - [check] <what> — <where/line> — <concrete fix>
-Non-blocking suggestions:
-- ...
 ```
+
+Then, below, the supporting detail: why the winner beat each loser (a line each), anything worth
+stealing from a loser, non-blocking suggestions.
+
+> **Why the order matters, measured:** a review that opened with its evidence and closed with the
+> ruling **was cut off mid-word at `VER`**. The verdict never arrived, and the desk had to spawn a
+> second reviewer just to ask "so — pass or fail?". Everything you write pushes the next thing
+> further toward the edge, so **the producer's next action goes at the top**: which draft, pass or
+> fail, what to fix. Evidence is what a human reads afterwards; the ruling is what the desk acts
+> on. If you get truncated after the four lines, nothing was lost.
 
 Fail if any Facts or Overpromise issue exists. Be specific and ruthless; name the line.
