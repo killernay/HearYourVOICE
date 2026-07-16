@@ -69,6 +69,37 @@ const agents = fs.existsSync(path.join(ROOT, "agents"))
   : [];
 check(agents.length > 0, "no hyv-* agents found in agents/");
 
+// ---- nothing personal ships --------------------------------------------------
+// A real VOICE_ID sat in a --help example from the first commit and went out with 1.0.0 —
+// caught by hand, months late, one grep away the whole time. Vigilance isn't a control; this is.
+// Anything that looks like a credential stops the build, not the release.
+const SECRETS = [
+  [/\bsk_[A-Za-z0-9]{20,}\b/, "an ElevenLabs API key"],
+  [/\bAIza[A-Za-z0-9_-]{20,}\b/, "a Google API key"],
+  [/\b[a-f0-9]{64}\b/, "a 64-hex secret"],
+  // ElevenLabs voice ids are 20 chars of mixed case — real ones only ever belong in .env.
+  [/--voice-id\s+(?!<|\$|"?\$)[A-Za-z0-9]{20}\b/, "a real --voice-id (use <id> or let .env supply it)"],
+];
+const walk = (dir) => fs.readdirSync(dir, { withFileTypes: true }).flatMap((e) => {
+  if (e.name === ".git" || e.name === "node_modules" || e.name === "dist") return [];
+  const p = path.join(dir, e.name);
+  return e.isDirectory() ? walk(p) : [p];
+});
+for (const file of walk(ROOT)) {
+  if (/\.(zip|png|jpg|mp3|mp4|ico)$/i.test(file)) continue;
+  if (path.basename(file).startsWith(".env") && !file.includes("example")) continue; // gitignored, never packed
+  let body;
+  try { body = fs.readFileSync(file, "utf8"); } catch { continue; }
+  for (const [re, what] of SECRETS) {
+    const hit = re.exec(body);
+    if (hit) {
+      const line = body.slice(0, hit.index).split("\n").length;
+      fail(`${path.relative(ROOT, file)}:${line} looks like ${what} — "${hit[0].slice(0, 24)}…". Nothing packed.`);
+      errors++;
+    }
+  }
+}
+
 if (errors) { console.error(`\n${errors} problem(s) — nothing packed.`); process.exit(1); }
 
 // ---- pack --------------------------------------------------------------------

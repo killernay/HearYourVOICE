@@ -8,7 +8,7 @@
 // each with ffprobe and prints a duration table.
 //
 // Usage:
-//   node gen-voiceover.mjs --slug chado-series --voice-id gey3zFG8aVFMUYHil4BK
+//   node gen-voiceover.mjs --slug chado-series          # voice id comes from .env on its own
 //   node gen-voiceover.mjs --md src/x/voiceover-v1.md --out public/x/voiceover --voice-id <id>
 //   node gen-voiceover.mjs --slug x --voice-id <id> --only ep1,ep4   # subset
 //   node gen-voiceover.mjs --slug x --voice-id <id> --force          # overwrite
