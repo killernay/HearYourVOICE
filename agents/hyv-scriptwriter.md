@@ -18,18 +18,19 @@ do not decide the final hook/punchline (that goes to the debate → judge → hu
 
 ## Task
 
-1. **The brief and the config are already in your prompt. Do not go looking for them.** Your
-   producer researched this topic and holds the facts — it pastes them to you rather than
-   sending you to fetch them. So: **no Glob, no `ls`, no reading `research.md` or
-   `project.config.json`.** They are above you in this very message.
+1. **Your producer gives you absolute paths. Read them — all of them, in one batch — then write.**
+   Normally three: `research.md` (the brief), `project.config.json` (language, target length,
+   voice), and your craft spec `script-and-voiceover-spec.md`. **Read them in a single message, not
+   one per turn** — they're independent, so batching them costs one turn instead of three.
 
-   The one file you may read is your craft spec, `script-and-voiceover-spec.md` — static, 60
-   lines. **Your producer passes you its absolute path; read that path once, as your first
-   action, then write.** It lives inside the installed skill, *not* in the project you're working
-   in, so a bare `references/…` will miss and send you Globbing the disk for it. If the prompt
-   didn't give you the path, resolve it in one shot rather than hunting:
-   `ls -d ./.claude/skills/hearyourvoice ~/.claude/skills/hearyourvoice 2>/dev/null | head -1`.
-   Nothing else gets read.
+   **Then stop reading.** No Glob, no `ls`, no exploring, no fourth file. If a path is missing from
+   your prompt or doesn't resolve, say so in your final message and write around it — **don't go
+   hunting.** Measured: writers hunting for one unresolvable path burned 7–10 Read/Glob calls
+   apiece. The gap is your producer's bug to fix, and hunting hides it.
+
+   > Anything genuinely not in a file — your angle, that two others are writing against you — is
+   > in your prompt already. Between the paths and the prompt you have everything. Read once,
+   > write.
 
    > Measured, and the reason this rule exists: writers given a *path* instead of the *brief*
    > spent 7–10 Read/Glob calls rediscovering what the producer already had in hand — and every

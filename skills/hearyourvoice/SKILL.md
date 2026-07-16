@@ -110,15 +110,13 @@ their writers had already finished.** One message makes them concurrent; the fla
 work. You need both — concurrent work you never collect is worth nothing. **Typing `sleep` means
 you spawned wrong; fix the spawn, not the wait.**
 
-**And when you do spawn: hand over the payload, never the pointer.** You hold the brief and the
-config. Writing `Read src/<slug>/research.md` throws that away and drops a fresh agent into an
-empty room — so it Globs, it `ls`, it opens the config, it reads three more files to be sure it
-understood. **Measured on a 3-desk run: writers given a path spent 7–10 Read/Glob calls before
-writing a word, and 57% of every tool call in that run was an agent rediscovering what its spawner
-already knew.** A Read costs 2 seconds; the model turn wrapped around it costs ~30. Paste the
-facts, the sources, the target length, the language, the voice config, and the angle **into the
-prompt**. If the prompt only makes sense to someone who can see your disk, it's a pointer — rewrite
-it before you send it.
+**And when you do spawn: already a file → send the absolute path. Not a file → paste it.**
+`research.md` and `project.config.json` are written; three writers can read them at once in ~2s
+each. Retyping the brief into three prompts means generating it four times, serially, on the
+critical path — **measured: 23,814 characters of prompt and 6:38 to hand off, to brief three
+writers who then finished in 22 seconds.** Paste only what exists nowhere else: the angle, that the
+others are competing, the deliverable shape. And make paths **absolute** — a bare `references/…`
+doesn't resolve from the project and sends every writer Globbing the disk for it.
 
 So spawn for **competition**:
 

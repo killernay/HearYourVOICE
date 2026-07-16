@@ -142,7 +142,7 @@ Set in frontmatter (`model: opus` / `model: sonnet`) — verified live: `hyv-ide
 |---|---|---|
 | 0a scaffold | **you** | `new-project.mjs --slug <your-slug>` — **your own slug, your first action, one command.** It never overwrites `.env`, so the other desks doing theirs at the same moment cannot collide with you. Don't wait to be handed a folder. |
 | 0b research | **you** | **`research.md` already there with an Evidence log? Read it and skip searching entirely.** Otherwise: WebSearch + WebFetch, 3 facts, ≥2 independent sources each, ≤6 fetches. Write `research.md` — brief **+ Evidence log** (below). **One shared brief; everything below competes on it.** |
-| **1a scripts — COMPETE** | **spawn 3 × `hyv-scriptwriter` in ONE message, each with `run_in_background: false`** | Same brief, three different angles. **Paste the brief and the config values into each prompt — never a path.** Give each its angle and tell it the others exist. **Include `$HYV/references/script-and-voiceover-spec.md` resolved to an absolute path** — it's the one file they read, and a bare `references/…` sends all three Globbing for it. One message makes them concurrent; `run_in_background: false` hands you their scripts. **Never `sleep` to wait — see below.** |
+| **1a scripts — COMPETE** | **spawn 3 × `hyv-scriptwriter` in ONE message, each with `run_in_background: false`** | Same brief, three different angles. **Send absolute paths to `research.md`, `project.config.json` and `$HYV/references/script-and-voiceover-spec.md` — they're files; do not retype them.** Paste only what isn't written anywhere: its angle, that the others exist, the deliverable shape. One message makes them concurrent; `run_in_background: false` hands you their scripts. **Never `sleep` to wait — see below.** |
 | **1b บก เลือก + ตรวจ** | **spawn `hyv-script-reviewer` — ALWAYS, before any voice** | Reads all three, **picks one**, names its blocking fixes. Fix them, resubmit, loop until `pass`. **The proof stage — see below.** |
 | 1d hook debate | **spawn** | ONLY if the winning script's hook is contested, or the human asked. 3 in one message, then `hyv-judge`. Usually the script competition already settled it. |
 | 1e shotlist | **you** | `new-shotlist.py` + fill it from the script and the brief's `Visual opportunities`. |
@@ -289,25 +289,29 @@ block on it, read three scripts, hand them to the บก.
 
 If you ever find yourself typing `sleep`, stop — you spawned wrong. Fix the spawn, not the wait.
 
-## Hand over the payload, never the pointer
+## If it's already a file, send the path. If it isn't, paste it.
 
-**When you spawn anyone, paste what they need into the prompt. Never send them to fetch it.**
+**The test is not "payload or pointer" — it's "does this already exist on disk?"**
 
-You already did the research. The brief is in your context, the config values are in your context.
-Writing `Read src/<slug>/research.md for the verified research` throws all of that away and makes
-a fresh agent rebuild it from an empty room — and it can't just read the one file, because it
-doesn't yet know the room, so it Globs, it `ls`, it reads the config, it reads three more files
-to be sure.
+| What they need | Where it is | Send |
+|---|---|---|
+| the brief, the config, the spec | **already a file you wrote** | the **absolute path**. It's written. Reading it costs them ~2s. |
+| their angle, "you're one of three", the deliverable shape | **only in your head** | **paste it** — it's a few hundred characters and it exists nowhere else. |
 
-> **Measured on a 3-desk run:** writers handed a *path* spent **7–10 Read/Glob calls each before
-> writing a word**. 57% of all tool calls in that run were agents rediscovering what their spawner
-> already knew. The individual Read costs 2 seconds — but each one drags a model turn behind it,
-> and turns are ~30s of the clip's wall clock. That's minutes, per desk, for nothing.
+**Never retype a file you already wrote.** You spent a minute writing `research.md`. Pasting it
+into three writer prompts means generating that same text **four times** — and generating is the
+single most expensive thing you do.
 
-So the prompt you send a scriptwriter contains **the brief's facts and sources inline, the target
-length, language, and voice config inline, and its assigned angle**. It should be able to start
-writing on its first action. If your prompt would make sense only to someone who can see your
-disk, it's a pointer — rewrite it.
+> **Measured, both directions.** Writers sent a bare `references/…` path that didn't resolve spent
+> 7–10 Read/Glob calls hunting — which is why the path you send must be **absolute**, not why paths
+> are wrong. Then the fix overshot: a producer pasting full briefs generated **23,814 characters of
+> prompt** and took **6:38** to hand off — while the three writers it was briefing finished in
+> **22 seconds**. Reading the file in parallel would have cost them ~20s total. Six and a half
+> minutes bought twenty seconds.
+
+Three writers reading one file at once is three cheap parallel reads. You typing that file three
+times is serial, and it is on the critical path — nobody writes a word until you finish. **An
+absolute path to a file that exists is not a pointer problem; it's the cheapest handoff there is.**
 
 The same applies to you: whoever spawned you already knows the topic, the working dir, and that
 the keys are set. Don't re-verify the room before starting. Check what you're about to *spend*,
