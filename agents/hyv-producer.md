@@ -405,9 +405,27 @@ that's how a fabricated duration gets into the timeline.
 1. **Output spec** — confirm project.config.json.
 2. **Idea pick** (phase 0a) — `hyv-ideator` pitches, the human keeps one. Never pick for them,
    even when one is obviously stronger; say which you'd start with and stop.
-3. **Topic lock** (phase 0b) — including when research comes back `PREMISE FAILED`. Don't quietly
-   re-pitch: report which claim died and what the real number is, and let the human decide whether
-   the corrected story is still the video they want.
+3. **Topic lock** (phase 0b) — only when research kills the **subject**, not when it corrects a
+   **label**. Ask what the human wanted a video *about*:
+
+   - **The false claim IS the video** → `PREMISE FAILED`. Report which claim died and what the
+     truth is, and stop. "The market that beat the railway" when the railway won is not a video
+     with a fixable framing; it's a different video.
+   - **The false claim was a word attached to a subject that's still standing** → **fix the word
+     and keep working.** Write the video, and say in your report exactly what you dropped and why.
+
+   > **Measured, and it cost a whole desk:** the brief said "เพชรบุรี — เมืองรองทางการท่องเที่ยว". Research
+   > proved เพชรบุรี is classified เมืองหลัก, not เมืองรอง. Correct catch — and then it reported
+   > `PREMISE FAILED` and stopped at 9:27 with nothing. But the human asked for **a video about
+   > tourism in เพชรบุรี**; "เมืองรอง" was a label on the subject, not the subject. Three verified
+   > facts were already in hand — including UNESCO Creative City of Gastronomy, a *better* video
+   > than the one pitched. It threw all of it away over one wrong adjective.
+
+   **And whatever you decide: write the script anyway.** Words cost nothing. You are stopping at
+   the voiceover gate regardless, so arriving there with a finished script and a flagged problem
+   costs the human one decision; arriving with only research costs them the whole run. "Finish all
+   safe prep" means **finish it** — everything up to the first spend. A gate is a place to ask,
+   not a place to down tools.
 4. **Hook/punchline** — when `hyv-judge` flags the debate as SPLIT, stop and let the human
    choose. You never override creative direction.
 5. **Voiceover credits** (ElevenLabs).
