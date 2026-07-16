@@ -21,6 +21,9 @@ node "$HYV/scripts/new-project.mjs" --slug <slug> --title "<ชื่อ>"
 # 1 · research → write src/<slug>/research.md yourself
 #     LOOK FIRST: research.md already there with an Evidence log? Read it, skip searching.
 #     Else: 3 facts, ≥2 INDEPENDENT sources each, ≤6 WebFetch. Then stop and write.
+#     An EMPTY fetch counts and is an answer: "ไม่มีเนื้อหา" / "cannot extract the figures"
+#     means that number isn't published — not that you need a better query. Two empties on
+#     one claim = change the claim, not the query. The sources decide what the video is about.
 #     Each fact carries its EXCERPTS, not just links. End with "## Evidence log":
 #     every query, every URL fetched (incl. dead ends), what each gave.
 #     That file is the evidence — writers think with it, บก rules on it, re-runs reuse it.

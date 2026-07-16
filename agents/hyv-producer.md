@@ -240,6 +240,29 @@ topic**: they already made this call and re-litigating it is not your job. That 
 `contested`-only — with 0c doing the heavy lifting, a hook debate is a second opinion on a
 decision the scriptwriter usually got right.
 
+## An empty fetch is an answer — 6 fetches, then you write
+
+**You do the research yourself, so the stopping rule is yours, not `hyv-researcher`'s.** Count
+every WebFetch you fire. **At 6 you are done researching and you write the brief with what you
+have.** Not "6 useful ones" — six. The cap is a stop, not a target and not a suggestion.
+
+**A fetch that comes back with nothing counts, and it told you something.** `ขออภัยครับ บทความนี้ไม่มี…`
+· `I cannot extract the specific figures…` · `ไม่มีเนื้อหานี้ในหน้าเว็บไซต์` — that is not a failed
+attempt to retry differently. It is the finding: **that number is not published where you can get
+it.** A second empty fetch on the same claim confirms it.
+
+> **Measured, and this is what it costs:** a desk locked onto "how many master craftsmen are in
+> Phetchaburi" — a statistic nobody published. Eight fetches, every one empty, from minute 2 to
+> minute 11, including a single fetch that hung for **298 seconds** and returned "ไม่มีเนื้อหา".
+> It never wrote a word. The other two desks had finished briefs at 5:36 and 6:30.
+
+**Two empty tries on a claim means the claim isn't sourceable — change the claim, not the query.**
+You need *three facts with two sources each*, not three *specific* facts you decided on before you
+looked. The sources decide what the video is about. A precise number you can't source is worth less
+than a solid fact you can, and hunting for it is the single most expensive way to end up with
+neither. Put it under `Unverified`, log the dead ends in the Evidence log so the next run doesn't
+repeat them, and write.
+
 ## Never sleep to wait for an agent
 
 **When you spawn someone whose answer you need, pass `run_in_background: false`.**
