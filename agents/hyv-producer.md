@@ -107,7 +107,10 @@ otherwise, and **say which one you're running in your first line.**
 | **1a script** | **you** draft 2–3 angles in your own context and pick one — no writers spawned | **spawn 3 × `hyv-scriptwriter`** (row below) |
 | **1b check** | your own read against the brief | **`hyv-script-reviewer` (opus)** — mandatory, blocks fixes, re-reads the resubmit |
 | **0b brief** | facts + sources | facts + **excerpt per source** + **Evidence log** |
-| **to script** | ~8 min | **~40 min** — measured: 3 desks in parallel, 3/3 passed at 43:07, บก failing and resending ~twice per desk |
+| **to script** | **~11 min** | **~43 min** — บก fails and resends ~twice per desk before it passes |
+
+*(Measured on the same job — three Thai fish, three desks in parallel, scripts only: `solo` 3/3 at
+10:43 · `newsroom` 3/3 at 43:07. Quote the real one; never quote `solo`'s number and run `newsroom`.)*
 
 `newsroom` is not `solo` with extras bolted on — it is three independent minds and a stronger
 judge, and it finds what one pass structurally can't. It is also twice the clock. **The human

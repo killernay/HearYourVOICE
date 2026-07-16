@@ -248,10 +248,13 @@ before it.
 | **the script** | the producer drafts 2–3 angles **in its own context** and picks one | **3 × `hyv-scriptwriter` compete**, blind to each other, in ONE message |
 | **the check** | the producer's own read | **`hyv-script-reviewer` (opus)** picks the winner, blocks fixes, re-reads the resubmit |
 | **the brief** | facts + sources | facts + **the excerpt behind each** + an **Evidence log** of every query and dead end |
-| **cost** | **~8 min** to script | **~40 min** to script — see below |
+| **cost** | **~11 min** to script | **~43 min** to script — see below |
 
-> **The `newsroom` number, measured, and quote it honestly: three scripts, three desks in
-> parallel, 3/3 passed at 43:07.** Per desk that's ~4 min researching · ~3½ writing the brief with
+> **Both numbers are measured on the same job — three Thai fish, three desks in parallel, scripts
+> only: `solo` 3/3 at 10:43 · `newsroom` 3/3 at 43:07.** Four times the clock, and the human is
+> the one who gets to decide whether this topic is worth it.
+>
+> Inside the `newsroom` run, per desk: ~4 min researching · ~3½ writing the brief with
 > its excerpts · ~6 for three writers competing · and the rest in the บก's loop — **it failed and
 > sent back roughly twice per desk before passing.** That loop is the product, not an overrun: it
 > caught a script that told viewers to cast where it had just spent three lines proving the fish
