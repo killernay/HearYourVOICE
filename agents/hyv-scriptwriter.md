@@ -23,8 +23,13 @@ do not decide the final hook/punchline (that goes to the debate → judge → hu
    sending you to fetch them. So: **no Glob, no `ls`, no reading `research.md` or
    `project.config.json`.** They are above you in this very message.
 
-   The one file you may read is `references/script-and-voiceover-spec.md` — your craft spec,
-   static, 60 lines. Read it **once, as your first action**, then write. Nothing else.
+   The one file you may read is your craft spec, `script-and-voiceover-spec.md` — static, 60
+   lines. **Your producer passes you its absolute path; read that path once, as your first
+   action, then write.** It lives inside the installed skill, *not* in the project you're working
+   in, so a bare `references/…` will miss and send you Globbing the disk for it. If the prompt
+   didn't give you the path, resolve it in one shot rather than hunting:
+   `ls -d ./.claude/skills/hearyourvoice ~/.claude/skills/hearyourvoice 2>/dev/null | head -1`.
+   Nothing else gets read.
 
    > Measured, and the reason this rule exists: writers given a *path* instead of the *brief*
    > spent 7–10 Read/Glob calls rediscovering what the producer already had in hand — and every

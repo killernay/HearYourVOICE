@@ -142,7 +142,7 @@ Set in frontmatter (`model: opus` / `model: sonnet`) — verified live: `hyv-ide
 |---|---|---|
 | 0a scaffold | **you** | `new-project.mjs --slug <your-slug>` — **your own slug, your first action, one command.** It never overwrites `.env`, so the other desks doing theirs at the same moment cannot collide with you. Don't wait to be handed a folder. |
 | 0b research | **you** | **`research.md` already there with an Evidence log? Read it and skip searching entirely.** Otherwise: WebSearch + WebFetch, 3 facts, ≥2 independent sources each, ≤6 fetches. Write `research.md` — brief **+ Evidence log** (below). **One shared brief; everything below competes on it.** |
-| **1a scripts — COMPETE** | **spawn 3 × `hyv-scriptwriter` in ONE message** | Same brief, three different angles. **Paste the brief and the config values into each prompt — never a path.** Give each its angle and tell it the others exist. They finish in the time of one, and you keep the best. |
+| **1a scripts — COMPETE** | **spawn 3 × `hyv-scriptwriter` in ONE message, each with `run_in_background: false`** | Same brief, three different angles. **Paste the brief and the config values into each prompt — never a path.** Give each its angle and tell it the others exist. **Include `$HYV/references/script-and-voiceover-spec.md` resolved to an absolute path** — it's the one file they read, and a bare `references/…` sends all three Globbing for it. One message makes them concurrent; `run_in_background: false` hands you their scripts. **Never `sleep` to wait — see below.** |
 | **1b บก เลือก + ตรวจ** | **spawn `hyv-script-reviewer` — ALWAYS, before any voice** | Reads all three, **picks one**, names its blocking fixes. Fix them, resubmit, loop until `pass`. **The proof stage — see below.** |
 | 1d hook debate | **spawn** | ONLY if the winning script's hook is contested, or the human asked. 3 in one message, then `hyv-judge`. Usually the script competition already settled it. |
 | 1e shotlist | **you** | `new-shotlist.py` + fill it from the script and the brief's `Visual opportunities`. |
@@ -239,6 +239,32 @@ which is the normal case, since its job is to pitch several. **Skip it when the 
 topic**: they already made this call and re-litigating it is not your job. That is why 1d is now
 `contested`-only — with 0c doing the heavy lifting, a hook debate is a second opinion on a
 decision the scriptwriter usually got right.
+
+## Never sleep to wait for an agent
+
+**When you spawn someone whose answer you need, pass `run_in_background: false`.**
+
+`Agent` runs in the **background by default**. Spawn three writers without that flag and you get
+three acknowledgements, no scripts, and nothing to wait on — so you will be tempted to invent a
+waiting loop out of shell: `sleep 30 && echo done`, `echo "waiting for writer agents"`, a `sleep 1`
+noop. **Don't.** Every one of those is a model turn that produces nothing, and the sleep length is
+a guess about work you can't see.
+
+> **Measured:** producers that spawned their writers in the background then polled with `sleep 30`
+> sat idle from 5:53 to past 11:00 — the writers had finished; the producer was still asleep.
+
+The two settings do different jobs and you need both:
+
+| | what it buys |
+|---|---|
+| **all three `Agent` calls in ONE message** | they run **concurrently** — three scripts in the time of one |
+| **`run_in_background: false` on each** | you **get their scripts back** when they're done |
+
+One message without the flag = concurrent work you never collect. The flag without one message =
+three writers queued behind each other. Together they are the whole competition: send the block,
+block on it, read three scripts, hand them to the บก.
+
+If you ever find yourself typing `sleep`, stop — you spawned wrong. Fix the spawn, not the wait.
 
 ## Hand over the payload, never the pointer
 

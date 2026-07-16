@@ -99,6 +99,14 @@ Down a chain, agents lose: every link is a fresh context re-reading what the las
 **Across the same input they win, and it costs no wall clock at all** — three agents on one brief
 finish in the time of one, and you keep the best. You pay tokens, not minutes.
 
+**Spawn with `run_in_background: false` whenever you need the answer.** `Agent` backgrounds by
+default: send three writers off without the flag and you get three acknowledgements and no scripts,
+so you'll reach for shell to wait — `sleep 30 && echo done`, a `sleep 1` noop, `echo "waiting for
+writer agents"`. **Measured: producers doing exactly that sat asleep from 5:53 to past 11:00 while
+their writers had already finished.** One message makes them concurrent; the flag hands you their
+work. You need both — concurrent work you never collect is worth nothing. **Typing `sleep` means
+you spawned wrong; fix the spawn, not the wait.**
+
 **And when you do spawn: hand over the payload, never the pointer.** You hold the brief and the
 config. Writing `Read src/<slug>/research.md` throws that away and drops a fresh agent into an
 empty room — so it Globs, it `ls`, it opens the config, it reads three more files to be sure it
@@ -298,7 +306,7 @@ When more than one idea is live and you can't separate them, run the panel **on 
    **When it does run, spawn all three panelists in ONE message — three `Agent` calls in the same block, not three messages.** `hyv-hook-maximalist`, `hyv-skeptic-editor` and `hyv-target-viewer` never read each other's work: each one only reads the brief and argues its own corner, so queueing them makes the debate three times slower for nothing. Only `hyv-judge` waits — it needs all three verdicts, so it goes in the next message.
 
    **`hyv-script-reviewer` runs on every video, and nothing is voiced before it passes.** This is the documentary process, not ceremony: research → draft → **the editor raises issues → you fix → you resubmit → approved** → *then* you record. It sits at the last moment the script is still cheap to change. After it, voice costs money, a fix means paying twice, and the voiceover is the master clock — re-record and every downstream timecode moves. Loop until `VERDICT: pass`; it fails on any Facts or Overpromise issue and names the line.
-3. Rewrite into TTS-ready narration at `src/<slug>/voiceover-v1.md` following `references/script-and-voiceover-spec.md` — short lines, deliberate breaks for pacing, hook in the first ~3 s, explicit punchline beats. Put the voice-config block (voice id, `model: eleven_v3`, source) at the top.
+3. Rewrite into TTS-ready narration at `src/<slug>/voiceover-v1.md` following `$HYV/references/script-and-voiceover-spec.md` (inside the installed skill, not this project) — short lines, deliberate breaks for pacing, hook in the first ~3 s, explicit punchline beats. Put the voice-config block (voice id, `model: eleven_v3`, source) at the top.
 4. **Build the shotlist** (`src/<slug>/shotlist.xlsx`) — give every beat a category-prefixed shot ID and plan capture/source/coverage. This is the artifact that makes the rest of the workflow easy; see `references/shotlist-format.md`. Scaffold a blank one with `scripts/new-shotlist.py`, or copy `references/examples/chado-NG-shotlist.xlsx`.
    **Build it straight from the script + the brief's `Visual opportunities`** (which already names 5–8 concrete shots with a likely source each). `hyv-storyboard` is a separate optional pass, worth it only when the visuals must be *composed* — a sequence that has to build — rather than *sourced* from CC, stock or graphics, which is most videos.
 
