@@ -98,6 +98,22 @@ The human sets a stop, and each stop is a finished job:
 | `voice` | 2 | + real voiceover + measured clock — **they hear it before anyone builds visuals for it** |
 | `full` | 6 | + footage · timeline · mp4 · `delivery/` |
 
+**A second dial rides on top: `solo` (default) or `newsroom`.** It doesn't change where you stop —
+it changes how hard the story gets tested on the way. Assume `solo` unless the prompt says
+otherwise, and **say which one you're running in your first line.**
+
+| | `solo` ← default | `newsroom` |
+|---|---|---|
+| **1a script** | **you** draft 2–3 angles in your own context and pick one — no writers spawned | **spawn 3 × `hyv-scriptwriter`** (row below) |
+| **1b check** | your own read against the brief | **`hyv-script-reviewer` (opus)** — mandatory, blocks fixes, re-reads the resubmit |
+| **0b brief** | facts + sources | facts + **excerpt per source** + **Evidence log** |
+| **to script** | ~8 min | ~15–20 min |
+
+`newsroom` is not `solo` with extras bolted on — it is three independent minds and a stronger
+judge, and it finds what one pass structurally can't. It is also twice the clock. **The human
+picks; you don't upgrade or downgrade them quietly.** Everything below assumes `newsroom` where it
+says "spawn"; under `solo` you do that work yourself, to the same bar, in one context.
+
 **Default to `voice` when nobody said.** It is the natural checkpoint: the voiceover is the master
 clock, and a script that sounds wrong out loud should cost 6 minutes, not 15. Never assume `full`
 just because the request said "a video" — ask, then say which mode you are running.
@@ -143,7 +159,7 @@ Set in frontmatter (`model: opus` / `model: sonnet`) — verified live: `hyv-ide
 | 0a scaffold | **you** | `new-project.mjs --slug <your-slug>` — **your own slug, your first action, one command.** It never overwrites `.env`, so the other desks doing theirs at the same moment cannot collide with you. Don't wait to be handed a folder. |
 | 0b research | **you** | **`research.md` already there with an Evidence log? Read it and skip searching entirely.** Otherwise: WebSearch + WebFetch, 3 facts, ≥2 independent sources each, ≤6 fetches. Write `research.md` — brief **+ Evidence log** (below). **One shared brief; everything below competes on it.** |
 | **1a scripts — COMPETE** | **spawn 3 × `hyv-scriptwriter` in ONE message, each with `run_in_background: false`** | Same brief, three different angles. **Send absolute paths to `research.md`, `project.config.json` and `$HYV/references/script-and-voiceover-spec.md` — they're files; do not retype them.** Paste only what isn't written anywhere: its angle, that the others exist, the deliverable shape. One message makes them concurrent; `run_in_background: false` hands you their scripts. **Never `sleep` to wait — see below.** |
-| **1b บก เลือก + ตรวจ** | **spawn `hyv-script-reviewer` — ALWAYS, before any voice** | Reads all three, **picks one in a line or two**, then audits **only the winner** at full depth and names its blocking fixes. Fix them, resubmit (one draft now — it skips straight to the checklist), loop until `pass`. **The proof stage — see below.** |
+| **1b ตรวจก่อนเสียง — never skipped** | `newsroom`: **spawn `hyv-script-reviewer`** · `solo`: **you**, against the brief | **newsroom:** reads all three, **picks one in a line or two**, audits **only the winner** at full depth, names blocking fixes. Fix, resubmit (one draft — it skips to the checklist), loop until `pass`. **solo:** you run that same checklist on your own draft yourself. Either way **no script reaches a voice unchecked.** **The proof stage — see below.** |
 | 1d hook debate | **spawn** | ONLY if the winning script's hook is contested, or the human asked. 3 in one message, then `hyv-judge`. Usually the script competition already settled it. |
 | 1e shotlist | **you** | `new-shotlist.py` + fill it from the script and the brief's `Visual opportunities`. |
 | 2 voiceover | **you** | Only after `pass`. `gen-voiceover.mjs` (gate first, `--yes` after the OK) → `measure-voiceover.mjs`. |

@@ -122,10 +122,11 @@ doesn't resolve from the project.
 
 So spawn for **competition**:
 
-1. **Three `hyv-scriptwriter` on one brief, in ONE message** — three angles, then
-   `hyv-script-reviewer` (the บก) picks one and names its fixes. This is not theory: the hook
-   debate already works this way and produced *"ในคน 100 คนที่คิดแบบนี้ เป็นไซนัสจริง แค่ 3 คน — แล้วอีก 97 คนล่ะ"*,
-   which no single writer here came up with.
+1. **`newsroom` only — three `hyv-scriptwriter` on one brief, in ONE message** — three angles,
+   then `hyv-script-reviewer` (the บก) picks one and names its fixes. Not theory: the hook debate
+   already works this way and produced *"ในคน 100 คนที่คิดแบบนี้ เป็นไซนัสจริง แค่ 3 คน — แล้วอีก 97 คนล่ะ"*, which no
+   single writer here came up with. **Under `solo` (the default) you draft the angles yourself and
+   spawn nobody** — see the dial above.
 2. **The debate panel** — `hyv-hook-maximalist` ∥ `hyv-skeptic-editor` ∥ `hyv-target-viewer` →
    `hyv-judge`, when the winning hook is still contested. Independence *is* the product: each must
    argue without seeing the others, impossible in one context. Three in ONE message, then the judge.
@@ -235,6 +236,33 @@ themselves. Stopping there is a finished job, so report it as one.
 Say which mode you are running, once, before you start. When they only asked for "a video about
 X", ask which they want rather than assuming `full` — it is the most expensive answer to a
 question they may not have asked.
+
+### The second dial: `solo` or `newsroom` — how hard the story gets tested
+
+**How *far* you go and how *hard* you check are different questions.** Both dials apply to every
+mode: `voice solo` and `voice newsroom` both end at a real mp3; they disagree about what happened
+before it.
+
+| | `solo` ← default | `newsroom` |
+|---|---|---|
+| **the script** | the producer drafts 2–3 angles **in its own context** and picks one | **3 × `hyv-scriptwriter` compete**, blind to each other, in ONE message |
+| **the check** | the producer's own read | **`hyv-script-reviewer` (opus)** picks the winner, blocks fixes, re-reads the resubmit |
+| **the brief** | facts + sources | facts + **the excerpt behind each** + an **Evidence log** of every query and dead end |
+| **cost** | **~8 min** to script | **~15–20 min** to script |
+
+**Neither is the "cheap" one — they buy different things.** `solo` is one mind's best guess,
+checked by the mind that guessed. `newsroom` is three independent attempts judged by a stronger
+model against sourced evidence, and **it catches what a single pass cannot**: measured, a
+scriptwriter refused a brief claiming ปลาช่อน is special because it breathes air — ปลาชะโด, same
+family, breathes air too — and the desk rewrote the premise around water depth instead. No solo
+draft found that, because the writer who spots it is the one who *isn't* the writer who wrote it.
+
+**Default to `solo`, and say the other exists.** Most clips don't need three writers arguing, and
+eight minutes for a real script is a good trade. Reach for `newsroom` when being wrong is
+expensive — medicine, money, law, anything a viewer might act on, anything that will be
+fact-checked in public — or when the human asks for it. **If they asked for `newsroom`, quote them
+15–20 minutes up front.** They picked the slow one on purpose; don't quietly hand them `solo`
+because a number looked bad.
 
 ## The loop
 
