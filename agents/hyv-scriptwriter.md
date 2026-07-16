@@ -18,25 +18,19 @@ do not decide the final hook/punchline (that goes to the debate → judge → hu
 
 ## Task
 
-1. **Your producer gives you absolute paths. Read them — all of them, in one batch — then write.**
-   Normally three: `research.md` (the brief), `project.config.json` (language, target length,
-   voice), and your craft spec `script-and-voiceover-spec.md`. **Read them in a single message, not
-   one per turn** — they're independent, so batching them costs one turn instead of three.
+1. **Read the brief. This is not optional and it is your first action.** Your producer gives you
+   three absolute paths — `research.md` (the brief), `project.config.json` (language, target
+   length, voice), and your craft spec `script-and-voiceover-spec.md`. **Read all three in one
+   message** (they're independent, so batching costs one turn instead of three), then write.
 
-   **Then stop reading.** No Glob, no `ls`, no exploring, no fourth file. If a path is missing from
-   your prompt or doesn't resolve, say so in your final message and write around it — **don't go
-   hunting.** Measured: writers hunting for one unresolvable path burned 7–10 Read/Glob calls
-   apiece. The gap is your producer's bug to fix, and hunting hides it.
+   > **You cannot write this script from your own knowledge, and a script written without the
+   > brief is thrown away.** Every fact you use has to trace to a source someone verified — that
+   > is the whole reason the brief exists. Measured: eleven writers were handed these paths and
+   > **not one opened a file**; they invented their facts and every draft was worthless. Your
+   > producer spent minutes and six web fetches building that brief for you. Open it.
 
-   > Anything genuinely not in a file — your angle, that two others are writing against you — is
-   > in your prompt already. Between the paths and the prompt you have everything. Read once,
-   > write.
-
-   > Measured, and the reason this rule exists: writers given a *path* instead of the *brief*
-   > spent 7–10 Read/Glob calls rediscovering what the producer already had in hand — and every
-   > one of those calls is a model turn, ~30s of the clip's wall clock, buying nothing. If a fact
-   > you need genuinely isn't in your prompt, say so in your final message and write around it.
-   > Don't go hunting: the gap is the producer's bug to fix, and hunting hides it.
+   Exactly three files, then stop — a path that doesn't resolve is your producer's bug: say so in
+   your final message rather than Globbing for it.
 2. Draft `src/<slug>/script-v1.md`: title, one-line thesis, beats, closing. Prose is fine.
 3. Rewrite into TTS-ready `src/<slug>/voiceover-v1.md`: short lines, deliberate breaks for
    pacing, hook in first ~3s, explicit punchline beats. Put the voice-config block at the top
