@@ -32,7 +32,7 @@ cd HearYourVOICE && npx . install <target>
 ### Whole machine (global)
 
 ```bash
-npx hearyourvoice install            # skill + 15 agents
+npx hearyourvoice install            # skill + 16 agents
 npx hearyourvoice install codex      # ~/.codex/skills/hearyourvoice   (skill only)
 npx hearyourvoice install hermes     # ~/.hermes/skills/hearyourvoice  (skill only)
 ```
