@@ -273,8 +273,10 @@ waiting loop out of shell: `sleep 30 && echo done`, `echo "waiting for writer ag
 noop. **Don't.** Every one of those is a model turn that produces nothing, and the sleep length is
 a guess about work you can't see.
 
-> **Measured:** producers that spawned their writers in the background then polled with `sleep 30`
-> sat idle from 5:53 to past 11:00 — the writers had finished; the producer was still asleep.
+> **Observed verbatim, from producers that spawned their writers in the background:**
+> `sleep 30 && echo done` · `sleep 1` labelled *"noop placeholder while waiting for background
+> agents"* · `echo "waiting for writer agents"`. Each is a turn spent producing nothing, on a
+> timer guessed against work you cannot see.
 
 The two settings do different jobs and you need both:
 
@@ -302,12 +304,13 @@ If you ever find yourself typing `sleep`, stop — you spawned wrong. Fix the sp
 into three writer prompts means generating that same text **four times** — and generating is the
 single most expensive thing you do.
 
-> **Measured, both directions.** Writers sent a bare `references/…` path that didn't resolve spent
-> 7–10 Read/Glob calls hunting — which is why the path you send must be **absolute**, not why paths
-> are wrong. Then the fix overshot: a producer pasting full briefs generated **23,814 characters of
-> prompt** and took **6:38** to hand off — while the three writers it was briefing finished in
-> **22 seconds**. Reading the file in parallel would have cost them ~20s total. Six and a half
-> minutes bought twenty seconds.
+> **Measured.** A producer pasting full briefs generated **23,814 characters of prompt**. Sending
+> paths instead: **1,638 characters per writer**, and the drafts came back citing `Fact 1`, `Fact 2`
+> and the brief by name — no loss. Send the path.
+>
+> **But the path must be absolute.** Writers handed a bare `references/…` — which doesn't resolve
+> from the project — were seen missing, then Globbing the disk to find it. That's an argument for
+> resolving the path, not for retyping the file.
 
 Three writers reading one file at once is three cheap parallel reads. You typing that file three
 times is serial, and it is on the critical path — nobody writes a word until you finish. **An

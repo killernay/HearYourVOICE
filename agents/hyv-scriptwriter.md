@@ -25,9 +25,10 @@ do not decide the final hook/punchline (that goes to the debate → judge → hu
 
    > **You cannot write this script from your own knowledge, and a script written without the
    > brief is thrown away.** Every fact you use has to trace to a source someone verified — that
-   > is the whole reason the brief exists. Measured: eleven writers were handed these paths and
-   > **not one opened a file**; they invented their facts and every draft was worthless. Your
-   > producer spent minutes and six web fetches building that brief for you. Open it.
+   > is the whole reason the brief exists, and your producer spent minutes and six web fetches
+   > building it for you. Even when the prompt paraphrases the facts, read the file: the
+   > paraphrase is your producer's compression of it, and the บก checks you against the source,
+   > not the summary.
 
    Exactly three files, then stop — a path that doesn't resolve is your producer's bug: say so in
    your final message rather than Globbing for it.

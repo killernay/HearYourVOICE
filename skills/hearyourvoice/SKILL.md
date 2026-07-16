@@ -79,9 +79,9 @@ one worker under three foremen.
 **Spawn every producer in ONE message — one `Agent` call per topic, all in the same block, never
 one message each.** "In parallel" is not something you intend, it is something the message shape
 either does or doesn't do: three `Agent` calls in one block run at once; three messages queue, and
-topic 3 starts only when topic 1 is done. **Measured: one producer per message turned a 3-desk run
-into a 3× serial chain, while the phrase "spawn them in parallel" sat right there in the prompt.**
-Compose all of them before you send. Their whole point is that they never need each other.
+topic 3 starts only when topic 1 is done. **Observed: a 3-topic run spawned exactly one producer
+and then waited on it — while the words "spawn 3 ตัวใน ข้อความเดียว" sat right there in the human's
+prompt.** Compose all of them before you send. Their whole point is that they never need each other.
 
 **Set nothing up first.** Each producer scaffolds its own slug —
 `new-project.mjs` never overwrites `.env`, so they can't collide. You do not need to inspect the
@@ -104,19 +104,21 @@ finish in the time of one, and you keep the best. You pay tokens, not minutes.
 
 **Spawn with `run_in_background: false` whenever you need the answer.** `Agent` backgrounds by
 default: send three writers off without the flag and you get three acknowledgements and no scripts,
-so you'll reach for shell to wait — `sleep 30 && echo done`, a `sleep 1` noop, `echo "waiting for
-writer agents"`. **Measured: producers doing exactly that sat asleep from 5:53 to past 11:00 while
-their writers had already finished.** One message makes them concurrent; the flag hands you their
-work. You need both — concurrent work you never collect is worth nothing. **Typing `sleep` means
-you spawned wrong; fix the spawn, not the wait.**
+so you'll reach for shell to wait — **observed verbatim: `sleep 30 && echo done`, a `sleep 1` noop
+labelled "placeholder while waiting for background agents", `echo "waiting for writer agents"`.**
+Every one of those is a model turn that produces nothing, timed by a guess about work you can't
+see. One message makes them concurrent; the flag hands you their work. You need both — concurrent
+work you never collect is worth nothing. **Typing `sleep` means you spawned wrong; fix the spawn,
+not the wait.**
 
 **And when you do spawn: already a file → send the absolute path. Not a file → paste it.**
-`research.md` and `project.config.json` are written; three writers can read them at once in ~2s
-each. Retyping the brief into three prompts means generating it four times, serially, on the
-critical path — **measured: 23,814 characters of prompt and 6:38 to hand off, to brief three
-writers who then finished in 22 seconds.** Paste only what exists nowhere else: the angle, that the
+`research.md` and `project.config.json` are written; three writers can read them at once. Retyping
+the brief into three prompts means generating it four times — once to the file, once per writer —
+and that generation is serial, on the critical path, with nobody writing until you finish.
+**Measured: pasting full briefs produced 23,814 characters of prompt; sending paths instead
+produced 1,638 per writer, with no loss.** Paste only what exists nowhere else: the angle, that the
 others are competing, the deliverable shape. And make paths **absolute** — a bare `references/…`
-doesn't resolve from the project and sends every writer Globbing the disk for it.
+doesn't resolve from the project.
 
 So spawn for **competition**:
 
